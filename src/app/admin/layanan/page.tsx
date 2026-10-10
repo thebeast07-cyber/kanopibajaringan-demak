@@ -5,10 +5,6 @@ import { defaultCmsRepository } from '../../../lib/cms/repository';
 import {
   ServiceSchema,
   MeasurementType,
-  MaterialSchema,
-  FrameSchema,
-  LaborOptionSchema,
-  FinishingSchema,
   AddOnSchema,
 } from '../../../types/domain';
 import {
@@ -48,13 +44,29 @@ const CATEGORY_OPTIONS = [
 ];
 
 const MEASUREMENT_LABEL_MAP: Record<MeasurementType, { label: string; desc: string }> = {
-  m2: { label: 'Per m² (Luas)', desc: 'Kalkulasi berdasarkan Panjang × Lebar' },
-  meter: { label: 'Per Meter Lari', desc: 'Kalkulasi berdasarkan Panjang lari' },
-  unit: { label: 'Per Unit / Pcs', desc: 'Kalkulasi harga satuan per unit' },
+  m2: { label: 'Per m² (Luas)', desc: 'Pelanggan isi panjang × lebar' },
+  meter: { label: 'Per Meter Lari', desc: 'Pelanggan isi panjang saja' },
+  unit: { label: 'Per Unit / Pcs', desc: 'Pelanggan isi jumlah unit' },
   package: { label: 'Paket Fixed', desc: 'Harga terikat tetap per paket' },
   dimensions: { label: '3D Dimensi (P×L×T)', desc: 'Kalkulasi volume kubikasi' },
   mixed: { label: 'Kalkulasi Campuran', desc: 'Kombinasi m², paket, dan unit' },
 };
+
+// Hanya tiga cara ukur ini yang dimengerti kalkulator. Sisanya (package/dimensions/mixed)
+// masih ada di schema untuk data lama, tapi jangan ditawarkan — hasilnya Rp 0.
+const SELECTABLE_MEASUREMENTS: MeasurementType[] = ['m2', 'meter', 'unit'];
+
+const UNIT_LABEL_MAP: Record<string, string> = { m2: 'm²', meter: 'meter', unit: 'unit' };
+
+function unitLabelFor(type: MeasurementType): string {
+  return UNIT_LABEL_MAP[type] || 'unit';
+}
+
+function pricingModelFor(type: MeasurementType): 'per_m2' | 'per_m' | 'per_unit' {
+  if (type === 'm2') return 'per_m2';
+  if (type === 'meter') return 'per_m';
+  return 'per_unit';
+}
 
 interface ServiceFormState {
   id?: string;
@@ -65,6 +77,7 @@ interface ServiceFormState {
   category: ServiceSchema['category'];
   featured: boolean;
   measurementType: MeasurementType;
+  rate: number;
   minimumValue: number;
   minDays: number;
   maxDays: number;
@@ -79,10 +92,6 @@ interface ServiceFormState {
 
 export default function AdminLayananPage() {
   const [services, setServices] = useState<ServiceSchema[]>([]);
-  const [materials, setMaterials] = useState<MaterialSchema[]>([]);
-  const [frames, setFrames] = useState<FrameSchema[]>([]);
-  const [laborOptions, setLaborOptions] = useState<LaborOptionSchema[]>([]);
-  const [finishings, setFinishings] = useState<FinishingSchema[]>([]);
   const [addOns, setAddOns] = useState<AddOnSchema[]>([]);
 
   const [hasDraft, setHasDraft] = useState<boolean>(false);
@@ -107,10 +116,6 @@ export default function AdminLayananPage() {
     const updateData = () => {
       const working = defaultCmsRepository.getWorkingDataset();
       setServices(working.services);
-      setMaterials(working.materials || []);
-      setFrames(working.frames || []);
-      setLaborOptions(working.laborOptions || []);
-      setFinishings(working.finishings || []);
       setAddOns(working.addOns || []);
       setHasDraft(defaultCmsRepository.hasDraft());
       setActiveVersion(defaultCmsRepository.getActiveVersion());
@@ -187,13 +192,16 @@ export default function AdminLayananPage() {
       category: 'canopy',
       featured: true,
       measurementType: 'm2',
+      rate: 0,
       minimumValue: 10,
       minDays: 3,
       maxDays: 7,
-      allowedMaterialIds: materials.map((m) => m.id),
-      allowedFrameIds: frames.map((f) => f.id),
-      allowedLaborIds: laborOptions.map((l) => l.id),
-      allowedFinishingIds: finishings.map((fn) => fn.id),
+      // Model borongan: harga sudah all-in di tarif. Komponen dibiarkan kosong —
+      // kalau diisi, harganya dihitung dua kali.
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: addOns.map((a) => a.id),
       imageUrl: undefined,
       status: 'active',
@@ -223,6 +231,7 @@ export default function AdminLayananPage() {
       category: svc.category,
       featured: svc.featured,
       measurementType: svc.measurementType,
+      rate: svc.pricingRules?.[0]?.rate ?? 0,
       minimumValue: minBillingVal,
       minDays,
       maxDays,
@@ -244,6 +253,14 @@ export default function AdminLayananPage() {
     const errors: Record<string, string> = {};
     if (!form.title.trim()) errors.title = 'Nama layanan wajib diisi.';
     if (!form.shortDescription.trim()) errors.shortDescription = 'Deskripsi singkat wajib diisi.';
+    if (!form.rate || form.rate <= 0) {
+      errors.rate = `Tarif borongan wajib diisi, misal 900000 untuk Rp 900.000 / ${unitLabelFor(
+        form.measurementType
+      )}.`;
+    }
+    if (form.maxDays < form.minDays) {
+      errors.maxDays = 'Waktu maksimum tidak boleh lebih cepat dari waktu minimum.';
+    }
     return errors;
   };
 
@@ -256,7 +273,8 @@ export default function AdminLayananPage() {
     if (Object.keys(errors).length > 0) {
       console.log('[DEBUG] validateForm errors:', errors);
       setFormErrors(errors);
-      setFormTab('info');
+      // lempar owner ke tab yang error-nya ada, bukan selalu tab 1
+      setFormTab(errors.title || errors.shortDescription ? 'info' : 'pricing');
       return;
     }
 
@@ -269,8 +287,10 @@ export default function AdminLayananPage() {
           : { minimumArea: formState.minimumValue }
         : undefined;
 
+    const serviceId = formState.id || `svc-${Date.now()}`;
+
     const updatedService: ServiceSchema = {
-      id: formState.id || `svc-${Date.now()}`,
+      id: serviceId,
       slug: formState.slug || formState.title.toLowerCase().replace(/\s+/g, '-'),
       title: formState.title.trim(),
       shortDescription: formState.shortDescription.trim(),
@@ -278,12 +298,25 @@ export default function AdminLayananPage() {
       category: formState.category,
       featured: formState.featured,
       measurementType: formState.measurementType,
-      pricingRules: [],
+      pricingRules: [
+        {
+          id: `rule-${serviceId}-borongan`,
+          targetComponent: 'base',
+          model: pricingModelFor(formState.measurementType),
+          rate: formState.rate,
+          unitLabel: unitLabelFor(formState.measurementType),
+          description: `Harga borongan per ${unitLabelFor(
+            formState.measurementType
+          )} — sudah termasuk bahan, rangka, upah pasang, dan finishing`,
+        },
+      ],
       minimumBilling: minBillingObj,
-      allowedMaterialIds: formState.allowedMaterialIds,
-      allowedFrameIds: formState.allowedFrameIds,
-      allowedLaborIds: formState.allowedLaborIds,
-      allowedFinishingIds: formState.allowedFinishingIds,
+      // Sengaja dikosongkan: harga sudah all-in di tarif borongan di atas.
+      // Kalau komponen ini diisi, kalkulator menambahkannya lagi di atas tarif.
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: formState.allowedAddOnIds,
       allowedSiteConditionIds: [],
       durationRanges: [
@@ -340,16 +373,27 @@ export default function AdminLayananPage() {
       },
     },
     {
-      header: 'Cara Ukur',
+      header: 'Harga Borongan',
       accessor: (row) => {
-        const meta = MEASUREMENT_LABEL_MAP[row.measurementType] || {
-          label: row.measurementType,
-          desc: '',
-        };
+        const rate = row.pricingRules?.[0]?.rate;
+        const unit = row.pricingRules?.[0]?.unitLabel || unitLabelFor(row.measurementType);
+        const meta = MEASUREMENT_LABEL_MAP[row.measurementType];
+
+        if (!rate) {
+          return (
+            <div className="text-xs">
+              <div className="font-bold text-rose-600">Belum diisi</div>
+              <div className="text-[11px] text-rose-500">Harga muncul Rp 0 di kalkulator</div>
+            </div>
+          );
+        }
+
         return (
-          <div>
-            <div className="font-semibold text-slate-800 text-xs">{meta.label}</div>
-            <div className="text-[11px] text-slate-500">{meta.desc}</div>
+          <div className="text-xs">
+            <div className="font-bold text-slate-900">
+              Rp {rate.toLocaleString('id-ID')} <span className="font-normal text-slate-500">/ {unit}</span>
+            </div>
+            <div className="text-[11px] text-slate-500">{meta ? meta.desc : row.measurementType}</div>
           </div>
         );
       },
@@ -368,7 +412,7 @@ export default function AdminLayananPage() {
         return (
           <div className="text-xs space-y-0.5">
             <div className="font-semibold text-slate-800">
-              {minVal ? `Min: ${minVal} ${row.measurementType === 'meter' ? 'm' : 'm²'}` : 'Tanpa Minimum'}
+              {minVal ? `Min: ${minVal} ${unitLabelFor(row.measurementType)}` : 'Tanpa Minimum'}
             </div>
             <div className="text-slate-500 flex items-center gap-1 text-[11px]">
               <Clock className="w-3 h-3 text-slate-400" />
@@ -377,22 +421,6 @@ export default function AdminLayananPage() {
           </div>
         );
       },
-    },
-    {
-      header: 'Pilihan Terhubung',
-      accessor: (row) => (
-        <div className="flex flex-wrap gap-1 text-[10px]">
-          <span className="bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
-            {row.allowedMaterialIds?.length || 0} Bahan
-          </span>
-          <span className="bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
-            {row.allowedFrameIds?.length || 0} Rangka
-          </span>
-          <span className="bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
-            {row.allowedLaborIds?.length || 0} Upah
-          </span>
-        </div>
-      ),
     },
     {
       header: 'Status',
@@ -429,9 +457,8 @@ export default function AdminLayananPage() {
 
   const modalTabs: TabItem[] = [
     { id: 'info', label: '1. Informasi Utama' },
-    { id: 'measurement', label: '2. Cara Ukur & Waktu' },
-    { id: 'materials', label: '3. Bahan & Rangka' },
-    { id: 'other', label: '4. Upah & Finishing' },
+    { id: 'pricing', label: '2. Harga & Cara Ukur' },
+    { id: 'other', label: '3. Biaya Tambahan' },
   ];
 
   return (
@@ -658,13 +685,13 @@ export default function AdminLayananPage() {
             </div>
           )}
 
-          {/* TAB 2: CARA UKUR & MINIMUM */}
-          {formTab === 'measurement' && (
+          {/* TAB 2: HARGA BORONGAN & CARA UKUR */}
+          {formTab === 'pricing' && (
             <div className="space-y-5 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Metode / Cara Ukur Utama</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-                  {(Object.keys(MEASUREMENT_LABEL_MAP) as MeasurementType[]).map((key) => {
+                <label className="block font-semibold text-slate-700 mb-1">Dihitung per apa?</label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
+                  {SELECTABLE_MEASUREMENTS.map((key) => {
                     const item = MEASUREMENT_LABEL_MAP[key];
                     const isSelected = formState.measurementType === key;
                     return (
@@ -677,9 +704,9 @@ export default function AdminLayananPage() {
                             : 'border-slate-200 hover:border-slate-300 bg-white'
                         }`}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-1">
                           <span className="font-bold text-slate-900">{item.label}</span>
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-600" />}
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />}
                         </div>
                         <p className="text-[11px] text-slate-500 mt-0.5">{item.desc}</p>
                       </div>
@@ -688,14 +715,70 @@ export default function AdminLayananPage() {
                 </div>
               </div>
 
+              <div className="bg-amber-50/60 p-4 rounded-xl border border-amber-200 space-y-3">
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs">
+                    Tarif Borongan per {unitLabelFor(formState.measurementType)}
+                  </h4>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    Harga bersih sudah termasuk bahan, rangka, upah pasang, dan finishing. Satu angka ini
+                    yang dipakai kalkulator di website.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">
+                    Rp
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={5000}
+                    value={formState.rate || ''}
+                    placeholder="900000"
+                    onChange={(e) =>
+                      setFormState({ ...formState, rate: parseFloat(e.target.value) || 0 })
+                    }
+                    className="w-full text-base font-bold text-slate-900 pl-10 pr-20 py-2.5 rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-500">
+                    / {unitLabelFor(formState.measurementType)}
+                  </span>
+                </div>
+                {formErrors.rate && <p className="text-xs text-rose-600">{formErrors.rate}</p>}
+
+                {formState.rate > 0 && (
+                  <p className="text-[11px] text-slate-700 bg-white border border-amber-200 rounded-lg px-3 py-2">
+                    {formState.measurementType === 'm2'
+                      ? `Pelanggan isi 5 m × 2 m (10 m²) → Rp ${(
+                          formState.rate * Math.max(10, formState.minimumValue || 0)
+                        ).toLocaleString('id-ID')}`
+                      : formState.measurementType === 'meter'
+                      ? `Pelanggan isi 4 meter → Rp ${(
+                          formState.rate * Math.max(4, formState.minimumValue || 0)
+                        ).toLocaleString('id-ID')}`
+                      : `Pelanggan isi 2 unit → Rp ${(
+                          formState.rate * Math.max(2, formState.minimumValue || 0)
+                        ).toLocaleString('id-ID')}`}
+                    {formState.minimumValue > 0 && (
+                      <span className="text-slate-500">
+                        {' '}
+                        (minimum {formState.minimumValue} {unitLabelFor(formState.measurementType)})
+                      </span>
+                    )}
+                  </p>
+                )}
+              </div>
+
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                <h4 className="font-bold text-slate-800 text-xs">Minimum Perhitungan Pekerjaan</h4>
+                <h4 className="font-bold text-slate-800 text-xs">Minimum Pengerjaan</h4>
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Nilai Minimum (m² / Meter / Unit)
+                    Minimal {unitLabelFor(formState.measurementType)} yang ditagih
                   </label>
                   <input
                     type="number"
+                    min={0}
                     value={formState.minimumValue}
                     onChange={(e) =>
                       setFormState({
@@ -706,7 +789,8 @@ export default function AdminLayananPage() {
                     className="w-full text-sm p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Jika ukuran pekerjaan dari pelanggan lebih kecil dari nilai minimum, perhitungan harga akan menggunakan batas minimum ini. Isi 0 jika tidak ada batas minimum.
+                    Kalau pesanan pelanggan lebih kecil dari angka ini, tetap dihitung segini. Isi 0 kalau
+                    tidak ada batas minimum.
                   </p>
                 </div>
               </div>
@@ -733,202 +817,21 @@ export default function AdminLayananPage() {
                     }
                     className="w-full text-sm p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
+                  {formErrors.maxDays && (
+                    <p className="text-xs text-rose-600 mt-1">{formErrors.maxDays}</p>
+                  )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 3: BAHAN & RANGKA TERKAIT */}
-          {formTab === 'materials' && (
-            <div className="space-y-6 text-xs">
-              {/* Materials checklist */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800">Bahan Atap / Penutup yang Diizinkan</label>
-                  <span className="text-[11px] text-slate-500">
-                    {formState.allowedMaterialIds.length} Dipilih
-                  </span>
-                </div>
-                {materials.length === 0 ? (
-                  <p className="text-slate-500 italic">Belum ada bahan atap yang tersedia.</p>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200">
-                    {materials.map((mat) => {
-                      const isChecked = formState.allowedMaterialIds.includes(mat.id);
-                      return (
-                        <label
-                          key={mat.id}
-                          className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
-                            isChecked ? 'bg-amber-50 border-amber-300 font-semibold' : 'bg-white border-slate-200'
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() =>
-                              setFormState({
-                                ...formState,
-                                allowedMaterialIds: toggleArrayItem(
-                                  formState.allowedMaterialIds,
-                                  mat.id
-                                ),
-                              })
-                            }
-                            className="rounded border-slate-300 text-amber-500 focus:ring-amber-500"
-                          />
-                          <div className="truncate">
-                            <div className="text-xs text-slate-900 truncate">{mat.name}</div>
-                            <div className="text-[10px] text-slate-500">
-                              Rp {mat.pricingRule?.rate?.toLocaleString('id-ID')} / {mat.pricingRule?.unitLabel || 'm²'}
-                            </div>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Frames checklist */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800">Opsi Rangka yang Diizinkan</label>
-                  <span className="text-[11px] text-slate-500">
-                    {formState.allowedFrameIds.length} Dipilih
-                  </span>
-                </div>
-                {frames.length === 0 ? (
-                  <p className="text-slate-500 italic">Belum ada rangka yang tersedia.</p>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200">
-                    {frames.map((frame) => {
-                      const isChecked = formState.allowedFrameIds.includes(frame.id);
-                      return (
-                        <label
-                          key={frame.id}
-                          className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
-                            isChecked ? 'bg-amber-50 border-amber-300 font-semibold' : 'bg-white border-slate-200'
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() =>
-                              setFormState({
-                                ...formState,
-                                allowedFrameIds: toggleArrayItem(
-                                  formState.allowedFrameIds,
-                                  frame.id
-                                ),
-                              })
-                            }
-                            className="rounded border-slate-300 text-amber-500 focus:ring-amber-500"
-                          />
-                          <div className="truncate">
-                            <div className="text-xs text-slate-900 truncate">{frame.name}</div>
-                            <div className="text-[10px] text-slate-500">
-                              Rp {frame.pricingRule?.rate?.toLocaleString('id-ID')} / {frame.pricingRule?.unitLabel || 'm²'}
-                            </div>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: UPAH & FINISHING */}
+          {/* TAB 3: BIAYA TAMBAHAN */}
           {formTab === 'other' && (
             <div className="space-y-6 text-xs">
-              {/* Labor Checklist */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800">Opsi Upah Pengerjaan</label>
-                  <span className="text-[11px] text-slate-500">
-                    {formState.allowedLaborIds.length} Dipilih
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200">
-                  {laborOptions.map((labor) => {
-                    const isChecked = formState.allowedLaborIds.includes(labor.id);
-                    return (
-                      <label
-                        key={labor.id}
-                        className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
-                          isChecked ? 'bg-amber-50 border-amber-300 font-semibold' : 'bg-white border-slate-200'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() =>
-                            setFormState({
-                              ...formState,
-                              allowedLaborIds: toggleArrayItem(
-                                formState.allowedLaborIds,
-                                labor.id
-                              ),
-                            })
-                          }
-                          className="rounded border-slate-300 text-amber-500 focus:ring-amber-500"
-                        />
-                        <div className="truncate">
-                          <div className="text-xs text-slate-900 truncate">{labor.name}</div>
-                          <div className="text-[10px] text-slate-500">
-                            Rp {labor.pricingRule?.rate?.toLocaleString('id-ID')}
-                          </div>
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Finishing Checklist */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="font-bold text-slate-800">Opsi Cat & Finishing</label>
-                  <span className="text-[11px] text-slate-500">
-                    {formState.allowedFinishingIds.length} Dipilih
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200">
-                  {finishings.map((fn) => {
-                    const isChecked = formState.allowedFinishingIds.includes(fn.id);
-                    return (
-                      <label
-                        key={fn.id}
-                        className={`flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition ${
-                          isChecked ? 'bg-amber-50 border-amber-300 font-semibold' : 'bg-white border-slate-200'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() =>
-                            setFormState({
-                              ...formState,
-                              allowedFinishingIds: toggleArrayItem(
-                                formState.allowedFinishingIds,
-                                fn.id
-                              ),
-                            })
-                          }
-                          className="rounded border-slate-300 text-amber-500 focus:ring-amber-500"
-                        />
-                        <div className="truncate">
-                          <div className="text-xs text-slate-900 truncate">{fn.name}</div>
-                          <div className="text-[10px] text-slate-500">
-                            Rp {fn.pricingRule?.rate?.toLocaleString('id-ID')}
-                          </div>
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
+              <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                Bahan, rangka, upah, dan finishing sudah masuk ke tarif borongan di tab sebelumnya — jadi
+                tidak dipilih di sini lagi. Yang di bawah ini biaya ekstra yang dibahas saat survei.
+              </p>
 
               {/* AddOns Checklist */}
               <div className="space-y-2">

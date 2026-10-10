@@ -117,7 +117,7 @@ export function calculateImpactPreview(
 
   const componentDiffs: ImpactComponentDiff[] = [
     {
-      name: 'Biaya Dasar Rangka',
+      name: 'Harga Borongan',
       publishedCost: pubSnap.breakdown.baseCost,
       draftCost: draftSnap.breakdown.baseCost,
       difference: draftSnap.breakdown.baseCost - pubSnap.breakdown.baseCost,

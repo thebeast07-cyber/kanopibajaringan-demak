@@ -2,19 +2,21 @@ import { CompleteDataset } from '../types/domain';
 
 export const COMPREHENSIVE_DATASET: CompleteDataset = {
   businessConfig: {
-    businessName: 'Kanopi & Baja Ringan Pro',
-    tagline: 'Spesialis Kanopi, Baja Ringan, Pagar & Railing Bergaransi',
+    businessName: '3 Putra',
+    tagline: 'Pasang kanopi, baja ringan, pagar & railing',
     pricingVersion: 'v1.0.0-dev',
     frontlineContact: {
-      name: 'Tim Marketing & Frontline',
-      whatsappNumber: '6281234567890',
-      email: 'sales@kanopibajaringanpro.id',
-      role: 'Konsultan & Frontline Lead',
+      name: 'Tim 3 Putra',
+      whatsappNumber: '6282228132455', // 082228132455 dalam format internasional (wa.me butuh kode negara)
+      email: '',
+      role: 'Konsultan',
     },
     serviceAreas: ['Tangerang', 'Tangerang Selatan', 'Jakarta Barat', 'Jakarta Selatan', 'Depok', 'Bogor', 'Bekasi'],
     surveyDisclaimer:
-      'Estimasi biaya dan durasi proyek di website ini adalah rincian kalkulasi awal berdasarkan spesifikasi baku. Harga & durasi final akan dipastikan setelah Survei Lokasi Gratis oleh Tim Teknis Owner.',
-    guaranteeTerms: 'Garansi kebocoran 6 bulan & garansi struktur rangka hingga 5 tahun.',
+      'Harga di sini hitungan ancer-ancer dari ukuran yang kamu masukkan. Harga pastinya ditentukan setelah kami survei lokasi.',
+    // guaranteeTerms sengaja kosong: pemilik belum mengonfirmasi ada garansi apa.
+    // Isi kalau sudah pasti, jangan dikarang (R-36).
+    guaranteeTerms: '',
   },
 
   laborOptions: [
@@ -489,23 +491,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'm2',
       pricingRules: [
         {
-          id: 'rule-svc-kanopi-alderon-base',
+          id: 'rule-svc-kanopi-alderon-borongan',
           targetComponent: 'base',
           model: 'per_m2',
-          rate: 150000,
+          rate: 785000,
           unitLabel: 'm²',
-          description: 'Base fee fabrikasi dan penyiapan rangka kanopi per m²',
+          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing anti-karat',
         },
       ],
       minimumBilling: {
         minimumArea: 12, // Minimum 12 m²
       },
-      allowedMaterialIds: ['mat-alderon-twinwall', 'mat-alderon-rs'],
-      allowedFrameIds: ['frame-hollow-40x60-galvanis', 'frame-hollow-50x100-double'],
-      allowedLaborIds: ['labor-std-installation', 'labor-heavy-welding'],
-      allowedFinishingIds: ['finish-cat-zinc-chromate', 'finish-powder-coating', 'finish-cat-duco-mobil'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: ['addon-talang-pvc', 'addon-talang-seng-galvalum', 'addon-bongkar-kanopi-lama', 'addon-led-strip-embedded'],
-      allowedSiteConditionIds: ['site-floor-2-access', 'site-narrow-space', 'site-out-of-town'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 20, minDays: 2, maxDays: 3 },
         { minUnits: 21, maxUnits: 40, minDays: 3, maxDays: 5 },
@@ -527,22 +529,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'm2',
       pricingRules: [
         {
-          id: 'rule-svc-kanopi-poly-base',
+          id: 'rule-svc-kanopi-poly-borongan',
           targetComponent: 'base',
           model: 'per_m2',
-          rate: 160000,
+          rate: 825000,
           unitLabel: 'm²',
+          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
         minimumArea: 10,
       },
-      allowedMaterialIds: ['mat-polycarbonate-solartuff'],
-      allowedFrameIds: ['frame-hollow-40x60-galvanis', 'frame-hollow-50x100-double'],
-      allowedLaborIds: ['labor-std-installation'],
-      allowedFinishingIds: ['finish-cat-zinc-chromate', 'finish-powder-coating'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: ['addon-talang-pvc', 'addon-bongkar-kanopi-lama'],
-      allowedSiteConditionIds: ['site-floor-2-access', 'site-narrow-space'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 25, minDays: 2, maxDays: 4 },
         { minUnits: 26, maxUnits: null, minDays: 4, maxDays: 7 },
@@ -562,22 +565,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'm2',
       pricingRules: [
         {
-          id: 'rule-svc-spandek-base',
+          id: 'rule-svc-spandek-borongan',
           targetComponent: 'base',
           model: 'per_m2',
-          rate: 120000,
+          rate: 570000,
           unitLabel: 'm²',
+          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
         minimumArea: 15,
       },
-      allowedMaterialIds: ['mat-spandek-pasir'],
-      allowedFrameIds: ['frame-hollow-40x60-galvanis', 'frame-baja-ringan-c75'],
-      allowedLaborIds: ['labor-std-installation'],
-      allowedFinishingIds: ['finish-cat-zinc-chromate'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: ['addon-talang-pvc', 'addon-bongkar-kanopi-lama'],
-      allowedSiteConditionIds: ['site-floor-2-access', 'site-out-of-town'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 30, minDays: 1, maxDays: 3 },
         { minUnits: 31, maxUnits: null, minDays: 3, maxDays: 5 },
@@ -598,22 +602,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'm2',
       pricingRules: [
         {
-          id: 'rule-svc-baja-base',
+          id: 'rule-svc-baja-borongan',
           targetComponent: 'base',
           model: 'per_m2',
-          rate: 110000,
+          rate: 480000,
           unitLabel: 'm²',
+          description: 'Harga borongan per m² — sudah termasuk rangka baja ringan, penutup atap, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
         minimumArea: 30,
       },
-      allowedMaterialIds: ['mat-spandek-pasir'],
-      allowedFrameIds: ['frame-baja-ringan-c75'],
-      allowedLaborIds: ['labor-std-installation'],
-      allowedFinishingIds: ['finish-cat-zinc-chromate'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: ['addon-bongkar-kanopi-lama'],
-      allowedSiteConditionIds: ['site-floor-2-access', 'site-out-of-town'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 50, minDays: 3, maxDays: 5 },
         { minUnits: 51, maxUnits: 100, minDays: 5, maxDays: 8 },
@@ -634,22 +639,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'meter',
       pricingRules: [
         {
-          id: 'rule-svc-pagar-base',
+          id: 'rule-svc-pagar-borongan',
           targetComponent: 'base',
           model: 'per_m',
-          rate: 220000,
+          rate: 630000,
           unitLabel: 'meter',
+          description: 'Harga borongan per meter — sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
         minimumLength: 4, // Minimum 4 meter lari
       },
-      allowedMaterialIds: ['mat-hollow-galvanis-std', 'mat-wpc-wood-panel'],
-      allowedFrameIds: ['frame-fence-hollow-40x40'],
-      allowedLaborIds: ['labor-meter-installation', 'labor-heavy-welding'],
-      allowedFinishingIds: ['finish-linear-standard', 'finish-powder-coating'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: ['addon-roda-pagar-heavy'],
-      allowedSiteConditionIds: ['site-narrow-space', 'site-out-of-town'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 6, minDays: 3, maxDays: 5 },
         { minUnits: 7, maxUnits: 15, minDays: 5, maxDays: 8 },
@@ -670,22 +676,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'meter',
       pricingRules: [
         {
-          id: 'rule-svc-railing-base',
+          id: 'rule-svc-railing-borongan',
           targetComponent: 'base',
           model: 'per_m',
-          rate: 200000,
+          rate: 610000,
           unitLabel: 'meter',
+          description: 'Harga borongan per meter — sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
         minimumLength: 5,
       },
-      allowedMaterialIds: ['mat-hollow-galvanis-std'],
-      allowedFrameIds: ['frame-fence-hollow-40x40'],
-      allowedLaborIds: ['labor-meter-installation'],
-      allowedFinishingIds: ['finish-linear-standard', 'finish-powder-coating'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: [],
-      allowedSiteConditionIds: ['site-floor-2-access'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 10, minDays: 2, maxDays: 4 },
         { minUnits: 11, maxUnits: null, minDays: 4, maxDays: 7 },
@@ -705,22 +712,23 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       measurementType: 'unit',
       pricingRules: [
         {
-          id: 'rule-svc-tralis-base',
+          id: 'rule-svc-tralis-borongan',
           targetComponent: 'base',
           model: 'per_unit',
-          rate: 120000,
+          rate: 425000,
           unitLabel: 'unit',
+          description: 'Harga borongan per unit jendela — sudah termasuk bahan, upah pasang, dan cat anti karat',
         },
       ],
       minimumBilling: {
         minimumQuantity: 3, // Minimum 3 unit
       },
-      allowedMaterialIds: ['mat-tralis-begel-12mm'],
-      allowedFrameIds: ['frame-tralis-siku'],
-      allowedLaborIds: ['labor-unit-installation'],
-      allowedFinishingIds: ['finish-unit-standard'],
+      allowedMaterialIds: [],
+      allowedFrameIds: [],
+      allowedLaborIds: [],
+      allowedFinishingIds: [],
       allowedAddOnIds: [],
-      allowedSiteConditionIds: ['site-floor-2-access'],
+      allowedSiteConditionIds: [],
       durationRanges: [
         { minUnits: 0, maxUnits: 5, minDays: 2, maxDays: 3 },
         { minUnits: 6, maxUnits: null, minDays: 3, maxDays: 6 },
@@ -730,92 +738,44 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
     },
   ],
 
-  portfolios: [
-    {
-      id: 'port-bsd-alderon',
-      slug: 'kanopi-alderon-bsd-city',
-      title: 'Kanopi Alderon Twinwall Carport BSD City',
-      serviceId: 'svc-kanopi-alderon',
-      location: {
-        city: 'Tangerang Selatan',
-        district: 'Serpong',
-        province: 'Banten',
-      },
-      completionYear: 2024,
-      thumbnailUrl: 'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=800&q=80',
-      galleryImages: [
-        'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=800&q=80',
-        'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80',
-      ],
-      specsSummary: 'Luas 24 m², Atap Alderon Twinwall 10mm, Rangka Hollow Galvanis 40x60, Cat Duco Hitam Doff.',
-      testimonialQuote: 'Hasil kanopi sangat rapi, tidak berisik saat hujan lebat. Pengerjaan cepat tepat 3 hari.',
-    },
-    {
-      id: 'port-bintaro-pagar-wpc',
-      slug: 'pagar-minimalis-wpc-bintaro',
-      title: 'Pagar Minimalis Motif WPC Kayu Bintaro Sektor 9',
-      serviceId: 'svc-pagar-minimalis',
-      location: {
-        city: 'Tangerang Selatan',
-        district: 'Pondok Aren',
-        province: 'Banten',
-      },
-      completionYear: 2024,
-      thumbnailUrl: 'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80',
-      galleryImages: ['https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=800&q=80'],
-      specsSummary: 'Panjang 6.5 meter, Panel Kayu WPC Jati, Frame Hollow 40x40 Powder Coating.',
-      testimonialQuote: 'Tampilan pagar jadi sangat mewah dan tidak perlu repot merawat kayu asli.',
-    },
-    {
-      id: 'port-jaksel-solartuff',
-      slug: 'kanopi-solartuff-void-jaksel',
-      title: 'Kanopi Transparan SolarTuff Void Kebayoran',
-      serviceId: 'svc-kanopi-polycarbonate',
-      location: {
-        city: 'Jakarta Selatan',
-        district: 'Kebayoran Baru',
-        province: 'DKI Jakarta',
-      },
-      completionYear: 2024,
-      thumbnailUrl: 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=800&q=80',
-      galleryImages: ['https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?w=800&q=80'],
-      specsSummary: 'Luas 15 m², SolarTuff Solid Clear 3mm, Double Frame 50x100 Galvanis.',
-      testimonialQuote: 'Void rumah jadi terang tanpa panas menyengat.',
-    },
-  ],
+  // Kosong sampai ada foto proyek asli milik 3 Putra.
+  // Sebelumnya berisi 3 proyek karangan (BSD City, Bintaro, Kebayoran) lengkap dengan
+  // testimoni pelanggan karangan dan foto stok Unsplash, dipajang sebagai "bukti pengerjaan".
+  // Isi lewat /admin/portofolio kalau fotonya sudah ada. Jangan dikarang lagi (R-18, R-38).
+  portfolios: [],
 
 
   faqs: [
     {
       id: 'faq-1',
       category: 'estimator',
-      question: 'Apakah hasil kalkulasi estimasi di website ini sudah final?',
+      question: 'Harga di kalkulator ini udah pasti?',
       answer:
-        'Kalkulasi di website merupakan estimasi biaya acuan awal berdasarkan rumus spesifikasi teknis baku. Biaya dan durasi pengerjaan final akan dikonfirmasikan setelah Survei Lokasi Gratis oleh Tim Teknis Owner.',
+        'Belum. Itu hitungan kasar dari ukuran yang kamu masukkan, buat ancer-ancer aja. Harga pastinya kami tentukan setelah lihat lokasinya langsung, karena kondisi tiap rumah beda.',
       order: 1,
     },
     {
       id: 'faq-2',
       category: 'survey',
-      question: 'Apakah survei lokasi dikenakan biaya?',
+      question: 'Survei lokasinya bayar nggak?',
       answer:
-        'Survei lokasi 100% GRATIS tanpa dipungut biaya untuk seluruh area jangkauan (Tangerang, Jakarta, Depok, Bogor, Bekasi).',
+        'Nggak. Survei gratis buat seluruh area yang kami layani: Tangerang, Tangerang Selatan, Jakarta Barat, Jakarta Selatan, Depok, Bogor, dan Bekasi.',
       order: 2,
     },
     {
       id: 'faq-3',
-      category: 'warranty',
-      question: 'Apakah pekerjaan konstruksi dilengkapi garansi?',
+      category: 'estimator',
+      question: 'Kok harganya cuma satu angka? Pilihan bahan dan warnanya mana?',
       answer:
-        'Ya, seluruh pekerjaan dilengkapi garansi struktur hingga 5 tahun dan garansi kebocoran/perawatan selama 6 bulan.',
+        'Harga yang muncul itu borongan, udah termasuk bahan, rangka, upah pasang, dan finishing. Pilihan bahan, warna, sama tambahan kayak talang atau bongkar atap lama kami bahas langsung pas chat atau pas survei, biar nggak ribet di website.',
       order: 3,
     },
     {
       id: 'faq-4',
-      category: 'payment_process',
-      question: 'Bagaimana sistem pembayaran proyek?',
+      category: 'estimator',
+      question: 'Kenapa ukuran saya kecil tapi dihitungnya lebih besar?',
       answer:
-        'Pembayaran dilakukan bertahap secara aman: DP Awal setelah kesepakatan SPK & Survei, pembayaran progress material, dan pelunasan setelah pengerjaan selesai diuji cobakan.',
+        'Tiap layanan punya minimum pengerjaan. Misal kanopi Alderon minimumnya 12 m², jadi pesanan 10 m² tetap dihitung 12 m². Ini karena biaya mobilisasi tukang dan potongan bahan tetap jalan walaupun ukurannya kecil. Angkanya selalu kami tampilkan apa adanya di kalkulator.',
       order: 4,
     },
   ],
@@ -832,7 +792,6 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
         'Rangka Hollow Galvanis 40x60mm t=1.6mm',
         'Pemasangan Standard & Pengelasan Rapi',
         'Finishing Cat Duco Hitam / Putih Doff',
-        'Garansi Kebocoran 6 Bulan & Struktur 5 Tahun',
       ],
       source: 'development',
       status: 'active',
@@ -847,7 +806,6 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
         'Atap Spandek Peredam 0.35mm',
         'Rangka Hollow Galvanis 40x40mm',
         'Pemasangan Standard (Termasuk)',
-        'Garansi Kebocoran 6 Bulan',
       ],
       source: 'development',
       status: 'active',
@@ -862,7 +820,6 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
         'Panel Kayu WPC Premium Anti Lapuk & Rayap',
         'Frame Siku Hollow Galvanis 40x40mm Powder Coating',
         'Roda & Engsel Pagar Heavy Duty',
-        'Garansi Kebocoran & Struktur',
       ],
       source: 'development',
       status: 'active',

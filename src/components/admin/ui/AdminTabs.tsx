@@ -21,6 +21,7 @@ export function AdminTabs({ tabs, activeTab, onTabChange, className = '' }: Admi
         return (
           <button
             key={tab.id}
+            type="button"
             onClick={() => onTabChange(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-all whitespace-nowrap ${
               isActive

@@ -32,6 +32,9 @@ export function AdminButton({
 
   return (
     <button
+      // default "button", bukan "submit" bawaan HTML — biar tombol di dalam form
+      // tidak diam-diam menyimpan data saat diklik
+      type={props.type ?? 'button'}
       disabled={disabled}
       className={`inline-flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
