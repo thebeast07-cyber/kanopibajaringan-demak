@@ -6,7 +6,7 @@ import { resolveServiceImage, getFallbackServiceImage, validateImageFile } from 
 import { validateDatasetForPublish } from './publishValidation';
 import { ServiceSchema } from '../../types/domain';
 
-describe('PHASE 6F.1 — Catalog Image Management & Resolution', () => {
+describe('PHASE 6F.1: Catalog Image Management & Resolution', () => {
   it('1. Service without imageUrl remains valid and passes dataset publish validation', () => {
     const serviceWithoutImage: ServiceSchema = {
       ...COMPREHENSIVE_DATASET.services[0],

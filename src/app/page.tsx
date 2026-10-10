@@ -49,7 +49,8 @@ export default function HomePage() {
             </h2>
             <p className="text-hutan-kabut leading-relaxed">
               Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti
-              dan atur jadwal survei. Survei gratis, nggak ada biaya tersembunyi.
+              dan atur jadwal survei. Surveinya gratis, dan kalau harga finalnya nggak cocok kamu
+              boleh batal.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <a

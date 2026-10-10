@@ -2,19 +2,22 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '3 Putra | Pasang Kanopi, Baja Ringan, Pagar & Railing',
+  // Nama resmi dipakai utuh di sini karena ini yang muncul di tab browser dan hasil
+  // pencarian. Di dalam halaman nama dipecah jadi businessName + tagline.
+  title: '3 Putra Spesialis Kanopi dan Baja Ringan | Cek Harga Borongan',
   description:
-    'Cek harga pasang kanopi, atap baja ringan, pagar, dan railing. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.',
+    'Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di Demak dan Semarang. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.',
   keywords: [
     'harga kanopi per m2',
-    'pasang kanopi tangerang',
+    'pasang kanopi demak',
+    'baja ringan semarang',
     'kanopi alderon',
     'atap baja ringan',
     'pagar minimalis',
     'railing tangga',
     'survei lokasi gratis kanopi',
   ],
-  authors: [{ name: '3 Putra' }],
+  authors: [{ name: '3 Putra Spesialis Kanopi dan Baja Ringan' }],
 };
 
 export default function RootLayout({

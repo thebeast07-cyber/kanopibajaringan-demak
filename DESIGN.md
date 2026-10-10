@@ -1,4 +1,4 @@
-# DESIGN.md — 3 Putra
+# DESIGN.md: 3 Putra
 
 Arah visual untuk landing page 3 Putra. Ditulis dari jawaban pemilik proyek, bukan tebakan agen.
 Dipakai sebagai **arah**; `antislop.md` dipakai sebagai **filter** di atasnya.
@@ -7,15 +7,27 @@ Dipakai sebagai **arah**; `antislop.md` dipakai sebagai **filter** di atasnya.
 
 ## Identitas
 
-- **Nama usaha:** 3 Putra
+- **Nama resmi:** 3 Putra Spesialis Kanopi dan Baja Ringan
 - **Bidang:** kanopi, baja ringan, pagar, railing, tralis. Harga borongan per m² / per meter / per unit, sudah termasuk bahan dan jasa pasang.
-- **Wilayah layanan:** Tangerang, Tangerang Selatan, Jakarta Barat, Jakarta Selatan, Depok, Bogor, Bekasi
-  _(diambil dari `serviceAreas` di data proyek, bukan dari jawaban pemilik. Perlu dikonfirmasi.)_
+- **Wilayah layanan:** Demak, Semarang
+  _Pemilik sendiri bilang cakupan idealnya Jawa, tapi yang difokuskan dulu Jawa Tengah dan sekitarnya._
+  _Dua kota ini yang pasti disebut, jadi dua inilah yang dipasang. Daftar sebenarnya masih perlu discovery._
+
+**Cara nama dipakai di halaman**
+
+Nama resminya panjang, jadi di `businessConfig` dipecah dua: `businessName` = "3 Putra" dan
+`tagline` = "Spesialis kanopi dan baja ringan". Keduanya tampil bertumpuk, jadi kebaca sebagai
+nama utuh tanpa bikin wordmark sepanjang satu baris.
+
+Di footer nama utuhnya selalu kelihatan. Di navbar baris tagline disembunyikan di bawah
+breakpoint `sm`, karena header setinggi 64px di HP nggak muat dua baris tanpa jadi sumpek.
+Jadi di layar HP nama panjangnya cuma muncul di footer dan di judul tab. Nama penuhnya juga
+dipakai di `<title>` halaman dan di `authors`, karena di situ yang kebaca mesin pencari.
 
 **Masih kosong, perlu diisi pemilik:**
 
-- Nama lengkap usaha (apakah "3 Putra" saja, atau ada lanjutannya?)
 - Kota basis / lokasi workshop
+- Daftar kota yang beneran dilayani
 - Siapa yang beli: pemilik rumah komplek, pemilik ruko, kontraktor, atau campur?
 
 ---
@@ -45,7 +57,7 @@ berapa) lalu lanjut ke WhatsApp. Apa pun yang menghalangi dua hal itu harus ming
 
 ---
 
-## Palet — "Rumah teduh"
+## Palet: "Rumah teduh"
 
 Dua warna inti + satu aksen. Netral (putih, hitam, abu) nggak dihitung.
 
@@ -96,7 +108,7 @@ antar huruf yang lebar (R-06).
 
 ---
 
-## Motif identitas — angka sebagai bintang
+## Motif identitas: angka sebagai bintang
 
 Seluruh usaha ini dijual per ukuran, dan satu-satunya alasan orang buka halaman ini adalah mau tahu
 angkanya. Jadi angka yang dijadikan motif:
@@ -117,14 +129,21 @@ kerasa punya 3 Putra, bukan punya template.
   karangan generator) diganti jadi 3 Putra, email dikosongkan.
 - Tiga proyek portofolio karangan beserta testimoni palsunya dihapus. `portfolios: []`.
 - Semua klaim garansi dihapus karena pemilik belum mengonfirmasi ada garansi apa.
+- Tujuh kota Jabodetabek di `serviceAreas` dihapus. Itu juga karangan generator, dan tampil di
+  navbar, hero, footer, dan jawaban FAQ seolah-olah fakta. Diganti Demak dan Semarang.
+- Klaim "bahan standar SNI" dihapus dari section layanan dan dari deskripsi layanan baja ringan.
+- Em dash dibersihkan dari seluruh `src/`, termasuk tanda `—` yang dipakai jadi penampung kosong
+  di angka harga kalkulator. Sekarang di situ ada kalimat: "Isi ukurannya dulu, harganya nanti
+  muncul di sini."
 
 ## Yang masih kosong dan perlu diisi pemilik
 
 | Butuh | Kenapa penting |
 |---|---|
-| Nama lengkap usaha, kota basis, siapa yang beli | Belum terjawab, ada di bagian Identitas di atas |
+| Daftar kota yang beneran dilayani | Sekarang cuma Demak dan Semarang, hasil tebakan paling aman |
+| Kota basis / workshop, siapa yang beli | Belum terjawab, ada di bagian Identitas di atas |
 | Foto proyek asli | Section portofolio sekarang kosong; isi lewat `/admin/portofolio` |
 | Ketentuan garansi yang sebenarnya | Kalau ada, isi `guaranteeTerms` di `businessConfig` |
-| Bukti sertifikasi SNI | Klaim "bahan standar SNI" masih tampil di halaman layanan |
+| Bukti SNI dan garansi pabrik di master data bahan | `materials` dan `frames` masih menyimpan `Standar SNI`, `Sertifikat SNI Tempered Glass`, dan `Garansi pabrik 10 tahun`. Belum tampil ke pengunjung karena harganya borongan, tapi tetap klaim yang belum dibuktikan. Bereskan lewat `/admin` |
 
 Nomor WhatsApp asli: 082228132455.

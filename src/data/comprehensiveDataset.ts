@@ -2,8 +2,11 @@ import { CompleteDataset } from '../types/domain';
 
 export const COMPREHENSIVE_DATASET: CompleteDataset = {
   businessConfig: {
+    // Nama resminya "3 Putra Spesialis Kanopi dan Baja Ringan". Dipecah dua karena
+    // di navbar dan footer keduanya tampil bertumpuk, jadi tetap kebaca utuh tanpa
+    // bikin wordmark sepanjang satu baris. Nama penuh dipakai di metadata halaman.
     businessName: '3 Putra',
-    tagline: 'Pasang kanopi, baja ringan, pagar & railing',
+    tagline: 'Spesialis kanopi dan baja ringan',
     pricingVersion: 'v1.0.0-dev',
     frontlineContact: {
       name: 'Tim 3 Putra',
@@ -11,7 +14,10 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       email: '',
       role: 'Konsultan',
     },
-    serviceAreas: ['Tangerang', 'Tangerang Selatan', 'Jakarta Barat', 'Jakarta Selatan', 'Depok', 'Bogor', 'Bekasi'],
+    // Sebelumnya berisi tujuh kota Jabodetabek karangan generator, padahal usahanya
+    // di Jawa Tengah. Dua kota ini yang disebut pemilik; cakupan sebenarnya masih
+    // perlu dipastikan, jadi jangan ditambah sendiri (R-38).
+    serviceAreas: ['Demak', 'Semarang'],
     surveyDisclaimer:
       'Harga di sini hitungan ancer-ancer dari ukuran yang kamu masukkan. Harga pastinya ditentukan setelah kami survei lokasi.',
     // guaranteeTerms sengaja kosong: pemilik belum mengonfirmasi ada garansi apa.
@@ -496,7 +502,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m2',
           rate: 785000,
           unitLabel: 'm²',
-          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing anti-karat',
+          description: 'Harga borongan per m², sudah termasuk bahan, rangka, upah pasang, dan finishing anti-karat',
         },
       ],
       minimumBilling: {
@@ -534,7 +540,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m2',
           rate: 825000,
           unitLabel: 'm²',
-          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing',
+          description: 'Harga borongan per m², sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
@@ -570,7 +576,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m2',
           rate: 570000,
           unitLabel: 'm²',
-          description: 'Harga borongan per m² — sudah termasuk bahan, rangka, upah pasang, dan finishing',
+          description: 'Harga borongan per m², sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
@@ -596,7 +602,8 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       title: 'Konstruksi Atap Baja Ringan C75',
       shortDescription: 'Rangka atap rumah & gedung anti rayap, presisi, & kokoh.',
       fullDescription:
-        'Pengerjaan ganti atap kayu lama ke baja ringan C75 SNI presisi tinggi dengan pilihan genteng metal atau spandek.',
+        // "SNI" dicabut dari kalimat ini: sertifikasinya belum dibuktikan pemilik (R-36).
+        'Pengerjaan ganti atap kayu lama ke baja ringan C75 dengan pilihan genteng metal atau spandek.',
       category: 'baja_ringan',
       featured: true,
       measurementType: 'm2',
@@ -607,7 +614,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m2',
           rate: 480000,
           unitLabel: 'm²',
-          description: 'Harga borongan per m² — sudah termasuk rangka baja ringan, penutup atap, upah pasang, dan finishing',
+          description: 'Harga borongan per m², sudah termasuk rangka baja ringan, penutup atap, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
@@ -644,7 +651,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m',
           rate: 630000,
           unitLabel: 'meter',
-          description: 'Harga borongan per meter — sudah termasuk bahan, rangka, upah pasang, dan finishing',
+          description: 'Harga borongan per meter, sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
@@ -681,7 +688,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_m',
           rate: 610000,
           unitLabel: 'meter',
-          description: 'Harga borongan per meter — sudah termasuk bahan, rangka, upah pasang, dan finishing',
+          description: 'Harga borongan per meter, sudah termasuk bahan, rangka, upah pasang, dan finishing',
         },
       ],
       minimumBilling: {
@@ -717,7 +724,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
           model: 'per_unit',
           rate: 425000,
           unitLabel: 'unit',
-          description: 'Harga borongan per unit jendela — sudah termasuk bahan, upah pasang, dan cat anti karat',
+          description: 'Harga borongan per unit jendela, sudah termasuk bahan, upah pasang, dan cat anti karat',
         },
       ],
       minimumBilling: {
@@ -759,7 +766,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
       category: 'survey',
       question: 'Survei lokasinya bayar nggak?',
       answer:
-        'Nggak. Survei gratis buat seluruh area yang kami layani: Tangerang, Tangerang Selatan, Jakarta Barat, Jakarta Selatan, Depok, Bogor, dan Bekasi.',
+        'Nggak, gratis. Demak dan Semarang kami datang sendiri. Di luar dua kota itu chat dulu, nanti kami bilang sanggup atau nggak, biar kamu nggak nunggu sia-sia.',
       order: 2,
     },
     {

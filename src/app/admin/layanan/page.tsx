@@ -53,7 +53,7 @@ const MEASUREMENT_LABEL_MAP: Record<MeasurementType, { label: string; desc: stri
 };
 
 // Hanya tiga cara ukur ini yang dimengerti kalkulator. Sisanya (package/dimensions/mixed)
-// masih ada di schema untuk data lama, tapi jangan ditawarkan — hasilnya Rp 0.
+// masih ada di schema untuk data lama, tapi jangan ditawarkan karena hasilnya Rp 0.
 const SELECTABLE_MEASUREMENTS: MeasurementType[] = ['m2', 'meter', 'unit'];
 
 const UNIT_LABEL_MAP: Record<string, string> = { m2: 'm²', meter: 'meter', unit: 'unit' };
@@ -196,7 +196,7 @@ export default function AdminLayananPage() {
       minimumValue: 10,
       minDays: 3,
       maxDays: 7,
-      // Model borongan: harga sudah all-in di tarif. Komponen dibiarkan kosong —
+      // Model borongan: harga sudah all-in di tarif. Komponen dibiarkan kosong:
       // kalau diisi, harganya dihitung dua kali.
       allowedMaterialIds: [],
       allowedFrameIds: [],
@@ -307,7 +307,7 @@ export default function AdminLayananPage() {
           unitLabel: unitLabelFor(formState.measurementType),
           description: `Harga borongan per ${unitLabelFor(
             formState.measurementType
-          )} — sudah termasuk bahan, rangka, upah pasang, dan finishing`,
+          )}, sudah termasuk bahan, rangka, upah pasang, dan finishing`,
         },
       ],
       minimumBilling: minBillingObj,
@@ -829,8 +829,8 @@ export default function AdminLayananPage() {
           {formTab === 'other' && (
             <div className="space-y-6 text-xs">
               <p className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-                Bahan, rangka, upah, dan finishing sudah masuk ke tarif borongan di tab sebelumnya — jadi
-                tidak dipilih di sini lagi. Yang di bawah ini biaya ekstra yang dibahas saat survei.
+                Bahan, rangka, upah, dan finishing sudah masuk ke tarif borongan di tab sebelumnya,
+                jadi tidak dipilih di sini lagi. Yang di bawah ini biaya ekstra yang dibahas saat survei.
               </p>
 
               {/* AddOns Checklist */}

@@ -85,7 +85,7 @@ describe('Pricing Engine Unit Tests', () => {
 
   test('5. Complete Estimate Calculation & Snapshot Preservation', () => {
     // Model harga BORONGAN: layanan punya satu tarif per m² yang sudah mencakup
-    // bahan, rangka, upah, dan finishing — jadi materialId/frameId/laborId/finishingId
+    // bahan, rangka, upah, dan finishing, jadi materialId/frameId/laborId/finishingId
     // tidak dikirim (kalkulator pelanggan juga tidak mengirimnya).
     const input: EstimatorInput = {
       serviceId: 'svc-kanopi-alderon',
@@ -109,7 +109,7 @@ describe('Pricing Engine Unit Tests', () => {
     assert.strictEqual(snapshot.breakdown.baseCost, 15700000);
     assert.strictEqual(snapshot.breakdown.subtotal, 17400000);
 
-    // Komponen terpisah harus nol — harganya sudah dilebur ke tarif borongan
+    // Komponen terpisah harus nol: harganya sudah dilebur ke tarif borongan
     assert.strictEqual(snapshot.breakdown.materialCost, 0);
     assert.strictEqual(snapshot.breakdown.frameCost, 0);
     assert.strictEqual(snapshot.breakdown.laborCost, 0);

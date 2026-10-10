@@ -4,7 +4,7 @@ import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { MaterialSchema } from '../../types/domain';
 
-test('STEP 4A — Master Data CRUD Foundation & Draft Isolation Tests', async (t) => {
+test('STEP 4A: Master Data CRUD Foundation & Draft Isolation Tests', async (t) => {
   await t.test('1. Creating/Saving a material creates a draft and does NOT mutate published dataset', () => {
     const repo = new LocalCmsRepository(COMPREHENSIVE_DATASET);
     const initialPubCount = repo.getPublishedDataset().materials.length;

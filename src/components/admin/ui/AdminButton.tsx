@@ -32,7 +32,7 @@ export function AdminButton({
 
   return (
     <button
-      // default "button", bukan "submit" bawaan HTML — biar tombol di dalam form
+      // default "button", bukan "submit" bawaan HTML, biar tombol di dalam form
       // tidak diam-diam menyimpan data saat diklik
       type={props.type ?? 'button'}
       disabled={disabled}

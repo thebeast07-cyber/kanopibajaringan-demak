@@ -33,9 +33,11 @@ export function ServicesSection({ services, onSelectService }: ServicesSectionPr
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-hutan tracking-tight">
             Yang bisa kami kerjakan
           </h2>
+          {/* Klaim "bahan standar SNI" dihapus dari kalimat di bawah: pemilik belum punya
+              bukti sertifikasinya, dan klaim standar tanpa bukti itu karangan (R-36). */}
           <p className="text-tinta-lembut leading-relaxed">
-            Semua harga di bawah ini borongan: sudah termasuk bahan standar SNI, rangka, upah pasang,
-            dan finishing. Pilihan bahan dan warna dibahas pas survei.
+            Semua harga di bawah ini borongan: sudah termasuk bahan, rangka, upah pasang, dan
+            finishing. Pilihan bahan dan warna dibahas pas survei.
           </p>
         </div>
 

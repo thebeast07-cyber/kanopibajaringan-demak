@@ -8,7 +8,7 @@ import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { CompleteDataset } from '../../types/domain';
 
-test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tests', async (t) => {
+test('PHASE 5D: Impact Preview, Publish Validation & Version Immutability Tests', async (t) => {
   const publishedDataset: CompleteDataset = JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET));
 
   await t.test('1. calculateImpactPreview uses exact pricingEngine without formula duplication', () => {
@@ -92,7 +92,7 @@ test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tes
     }, /Cannot publish invalid dataset/);
   });
 
-  await t.test('5. PHASE 6B — AddOnSchema.category is optional and retains structural validity', () => {
+  await t.test('5. PHASE 6B: AddOnSchema.category is optional and retains structural validity', () => {
     const datasetWithCategory: CompleteDataset = JSON.parse(JSON.stringify(publishedDataset));
 
     // Uncategorized addon
@@ -107,7 +107,7 @@ test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tes
     assert.equal(validation.valid, true);
   });
 
-  await t.test('6. PHASE 6B — AddOnSchema.category does NOT affect pricing engine calculation', () => {
+  await t.test('6. PHASE 6B: AddOnSchema.category does NOT affect pricing engine calculation', () => {
     const repo = new LocalCmsRepository(publishedDataset);
     repo.createDraft('Category Addon Test', 'Owner');
 

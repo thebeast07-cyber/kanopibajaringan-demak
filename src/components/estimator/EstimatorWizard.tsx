@@ -11,7 +11,7 @@ interface EstimatorWizardProps {
 }
 
 /**
- * Kalkulator estimasi — model harga borongan.
+ * Kalkulator estimasi untuk model harga borongan.
  *
  * Satu layar: pilih layanan → isi ukuran → harga langsung muncul → lempar ke WhatsApp.
  * Pilihan bahan, rangka, upah, dan finishing TIDAK ditanyakan di sini; harga tiap
@@ -51,15 +51,25 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
     notes: additionalNotes,
   };
 
+  // Ukuran nol bukan pesanan kecil, tapi pesanan yang belum diisi. Tanpa penjaga ini
+  // minimum pengerjaan tetap jalan, dan kalkulator menawarkan Rp 9.420.000 untuk
+  // kanopi 0 m². Harga cuma boleh muncul kalau ada ukuran yang beneran diketik.
+  const adaUkuran =
+    measurement === 'm2'
+      ? lengthInput > 0 && widthInput > 0
+      : measurement === 'meter'
+      ? lengthInput > 0
+      : quantityInput > 0;
+
   const snapshot = useMemo(() => {
-    if (!activeService) return null;
+    if (!activeService || !adaUkuran) return null;
     try {
       return calculateEstimate(currentInput, dataset).snapshot;
     } catch (err) {
       console.error(err);
       return null;
     }
-  }, [currentInput, dataset, activeService]);
+  }, [currentInput, dataset, activeService, adaUkuran]);
 
   // Tarif borongan layanan aktif, buat ditampilkan sebagai "785.000 / m²"
   const borongan = activeService?.pricingRules?.[0];
@@ -72,7 +82,11 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
   const handleOpenWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!snapshot) return;
+    if (!snapshot) {
+      // Dulu di sini cuma `return`, jadi tombolnya diam saja kalau ukurannya kosong.
+      setFormError('Isi ukurannya dulu, biar ada angka yang bisa kami bahas.');
+      return;
+    }
     if (!customerName.trim() || !cityOrDistrict.trim()) {
       setFormError('Isi nama dan lokasi dulu ya, biar kami tahu mau kirim tim ke mana.');
       return;
@@ -89,10 +103,11 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
   if (!activeService) return null;
 
-  const numberField =
-    'w-full px-4 min-h-[52px] rounded-xl border border-kertas-garis bg-white text-xl font-heading font-bold text-tinta focus:outline-none focus:border-hutan';
-  const textField =
-    'w-full px-4 min-h-[48px] rounded-xl border border-kertas-garis bg-white text-tinta focus:outline-none focus:border-hutan';
+  // outline bawaan dimatikan, jadi penggantinya harus lebih tebal dari sekadar
+  // border yang ganti warna: cincin hijau dua piksel, kelihatan jelas pas di-Tab (R-32).
+  const fokus = 'focus:outline-none focus:border-hutan focus:ring-2 focus:ring-hutan';
+  const numberField = `w-full px-4 min-h-[52px] rounded-xl border border-kertas-garis bg-white text-xl font-heading font-bold text-tinta ${fokus}`;
+  const textField = `w-full px-4 min-h-[48px] rounded-xl border border-kertas-garis bg-white text-tinta ${fokus}`;
   const fieldLabel = 'block text-sm font-semibold text-tinta mb-2';
   const hintLabel = 'block text-sm text-tinta-lembut mb-1.5';
 
@@ -235,10 +250,18 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
               </div>
 
               <div>
-                {/* Aksen amber mendarat di sini. Versi terang karena di atas hijau tua. */}
-                <p className="font-heading text-4xl sm:text-5xl leading-none font-bold tracking-tight text-amber-terang">
-                  {snapshot ? formatRupiah(snapshot.breakdown.total) : '—'}
-                </p>
+                {/* Aksen amber mendarat di sini. Versi terang karena di atas hijau tua.
+                    Tanpa ukuran, slot ini diisi kalimat, bukan tanda baca: pengunjung
+                    perlu tahu apa yang kurang, bukan menebak garis panjang artinya apa. */}
+                {snapshot ? (
+                  <p className="font-heading text-4xl sm:text-5xl leading-none font-bold tracking-tight text-amber-terang">
+                    {formatRupiah(snapshot.breakdown.total)}
+                  </p>
+                ) : (
+                  <p className="font-heading text-xl font-semibold text-hutan-kabut leading-snug">
+                    Isi ukurannya dulu, harganya nanti muncul di sini.
+                  </p>
+                )}
                 {borongan && snapshot && (
                   <p className="text-sm text-hutan-kabut mt-3">
                     {formatRupiah(borongan.rate)} / {unitLabel} × {snapshot.billableUnits.applied}{' '}
@@ -297,7 +320,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                   type="text"
                   value={cityOrDistrict}
                   onChange={(e) => setCityOrDistrict(e.target.value)}
-                  placeholder="mis. Pondok Aren, Tangerang Selatan"
+                  placeholder="mis. Sayung, Demak"
                   aria-invalid={Boolean(formError) && !cityOrDistrict.trim()}
                   className={textField}
                 />
@@ -324,10 +347,12 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 </p>
               )}
 
+              {/* Sengaja tidak dimatikan pakai `disabled`. Tombol mati tidak bisa
+                  di-Tab dan tidak menjelaskan apa-apa; yang ini tetap bisa ditekan
+                  dan menjawab sendiri kalau ukurannya belum diisi (R-26, R-32). */}
               <button
                 type="submit"
-                disabled={!snapshot}
-                className="w-full min-h-[52px] bg-amber-gelap hover:bg-amber-tua disabled:opacity-50 text-white font-bold rounded-xl transition-colors"
+                className="w-full min-h-[52px] bg-amber-gelap hover:bg-amber-tua text-white font-bold rounded-xl transition-colors"
               >
                 Lanjut chat WhatsApp
               </button>

@@ -4,7 +4,7 @@ import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { calculateEstimate } from '../estimator/pricingEngine';
 
-test('Step 1B — CMS Repository Layer Tests', async (t) => {
+test('Step 1B: CMS Repository Layer Tests', async (t) => {
   await t.test('1. Initial dataset can be loaded from comprehensiveDataset.ts', () => {
     const repo = new LocalCmsRepository(COMPREHENSIVE_DATASET);
     const dataset = repo.getPublishedDataset();

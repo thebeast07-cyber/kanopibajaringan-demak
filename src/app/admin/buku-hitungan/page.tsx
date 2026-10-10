@@ -54,7 +54,7 @@ export default function AdminBukuHitunganPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-amber-600" />
-            <span>Buku Hitungan — Dokumen Penjelasan Transparan Owner</span>
+            <span>Buku Hitungan: Dokumen Penjelasan Transparan Owner</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Penjelasan transparan tempat setiap angka kalkulasi berasal, dihasilkan langsung dari Pricing Engine secara konsisten.

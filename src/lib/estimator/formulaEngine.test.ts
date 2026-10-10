@@ -6,7 +6,7 @@ import { calculateEstimate } from './pricingEngine';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { EstimatorInput, FormulaStepConfig, ServiceCalculationConfig } from '../../types/domain';
 
-test('STEP 2 — Flexible Calculation Engine & Buku Hitungan Unit Tests', async (t) => {
+test('STEP 2: Flexible Calculation Engine & Buku Hitungan Unit Tests', async (t) => {
   const repo = new LocalCmsRepository(COMPREHENSIVE_DATASET);
   const dataset = repo.getPublishedDataset();
 
