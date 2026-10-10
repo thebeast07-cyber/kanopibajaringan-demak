@@ -51,32 +51,33 @@ export function buildWhatsAppLeadUrl(
     dimensionStr = `${snapshot.input.quantity || 1} unit`;
   }
 
+  // Pesan ini yang pertama dibaca pemilik di HP-nya. Ditulis seperti orang ngetik
+  // beneran: tanpa emoji, tanpa judul huruf kapital, nama usaha dibaca dari config
+  // (dulu "KANOPI PRO" ditulis mati di sini dan ketinggalan waktu nama usahanya ganti).
+  const namaUsaha = dataset.businessConfig.businessName;
+
   const lines = [
-    `*HALO TIM MARKETING / FRONTLINE KANOPI PRO*`,
-    `Saya ingin mengajukan *Survei Lokasi Gratis* & konfirmasi rincian estimasi proyek berikut:`,
+    `Halo ${namaUsaha}, saya mau tanya soal pemasangan.`,
     ``,
-    `📋 *KODE ESTIMASI:* \`${snapshot.estimateId}\``,
-    `📅 *Tanggal:* ${new Date(snapshot.calculatedAt).toLocaleDateString('id-ID')}`,
-    `🛠️ *Layanan:* ${serviceName}`,
-    `📐 *Dimensi/Volume:* ${dimensionStr}`,
+    `Layanan: ${serviceName}`,
+    `Ukuran: ${dimensionStr}`,
+    // Baris spesifikasi cuma muncul kalau ada yang dipilih. Layanan borongan tidak punya.
+    mat ? `Atap/bahan: ${mat.name}` : null,
+    frame ? `Rangka: ${frame.name}` : null,
+    labor ? `Jasa tukang: ${labor.name}` : null,
+    finishing ? `Finishing: ${finishing.name}` : null,
+    selectedAddons.length > 0 ? `Tambahan: ${selectedAddons.join(', ')}` : null,
+    selectedConditions.length > 0 ? `Kondisi lokasi: ${selectedConditions.join(', ')}` : null,
     ``,
-    `⚙️ *SPESIFIKASI PILIHAN:*`,
-    mat ? `• *Atap/Material:* ${mat.name}` : null,
-    frame ? `• *Rangka:* ${frame.name}` : null,
-    labor ? `• *Jasa Tukang:* ${labor.name}` : null,
-    finishing ? `• *Finishing:* ${finishing.name}` : null,
-    selectedAddons.length > 0 ? `• *Pekerjaan Tambahan:* ${selectedAddons.join(', ')}` : null,
-    selectedConditions.length > 0 ? `• *Kondisi Lokasi:* ${selectedConditions.join(', ')}` : null,
+    `Perkiraan dari kalkulator: *${formatRupiah(snapshot.breakdown.total)}*`,
+    `Perkiraan pengerjaan: ${snapshot.duration.text}`,
     ``,
-    `💰 *ESTIMASI BIAYA:* *${formatRupiah(snapshot.breakdown.total)}*`,
-    `⏱️ *ESTIMASI DURASI:* *${snapshot.duration.text}*`,
+    `Nama saya ${customer.customerName}, lokasi di ${customer.cityOrDistrict}.`,
+    customer.additionalNotes ? `Catatan: ${customer.additionalNotes}` : null,
     ``,
-    `👤 *DATA PEMOHON:*`,
-    `• *Nama:* ${customer.customerName}`,
-    `• *Lokasi/Kecamatan:* ${customer.cityOrDistrict}`,
-    customer.additionalNotes ? `• *Catatan Tambahan:* ${customer.additionalNotes}` : null,
+    `Boleh minta harga pastinya dan dijadwalkan survei?`,
     ``,
-    `ℹ️ _Saya memahami estimasi ini bersifat acuan awal dan harga final akan dipastikan setelah Tim Teknis melakukan survei lokasi._`,
+    `(kode ${snapshot.estimateId}, dihitung ${new Date(snapshot.calculatedAt).toLocaleDateString('id-ID')})`,
   ].filter((line) => line !== null);
 
   const rawMessage = lines.join('\n');

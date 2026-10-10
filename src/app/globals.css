@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-heading: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Fraunces', Georgia, serif;
   --font-sans: 'Figtree', system-ui, -apple-system, sans-serif;
 }
 
@@ -11,12 +11,14 @@ body {
   color: #1C1917;
   background-color: #FAF8F5;
   font-family: var(--font-sans);
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  /* Fraunces punya sumbu "lembut" dan optical size; disetel agak hangat dan
+     dioptimalkan untuk ukuran judul besar. */
+  font-variation-settings: 'SOFT' 30, 'WONK' 1, 'opsz' 40;
 }
 
 /* Custom light scrollbar */
@@ -34,13 +36,22 @@ h1, h2, h3, h4, h5, h6 {
   background: #A8A095;
 }
 
-/* Accessible focus ring */
+/* Cincin fokus keyboard. Hijau hutan, bukan hijau WhatsApp. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid #16A34A;
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #1B3B2B;
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
+/* Di atas permukaan hijau tua, cincin hijau nggak kelihatan. */
+.bg-hutan a:focus-visible,
+.bg-hutan button:focus-visible,
+.bg-hutan-tua a:focus-visible,
+.bg-hutan-tua button:focus-visible {
+  outline-color: #FAF8F5;
+}

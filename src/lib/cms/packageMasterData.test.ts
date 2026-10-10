@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { LocalCmsRepository } from './localCmsRepository';
 import { PackageSchema } from '../../types/domain';
 
-test('STEP 4G — Package Master Data CRUD & Draft Isolation Tests', async (t) => {
+test('STEP 4G: Package Master Data CRUD & Draft Isolation Tests', async (t) => {
   await t.test(
     '1. Creating a new package creates a draft and does NOT mutate published dataset',
     () => {

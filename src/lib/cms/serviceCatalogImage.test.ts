@@ -6,7 +6,7 @@ import { resolveServiceImage, getFallbackServiceImage, validateImageFile } from 
 import { validateDatasetForPublish } from './publishValidation';
 import { ServiceSchema } from '../../types/domain';
 
-describe('PHASE 6F.1 — Catalog Image Management & Resolution', () => {
+describe('PHASE 6F.1: Catalog Image Management & Resolution', () => {
   it('1. Service without imageUrl remains valid and passes dataset publish validation', () => {
     const serviceWithoutImage: ServiceSchema = {
       ...COMPREHENSIVE_DATASET.services[0],
@@ -45,7 +45,7 @@ describe('PHASE 6F.1 — Catalog Image Management & Resolution', () => {
       frameId: baseService.allowedFrameIds[0],
       laborId: baseService.allowedLaborIds[0],
       finishingId: baseService.allowedFinishingIds[0],
-      selectedAddOnIds: [],
+      addonIds: [],
     };
 
     const dsWithoutImage = { ...COMPREHENSIVE_DATASET };
@@ -60,8 +60,21 @@ describe('PHASE 6F.1 — Catalog Image Management & Resolution', () => {
     const estWithout = calculateEstimate(input, dsWithoutImage);
     const estWith = calculateEstimate(input, dsWithImage);
 
-    assert.equal(estWithout.totalPrice, estWith.totalPrice, 'Total price must be identical regardless of imageUrl');
-    assert.equal(estWithout.billableArea, estWith.billableArea, 'Billable area must be identical regardless of imageUrl');
+    assert.equal(
+      estWithout.snapshot.breakdown.total,
+      estWith.snapshot.breakdown.total,
+      'Total price must be identical regardless of imageUrl'
+    );
+    assert.equal(
+      estWithout.snapshot.billableUnits.applied,
+      estWith.snapshot.billableUnits.applied,
+      'Billable area must be identical regardless of imageUrl'
+    );
+    // jaring pengaman: kalau field-nya salah ketik lagi, nilainya undefined dan tes ini gagal
+    assert.ok(
+      typeof estWithout.snapshot.breakdown.total === 'number' && estWithout.snapshot.breakdown.total > 0,
+      'Total price must be a real number, not undefined'
+    );
   });
 
   it('4. Fallback image still resolves when imageUrl is absent', () => {

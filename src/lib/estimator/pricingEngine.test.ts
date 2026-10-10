@@ -84,14 +84,13 @@ describe('Pricing Engine Unit Tests', () => {
   });
 
   test('5. Complete Estimate Calculation & Snapshot Preservation', () => {
+    // Model harga BORONGAN: layanan punya satu tarif per m² yang sudah mencakup
+    // bahan, rangka, upah, dan finishing, jadi materialId/frameId/laborId/finishingId
+    // tidak dikirim (kalkulator pelanggan juga tidak mengirimnya).
     const input: EstimatorInput = {
       serviceId: 'svc-kanopi-alderon',
       length: 5,
       width: 4, // 20 m²
-      materialId: 'mat-alderon-twinwall', // 320,000 / m²
-      frameId: 'frame-hollow-40x60-galvanis', // 220,000 / m²
-      laborId: 'labor-std-installation', // 50,000 / m²
-      finishingId: 'finish-cat-zinc-chromate', // 45,000 / m²
       addonIds: ['addon-talang-pvc'], // 85,000 / meter (20m billable = 1,700,000)
       siteConditionIds: ['site-floor-2-access'], // 15% percentage surcharge
       notes: 'Lokasi rumah cluster jalan lebar.',
@@ -104,14 +103,17 @@ describe('Pricing Engine Unit Tests', () => {
     assert.deepStrictEqual(snapshot.input, input, 'Snapshot must preserve exact raw input');
     assert.strictEqual(snapshot.billableUnits.applied, 20);
 
-    // Base = 150k * 20 = 3,000,000
-    // Material = 320k * 20 = 6,400,000
-    // Frame = 220k * 20 = 4,400,000
-    // Labor = 50k * 20 = 1,000,000
-    // Finishing = 45k * 20 = 900,000
-    // AddOn = 85k * 20 = 1,700,000
-    // Subtotal = 17,400,000
+    // Borongan = 785k * 20 = 15,700,000
+    // AddOn    = 85k  * 20 =  1,700,000
+    // Subtotal             = 17,400,000
+    assert.strictEqual(snapshot.breakdown.baseCost, 15700000);
     assert.strictEqual(snapshot.breakdown.subtotal, 17400000);
+
+    // Komponen terpisah harus nol: harganya sudah dilebur ke tarif borongan
+    assert.strictEqual(snapshot.breakdown.materialCost, 0);
+    assert.strictEqual(snapshot.breakdown.frameCost, 0);
+    assert.strictEqual(snapshot.breakdown.laborCost, 0);
+    assert.strictEqual(snapshot.breakdown.finishingCost, 0);
 
     // Site condition 15% surcharge on 17,400,000 = 2,610,000
     assert.strictEqual(snapshot.breakdown.percentageAdjustmentsTotal, 2610000);
@@ -124,29 +126,31 @@ describe('Pricing Engine Unit Tests', () => {
     assert.strictEqual(snapshot.estimate.max, 20010000);
   });
 
-  test('6. Category-Aware Material Step Title Logic (Canopy vs Gerobak vs Booth)', () => {
-    const isGerobakOrBoothCategory = (category: string) => category === 'gerobak' || category === 'booth';
-    const getMaterialLabel = (category: string) =>
-      isGerobakOrBoothCategory(category) ? 'Material Body & Dinding' : 'Material Atap';
-    const getMaterialStepHeading = (category: string) =>
-      isGerobakOrBoothCategory(category)
-        ? '03. Pilih Material Body & Dinding'
-        : '03. Pilih Material Penutup Atap';
+  test('6. Setiap layanan aktif punya tepat satu tarif borongan', () => {
+    for (const svc of COMPREHENSIVE_DATASET.services.filter((s) => s.status === 'active')) {
+      assert.strictEqual(
+        svc.pricingRules.length,
+        1,
+        `${svc.title} harus punya tepat 1 tarif borongan, bukan ${svc.pricingRules.length}`
+      );
 
-    // 1. Canopy service category
-    assert.strictEqual(getMaterialLabel('canopy'), 'Material Atap');
-    assert.strictEqual(getMaterialStepHeading('canopy'), '03. Pilih Material Penutup Atap');
+      const rule = svc.pricingRules[0];
+      assert.ok(rule.rate > 0, `${svc.title} tarifnya harus lebih dari 0`);
 
-    // 2. Gerobak service category
-    assert.strictEqual(getMaterialLabel('gerobak'), 'Material Body & Dinding');
-    assert.strictEqual(getMaterialStepHeading('gerobak'), '03. Pilih Material Body & Dinding');
+      // satuan tarif harus cocok dengan cara layanan diukur
+      const expected =
+        svc.measurementType === 'm2' ? 'per_m2' : svc.measurementType === 'meter' ? 'per_m' : 'per_unit';
+      assert.strictEqual(
+        rule.model,
+        expected,
+        `${svc.title} diukur per ${svc.measurementType} tapi tarifnya ${rule.model}`
+      );
 
-    // 3. Booth service category
-    assert.strictEqual(getMaterialLabel('booth'), 'Material Body & Dinding');
-    assert.strictEqual(getMaterialStepHeading('booth'), '03. Pilih Material Body & Dinding');
-
-    // 4. Other service categories (e.g. gate, railing, tralis)
-    assert.strictEqual(getMaterialLabel('gate'), 'Material Atap');
-    assert.strictEqual(getMaterialStepHeading('gate'), '03. Pilih Material Penutup Atap');
+      // tidak boleh ada komponen nyangkut yang bikin harga dobel
+      assert.strictEqual(svc.allowedMaterialIds.length, 0, `${svc.title} masih punya bahan terpasang`);
+      assert.strictEqual(svc.allowedFrameIds.length, 0, `${svc.title} masih punya rangka terpasang`);
+      assert.strictEqual(svc.allowedLaborIds.length, 0, `${svc.title} masih punya upah terpasang`);
+      assert.strictEqual(svc.allowedFinishingIds.length, 0, `${svc.title} masih punya finishing terpasang`);
+    }
   });
 });

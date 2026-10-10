@@ -8,17 +8,18 @@ import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { CompleteDataset } from '../../types/domain';
 
-test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tests', async (t) => {
+test('PHASE 5D: Impact Preview, Publish Validation & Version Immutability Tests', async (t) => {
   const publishedDataset: CompleteDataset = JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET));
 
   await t.test('1. calculateImpactPreview uses exact pricingEngine without formula duplication', () => {
     const draftDataset: CompleteDataset = JSON.parse(JSON.stringify(publishedDataset));
     draftDataset.businessConfig.pricingVersion = 'v1.1.0-draft';
 
-    // Increase material rate for mat-alderon-twinwall from 320,000 to 400,000 (+80,000/m2 * 20m2 = +1,600,000)
-    const mat = draftDataset.materials.find((m) => m.id === 'mat-alderon-twinwall');
-    if (mat) {
-      mat.pricingRule.rate = 400000;
+    // Naikkan tarif borongan kanopi alderon dari 785,000 ke 885,000
+    // (+100,000/m² × 20m² = +2,000,000)
+    const svc = draftDataset.services.find((s) => s.id === 'svc-kanopi-alderon');
+    if (svc) {
+      svc.pricingRules[0].rate = 885000;
     }
 
     const preview = calculateImpactPreview(publishedDataset, draftDataset, {
@@ -29,11 +30,11 @@ test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tes
 
     assert.equal(preview.serviceId, 'svc-kanopi-alderon');
     assert.equal(preview.publishedTotal, 15700000);
-    assert.equal(preview.draftTotal, 17300000);
-    assert.equal(preview.difference, 1600000);
-    assert.equal(preview.percentageDifference, 10.19);
+    assert.equal(preview.draftTotal, 17700000);
+    assert.equal(preview.difference, 2000000);
+    assert.equal(preview.percentageDifference, 12.74);
     assert.equal(preview.hasChange, true);
-    assert.equal(preview.componentDiffs.find((c) => c.name === 'Material Penutup')?.difference, 1600000);
+    assert.equal(preview.componentDiffs.find((c) => c.name === 'Harga Borongan')?.difference, 2000000);
   });
 
   await t.test('2. validateDatasetForPublish enforces strict structural validity', () => {
@@ -91,7 +92,7 @@ test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tes
     }, /Cannot publish invalid dataset/);
   });
 
-  await t.test('5. PHASE 6B — AddOnSchema.category is optional and retains structural validity', () => {
+  await t.test('5. PHASE 6B: AddOnSchema.category is optional and retains structural validity', () => {
     const datasetWithCategory: CompleteDataset = JSON.parse(JSON.stringify(publishedDataset));
 
     // Uncategorized addon
@@ -106,7 +107,7 @@ test('PHASE 5D — Impact Preview, Publish Validation & Version Immutability Tes
     assert.equal(validation.valid, true);
   });
 
-  await t.test('6. PHASE 6B — AddOnSchema.category does NOT affect pricing engine calculation', () => {
+  await t.test('6. PHASE 6B: AddOnSchema.category does NOT affect pricing engine calculation', () => {
     const repo = new LocalCmsRepository(publishedDataset);
     repo.createDraft('Category Addon Test', 'Owner');
 

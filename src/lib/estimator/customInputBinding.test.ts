@@ -11,7 +11,7 @@ import {
   CompleteDataset,
 } from '../../types/domain';
 
-test('STEP 5C — Dynamic Custom Input Contract & Estimator Binding Tests', async (t) => {
+test('STEP 5C: Dynamic Custom Input Contract & Estimator Binding Tests', async (t) => {
   const dataset: CompleteDataset = JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET));
 
   await t.test('1. getCustomInputDescriptors extracts active custom_input steps in deterministic order', () => {

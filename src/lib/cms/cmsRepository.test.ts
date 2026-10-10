@@ -4,13 +4,16 @@ import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { calculateEstimate } from '../estimator/pricingEngine';
 
-test('Step 1B — CMS Repository Layer Tests', async (t) => {
+test('Step 1B: CMS Repository Layer Tests', async (t) => {
   await t.test('1. Initial dataset can be loaded from comprehensiveDataset.ts', () => {
     const repo = new LocalCmsRepository(COMPREHENSIVE_DATASET);
     const dataset = repo.getPublishedDataset();
 
     assert.ok(dataset.services.length > 0);
-    assert.equal(dataset.businessConfig.businessName, 'Kanopi & Baja Ringan Pro');
+    // Nama usaha itu isian pemilik yang bisa berubah kapan saja; yang penting
+    // repository mengembalikannya utuh, bukan nilainya persis apa.
+    assert.equal(dataset.businessConfig.businessName, COMPREHENSIVE_DATASET.businessConfig.businessName);
+    assert.ok(dataset.businessConfig.businessName.length > 0);
   });
 
   await t.test('2. Published dataset can be read', () => {

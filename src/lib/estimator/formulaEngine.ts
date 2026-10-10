@@ -395,7 +395,7 @@ function getDefaultStepsForService(
 
 /**
  * Turns FormulaEngineResult directly into a human-readable BukuHitunganDocument.
- * Does NOT duplicate calculation logic — formats already calculated values into operational Indonesian text.
+ * Does NOT duplicate calculation logic. Formats already calculated values into operational Indonesian text.
  */
 export function generateBukuHitungan(
   input: EstimatorInput,
