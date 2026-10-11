@@ -215,6 +215,11 @@ export interface MinimumBillingSchema {
   minimumQuantity?: number;
 }
 
+export interface BahanStandarSchema {
+  bagian: string; // mis. "Atap", "Rangka", "Cat"
+  bahan: string;
+}
+
 export interface ServiceSchema {
   id: string;
   slug: string;
@@ -244,6 +249,9 @@ export interface ServiceSchema {
   allowedAddOnIds: string[];
   allowedSiteConditionIds: string[];
   durationRanges: DurationRangeSchema[];
+  // Bahan yang dipakai di harga borongan. Cuma keterangan buat pelanggan, tidak
+  // ikut dihitung; allowedMaterialIds tetap kosong supaya harga bahan tidak dobel.
+  bahanStandar?: BahanStandarSchema[];
   imageUrl?: string;
   source: 'owner' | 'development';
   status: 'active' | 'placeholder';

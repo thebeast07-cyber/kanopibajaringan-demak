@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { evaluateFormulaEngine, generateBukuHitungan } from './formulaEngine';
 import { LocalCmsRepository } from '../cms/localCmsRepository';
 import { calculateEstimate } from './pricingEngine';
-import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
+import { datasetHargaUji } from './fixtureHargaUji';
 import { EstimatorInput, FormulaStepConfig, ServiceCalculationConfig } from '../../types/domain';
 
 test('STEP 2: Flexible Calculation Engine & Buku Hitungan Unit Tests', async (t) => {
-  const repo = new LocalCmsRepository(COMPREHENSIVE_DATASET);
+  const repo = new LocalCmsRepository(datasetHargaUji());
   const dataset = repo.getPublishedDataset();
 
   await t.test('1. Fixed calculation step', () => {

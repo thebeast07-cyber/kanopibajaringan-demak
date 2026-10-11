@@ -22,7 +22,8 @@ import {
   PublishValidationResult,
 } from './publishValidation';
 
-const STORAGE_KEY = 'kanopi_cms_state_v1';
+// v2: harga bawaan direset. Data v1 di browser lama tetap ada, cuma tidak dibaca lagi.
+const STORAGE_KEY = 'kanopi_cms_state_v2';
 
 interface StorageState {
   publishedDataset: CompleteDataset;

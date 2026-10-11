@@ -25,6 +25,7 @@ import {
   Globe,
   Settings,
   X,
+  ClipboardList,
 } from 'lucide-react';
 
 export interface NavGroup {
@@ -39,7 +40,10 @@ export interface NavGroup {
 export const ADMIN_NAV_GROUPS: NavGroup[] = [
   {
     groupLabel: 'UTAMA',
-    items: [{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard }],
+    items: [
+      { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+      { href: '/admin/isi-data', label: 'Isi Data Layanan', icon: ClipboardList },
+    ],
   },
   {
     groupLabel: 'PRODUK',

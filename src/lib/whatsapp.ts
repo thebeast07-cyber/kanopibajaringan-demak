@@ -1,4 +1,5 @@
-import { EstimateSnapshot, CompleteDataset } from '../types/domain';
+import { EstimateSnapshot, CompleteDataset, BahanStandarSchema } from '../types/domain';
+import { getTarifBorongan } from './estimator/pricingEngine';
 
 export interface CustomerContactInfo {
   customerName: string;
@@ -12,6 +13,15 @@ export function formatRupiah(amount: number): string {
     currency: 'IDR',
     maximumFractionDigits: 0,
   }).format(amount);
+}
+
+export function teksBahanStandar(bahan: BahanStandarSchema[] | undefined): string {
+  return (bahan ?? []).map((b) => `${b.bagian}: ${b.bahan}`).join('; ');
+}
+
+/** Link WhatsApp dengan pesan pembuka yang sudah terisi. */
+export function waTanyaUrl(whatsappNumber: string, pesan: string): string {
+  return `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(pesan)}`;
 }
 
 export function buildWhatsAppLeadUrl(
@@ -56,11 +66,17 @@ export function buildWhatsAppLeadUrl(
   // (dulu "KANOPI PRO" ditulis mati di sini dan ketinggalan waktu nama usahanya ganti).
   const namaUsaha = dataset.businessConfig.businessName;
 
+  // Harga atau lama pengerjaan yang belum diisi pemilik tidak ditulis sama sekali,
+  // supaya pesan tidak membawa "Rp 0" atau angka tebakan.
+  const adaHarga = Boolean(service && getTarifBorongan(service));
+  const bahanStandar = teksBahanStandar(service?.bahanStandar);
+
   const lines = [
     `Halo ${namaUsaha}, saya mau tanya soal pemasangan.`,
     ``,
     `Layanan: ${serviceName}`,
     `Ukuran: ${dimensionStr}`,
+    bahanStandar ? `Bahan standar: ${bahanStandar}` : null,
     // Baris spesifikasi cuma muncul kalau ada yang dipilih. Layanan borongan tidak punya.
     mat ? `Atap/bahan: ${mat.name}` : null,
     frame ? `Rangka: ${frame.name}` : null,
@@ -69,19 +85,21 @@ export function buildWhatsAppLeadUrl(
     selectedAddons.length > 0 ? `Tambahan: ${selectedAddons.join(', ')}` : null,
     selectedConditions.length > 0 ? `Kondisi lokasi: ${selectedConditions.join(', ')}` : null,
     ``,
-    `Perkiraan dari kalkulator: *${formatRupiah(snapshot.breakdown.total)}*`,
-    `Perkiraan pengerjaan: ${snapshot.duration.text}`,
+    adaHarga ? `Perkiraan dari kalkulator: *${formatRupiah(snapshot.breakdown.total)}*` : null,
+    snapshot.duration.text ? `Perkiraan pengerjaan: ${snapshot.duration.text}` : null,
     ``,
     `Nama saya ${customer.customerName}, lokasi di ${customer.cityOrDistrict}.`,
     customer.additionalNotes ? `Catatan: ${customer.additionalNotes}` : null,
     ``,
-    `Boleh minta harga pastinya dan dijadwalkan survei?`,
+    adaHarga
+      ? `Boleh minta harga pastinya dan dijadwalkan survei?`
+      : `Harganya belum ada di website. Boleh minta dihitungkan dan dijadwalkan survei?`,
     ``,
     `(kode ${snapshot.estimateId}, dihitung ${new Date(snapshot.calculatedAt).toLocaleDateString('id-ID')})`,
-  ].filter((line) => line !== null);
+  ]
+    .filter((line): line is string => line !== null)
+    // baris kosong dobel muncul kalau harga dan lama pengerjaan dua-duanya belum diisi
+    .filter((line, i, arr) => !(line === '' && arr[i - 1] === ''));
 
-  const rawMessage = lines.join('\n');
-  const targetPhone = dataset.businessConfig.frontlineContact.whatsappNumber.replace(/\D/g, '');
-
-  return `https://wa.me/${targetPhone}?text=${encodeURIComponent(rawMessage)}`;
+  return waTanyaUrl(dataset.businessConfig.frontlineContact.whatsappNumber, lines.join('\n'));
 }

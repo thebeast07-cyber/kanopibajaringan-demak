@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defaultDataAdapter } from '@/data/localDataAdapter';
+import { COMPREHENSIVE_DATASET } from '@/data/comprehensiveDataset';
+import { CompleteDataset } from '@/types/domain';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/landing/Hero';
@@ -9,12 +11,17 @@ import { ServicesSection } from '@/components/landing/ServicesSection';
 import { ProcessSection } from '@/components/landing/ProcessSection';
 import { FaqSection } from '@/components/landing/FaqSection';
 import { EstimatorWizard } from '@/components/estimator/EstimatorWizard';
+import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 
 export default function HomePage() {
-  const dataset = defaultDataAdapter.getDataset();
-  const config = defaultDataAdapter.getBusinessConfig();
-  const services = defaultDataAdapter.getServices();
-  const faqs = defaultDataAdapter.getFaqs();
+  // Render pertama pakai data bawaan, sama dengan hasil render server. Data terbitan admin
+  // (localStorage) baru dibaca setelah mount; kalau dibaca langsung, React error hydration.
+  const [dataset, setDataset] = useState<CompleteDataset>(COMPREHENSIVE_DATASET);
+  useEffect(() => setDataset(defaultDataAdapter.getDataset()), []);
+
+  const config = dataset.businessConfig;
+  const services = dataset.services.filter((s) => s.status === 'active');
+  const faqs = [...dataset.faqs].sort((a, b) => a.order - b.order);
 
   const [activeServiceId, setActiveServiceId] = useState<string>(services[0]?.id || '');
 
@@ -23,6 +30,8 @@ export default function HomePage() {
   };
 
   const waHref = `https://wa.me/${config.frontlineContact.whatsappNumber.replace(/\D/g, '')}`;
+  // Selama pemilik belum mengisi harga satu pun, kalimat yang menjanjikan angka diganti.
+  const adaHarga = services.some((s) => getTarifBorongan(s) !== null);
 
   return (
     <div className="min-h-screen flex flex-col bg-kertas text-tinta">
@@ -35,8 +44,13 @@ export default function HomePage() {
             orang buka halaman ini. */}
         <EstimatorWizard dataset={dataset} initialServiceId={activeServiceId} key={activeServiceId} />
 
-        <ServicesSection services={services} onSelectService={handleSelectService} />
-        <ProcessSection />
+        <ServicesSection
+          services={services}
+          namaUsaha={config.businessName}
+          whatsappNumber={config.frontlineContact.whatsappNumber}
+          onSelectService={handleSelectService}
+        />
+        <ProcessSection adaHarga={adaHarga} />
         <FaqSection faqs={faqs} />
 
         {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
@@ -45,12 +59,13 @@ export default function HomePage() {
         <section className="bg-hutan text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold leading-tight">
-              Udah dapat angkanya? Lanjut ngobrol.
+              {adaHarga ? 'Udah dapat angkanya? Lanjut ngobrol.' : 'Mau tahu harganya? Lanjut ngobrol.'}
             </h2>
             <p className="text-hutan-kabut leading-relaxed">
-              Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti
-              dan atur jadwal survei. Surveinya gratis, dan kalau harga finalnya nggak cocok kamu
-              boleh batal.
+              {adaHarga
+                ? 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti dan atur jadwal survei.'
+                : 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan hitungannya dan atur jadwal survei.'}{' '}
+              Surveinya gratis, dan kalau harga finalnya nggak cocok kamu boleh batal.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
@@ -65,7 +80,7 @@ export default function HomePage() {
                 href="#kalkulator"
                 className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-7 bg-hutan-tua hover:bg-hutan-muda text-white font-semibold rounded-xl border border-hutan-muda transition-colors"
               >
-                Hitung ulang
+                {adaHarga ? 'Hitung ulang' : 'Isi ukuran'}
               </a>
             </div>
           </div>

@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { ServiceSchema } from '@/types/domain';
-import { formatRupiah } from '@/lib/whatsapp';
+import { formatRupiah, waTanyaUrl } from '@/lib/whatsapp';
+import { getMinimumPengerjaan, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 
 interface ServicesSectionProps {
   services: ServiceSchema[];
+  namaUsaha: string;
+  whatsappNumber: string;
   onSelectService?: (serviceId: string) => void;
 }
 
@@ -14,17 +17,17 @@ function satuan(svc: ServiceSchema): string {
     || (svc.measurementType === 'm2' ? 'm²' : svc.measurementType === 'meter' ? 'meter' : 'unit');
 }
 
-function minimum(svc: ServiceSchema): number | undefined {
-  return (
-    svc.minimumBilling?.minimumArea ||
-    svc.minimumBilling?.minimumLength ||
-    svc.minimumBilling?.minimumQuantity
-  );
-}
+const kelasLinkWa =
+  'inline-flex items-center min-h-[44px] text-hutan font-semibold underline underline-offset-4 decoration-hutan-muda hover:decoration-2';
 
-export function ServicesSection({ services, onSelectService }: ServicesSectionProps) {
+export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectService }: ServicesSectionProps) {
   const utama = services.filter((s) => s.featured);
   const lainnya = services.filter((s) => !s.featured);
+
+  const tanyaBahan = (svc: ServiceSchema) =>
+    waTanyaUrl(whatsappNumber, `Halo ${namaUsaha}, saya mau tanya bahan lain untuk ${svc.title}.`);
+  const tanyaHarga = (svc: ServiceSchema) =>
+    waTanyaUrl(whatsappNumber, `Halo ${namaUsaha}, saya mau tanya harga ${svc.title}.`);
 
   return (
     <section id="layanan" className="py-16 sm:py-20 lg:py-24 bg-white text-tinta border-b border-kertas-garis">
@@ -36,16 +39,17 @@ export function ServicesSection({ services, onSelectService }: ServicesSectionPr
           {/* Klaim "bahan standar SNI" dihapus dari kalimat di bawah: pemilik belum punya
               bukti sertifikasinya, dan klaim standar tanpa bukti itu karangan (R-36). */}
           <p className="text-tinta-lembut leading-relaxed">
-            Semua harga di bawah ini borongan: sudah termasuk bahan, rangka, upah pasang, dan
-            finishing. Pilihan bahan dan warna dibahas pas survei.
+            Harganya borongan: sudah termasuk bahan standar, rangka, upah pasang, dan finishing. Mau
+            bahan atau warna lain? Tanya aja lewat WhatsApp.
           </p>
         </div>
 
         {/* Layanan unggulan. Harganya ditaruh paling menonjol karena itu yang dicari. */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {utama.map((svc) => {
-            const tarif = svc.pricingRules?.[0]?.rate;
-            const min = minimum(svc);
+            const tarif = getTarifBorongan(svc);
+            const min = getMinimumPengerjaan(svc);
+            const bahan = svc.bahanStandar ?? [];
             return (
               <div
                 key={svc.id}
@@ -54,22 +58,47 @@ export function ServicesSection({ services, onSelectService }: ServicesSectionPr
                 <div className="space-y-3">
                   <h3 className="font-heading text-xl font-bold text-hutan">{svc.title}</h3>
                   <p className="text-sm text-tinta-lembut leading-relaxed">{svc.shortDescription}</p>
+
+                  {/* Bagian bahan baru muncul kalau pemilik sudah mengisinya, tidak ada isian contoh. */}
+                  {bahan.length > 0 && (
+                    <div className="pt-2">
+                      <h4 className="text-sm font-semibold text-tinta">Bahan standar</h4>
+                      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                        {bahan.map((b, i) => (
+                          <React.Fragment key={i}>
+                            <dt className="text-tinta-lembut">{b.bagian}</dt>
+                            <dd className="text-tinta">{b.bahan}</dd>
+                          </React.Fragment>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
                 </div>
 
                 <div>
                   {tarif ? (
                     <p className="font-heading text-3xl font-bold text-amber">
-                      {formatRupiah(tarif)}
+                      {formatRupiah(tarif.rate)}
                       <span className="text-base font-normal text-tinta-lembut"> / {satuan(svc)}</span>
                     </p>
                   ) : (
-                    <p className="text-sm text-tinta-lembut">Harga belum diisi.</p>
+                    <p className="text-tinta leading-relaxed">
+                      Harganya belum dipasang di sini.{' '}
+                      <a href={tanyaHarga(svc)} target="_blank" rel="noopener noreferrer" className={kelasLinkWa}>
+                        Tanya harga lewat WhatsApp
+                      </a>
+                    </p>
                   )}
                   {min ? (
                     <p className="text-sm text-tinta-samar mt-1.5">
                       Minimum pengerjaan {min} {satuan(svc)}
                     </p>
                   ) : null}
+                  {bahan.length > 0 && (
+                    <a href={tanyaBahan(svc)} target="_blank" rel="noopener noreferrer" className={`${kelasLinkWa} text-sm mt-1`}>
+                      Mau bahan lain? Tanya lewat WhatsApp
+                    </a>
+                  )}
 
                   <a
                     href="#kalkulator"
@@ -91,7 +120,8 @@ export function ServicesSection({ services, onSelectService }: ServicesSectionPr
             <h3 className="font-heading text-lg font-bold text-hutan mb-4">Layanan lain</h3>
             <ul className="divide-y divide-kertas-garis">
               {lainnya.map((svc) => {
-                const tarif = svc.pricingRules?.[0]?.rate;
+                const tarif = getTarifBorongan(svc);
+                const bahan = svc.bahanStandar ?? [];
                 return (
                   <li
                     key={svc.id}
@@ -100,17 +130,27 @@ export function ServicesSection({ services, onSelectService }: ServicesSectionPr
                     <div className="max-w-xl">
                       <p className="font-semibold text-tinta">{svc.title}</p>
                       <p className="text-sm text-tinta-lembut leading-relaxed">{svc.shortDescription}</p>
+                      {bahan.length > 0 && (
+                        <p className="text-sm text-tinta mt-1">
+                          <span className="text-tinta-lembut">Bahan standar:</span>{' '}
+                          {bahan.map((b) => `${b.bagian} ${b.bahan}`).join(', ')}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-4 shrink-0">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 shrink-0">
                       {/* text-xl, bukan text-lg: #D97706 cuma lolos AA di ambang teks
                           besar (18.66px ke atas + tebal). 18px persis masih gagal. */}
                       {tarif ? (
                         <span className="font-heading text-xl font-bold text-amber">
-                          {formatRupiah(tarif)}
+                          {formatRupiah(tarif.rate)}
                           <span className="text-sm font-normal text-tinta-lembut"> / {satuan(svc)}</span>
                         </span>
-                      ) : null}
+                      ) : (
+                        <a href={tanyaHarga(svc)} target="_blank" rel="noopener noreferrer" className={`${kelasLinkWa} text-sm`}>
+                          Tanya harga lewat WhatsApp
+                        </a>
+                      )}
                       <a
                         href="#kalkulator"
                         onClick={() => onSelectService && onSelectService(svc.id)}

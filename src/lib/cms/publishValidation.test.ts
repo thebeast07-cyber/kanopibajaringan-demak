@@ -6,10 +6,11 @@ import {
 } from './publishValidation';
 import { LocalCmsRepository } from './localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
+import { datasetHargaUji } from '../estimator/fixtureHargaUji';
 import { CompleteDataset } from '../../types/domain';
 
 test('PHASE 5D: Impact Preview, Publish Validation & Version Immutability Tests', async (t) => {
-  const publishedDataset: CompleteDataset = JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET));
+  const publishedDataset: CompleteDataset = datasetHargaUji();
 
   await t.test('1. calculateImpactPreview uses exact pricingEngine without formula duplication', () => {
     const draftDataset: CompleteDataset = JSON.parse(JSON.stringify(publishedDataset));

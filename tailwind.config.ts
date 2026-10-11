@@ -26,6 +26,7 @@ const config: Config = {
           DEFAULT: '#1C1917', // teks badan
           lembut: '#5A5651',  // teks sekunder
           samar: '#6B655E',   // teks tersier. 5.2:1 di atas kertas; #857F78 cuma 3.7:1
+          batas: '#857F78',   // garis kolom isian. Bukan teks: cukup lolos batas 3:1 non-teks
         },
         // Aksen. Dipakai di angka harga dan tombol WhatsApp. Tidak di tempat lain.
         //

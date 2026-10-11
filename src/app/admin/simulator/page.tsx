@@ -193,7 +193,7 @@ export default function AdminSimulatorPage() {
 
               <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60">
                 <div className="text-[10px] text-slate-400">Estimasi Durasi Pengerjaan</div>
-                <div className="text-lg font-bold text-amber-400 mt-0.5">{snapshot.duration.text}</div>
+                <div className="text-lg font-bold text-amber-400 mt-0.5">{snapshot.duration.text || 'Data kosong'}</div>
               </div>
             </div>
 

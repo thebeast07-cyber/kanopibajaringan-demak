@@ -42,7 +42,7 @@ test.describe('PHASE 6F.1 — Catalog Image Management E2E Workflow', () => {
 
     // 6. Verify image reference exists in draft state via LocalStorage
     const storedImageUrl = await page.evaluate(() => {
-      const stored = localStorage.getItem('kanopi_cms_state_v1');
+      const stored = localStorage.getItem('kanopi_cms_state_v2');
       if (!stored) return null;
       const parsed = JSON.parse(stored);
       const dataset = parsed.draftDataset || parsed.publishedDataset;

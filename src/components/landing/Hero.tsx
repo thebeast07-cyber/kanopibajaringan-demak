@@ -1,6 +1,6 @@
 import React from 'react';
 import { BusinessConfigSchema, CompleteDataset } from '@/types/domain';
-import { calculateEstimate } from '@/lib/estimator/pricingEngine';
+import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { formatRupiah } from '@/lib/whatsapp';
 
 interface HeroProps {
@@ -13,7 +13,11 @@ export function Hero({ config, dataset }: HeroProps) {
 
   // Contoh dihitung dari data yang sama dengan kalkulator, bukan angka yang diketik
   // tangan. Dulu di sini tertulis Rp 17.400.000 yang sudah basi tiga model harga lalu.
-  const contohLayanan = dataset.services.find((s) => s.status === 'active' && s.measurementType === 'm2');
+  // Layanan tanpa harga dilewati, biar contohnya tidak pernah jadi Rp 0.
+  const contohLayanan = dataset.services.find(
+    (s) => s.status === 'active' && s.measurementType === 'm2' && getTarifBorongan(s) !== null
+  );
+  const adaHarga = dataset.services.some((s) => s.status === 'active' && getTarifBorongan(s) !== null);
   const contoh = contohLayanan
     ? calculateEstimate({ serviceId: contohLayanan.id, length: 5, width: 4 }, dataset).snapshot
     : null;
@@ -26,12 +30,13 @@ export function Hero({ config, dataset }: HeroProps) {
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-hutan tracking-tight leading-[1.1]">
               Mau pasang kanopi?
               <br />
-              Cek dulu harganya di sini.
+              {adaHarga ? 'Cek dulu harganya di sini.' : 'Kirim ukurannya ke sini.'}
             </h1>
 
             <p className="text-lg text-tinta-lembut leading-relaxed max-w-xl">
-              Masukin ukurannya, harganya langsung keluar. Nggak perlu isi form panjang, nggak perlu
-              nunggu dibalas besok. Kalau cocok, lanjut chat buat nego dan atur survei.
+              {adaHarga
+                ? 'Masukin ukurannya, harganya langsung keluar. Nggak perlu isi form panjang, nggak perlu nunggu dibalas besok. Kalau cocok, lanjut chat buat nego dan atur survei.'
+                : 'Masukin ukurannya, terus kirim lewat WhatsApp. Kami hitungkan harganya dan atur jadwal survei.'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
@@ -39,7 +44,7 @@ export function Hero({ config, dataset }: HeroProps) {
                 href="#kalkulator"
                 className="flex items-center justify-center min-h-[52px] px-7 bg-hutan hover:bg-hutan-muda text-white font-semibold rounded-xl transition-colors"
               >
-                Hitung harga sekarang
+                {adaHarga ? 'Hitung harga sekarang' : 'Masukkan ukuran'}
               </a>
               <a
                 href={waHref}
@@ -73,8 +78,8 @@ export function Hero({ config, dataset }: HeroProps) {
                 </p>
 
                 <p className="text-sm text-tinta-lembut mt-3 leading-relaxed">
-                  Sudah termasuk bahan, rangka, upah pasang, dan finishing. Estimasi pengerjaan{' '}
-                  {contoh.duration.text}.
+                  Sudah termasuk bahan, rangka, upah pasang, dan finishing.
+                  {contoh.duration.text && ` Estimasi pengerjaan ${contoh.duration.text}.`}
                 </p>
 
                 <a

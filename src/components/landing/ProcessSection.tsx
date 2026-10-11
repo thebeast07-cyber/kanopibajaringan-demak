@@ -3,12 +3,20 @@ import React from 'react';
 // Empat langkah ini memang alur kerjanya, bukan template "How It Works".
 // Bedanya: langkah pertama terjadi di halaman ini, tiga sisanya di luar halaman.
 // Hierarki itu yang dipakai jadi tampilan, bukan empat kartu kembar bernomor.
-const LANGKAH = [
-  {
+// Langkah pertama ikut kondisi data: selama harga belum diisi pemilik, kalkulator tidak
+// mengeluarkan angka, jadi kalimatnya tidak boleh menjanjikan itu.
+const LANGKAH_PERTAMA = {
+  adaHarga: {
     judul: 'Kamu cek harga di sini',
     desc: 'Pilih layanan, masukkan ukuran. Harganya langsung keluar, nggak perlu daftar atau isi form panjang.',
-    disini: true,
   },
+  belumAda: {
+    judul: 'Kamu isi ukuran di sini',
+    desc: 'Pilih layanan, masukkan ukuran, terus kirim lewat WhatsApp. Nggak perlu daftar atau isi form panjang.',
+  },
+};
+
+const LANGKAH_LANJUTAN = [
   {
     judul: 'Lanjut chat WhatsApp',
     desc: 'Tombol di kalkulator langsung bikin pesan berisi ukuran dan hitungannya. Kamu tinggal kirim.',
@@ -23,7 +31,12 @@ const LANGKAH = [
   },
 ];
 
-export function ProcessSection() {
+export function ProcessSection({ adaHarga }: { adaHarga: boolean }) {
+  const LANGKAH: { judul: string; desc: string; disini?: boolean }[] = [
+    { ...LANGKAH_PERTAMA[adaHarga ? 'adaHarga' : 'belumAda'], disini: true },
+    ...LANGKAH_LANJUTAN,
+  ];
+
   return (
     <section id="cara-kerja" className="py-16 sm:py-20 lg:py-24 bg-kertas text-tinta border-b border-kertas-garis">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +45,7 @@ export function ProcessSection() {
             Habis ini ngapain?
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
-            Dari cek harga sampai dikerjakan, nggak ada biaya sampai kamu setuju harga finalnya.
+            Dari isi ukuran sampai dikerjakan, nggak ada biaya sampai kamu setuju harga finalnya.
           </p>
         </div>
 

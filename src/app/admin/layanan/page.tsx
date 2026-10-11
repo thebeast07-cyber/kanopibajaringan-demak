@@ -327,6 +327,8 @@ export default function AdminLayananPage() {
           maxDays: Number(formState.maxDays),
         },
       ],
+      // Diisi di /admin/isi-data; form ini tidak punya kolomnya, jadi bawa yang lama.
+      bahanStandar: services.find((s) => s.id === serviceId)?.bahanStandar ?? [],
       imageUrl: formState.imageUrl && formState.imageUrl.trim().length > 0 ? formState.imageUrl.trim() : undefined,
       source: 'owner',
       status: formState.status,

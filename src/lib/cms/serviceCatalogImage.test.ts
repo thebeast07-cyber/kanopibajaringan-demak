@@ -5,6 +5,7 @@ import { calculateEstimate } from '../estimator/pricingEngine';
 import { resolveServiceImage, getFallbackServiceImage, validateImageFile } from './mediaStorage';
 import { validateDatasetForPublish } from './publishValidation';
 import { ServiceSchema } from '../../types/domain';
+import { datasetHargaUji } from '../estimator/fixtureHargaUji';
 
 describe('PHASE 6F.1: Catalog Image Management & Resolution', () => {
   it('1. Service without imageUrl remains valid and passes dataset publish validation', () => {
@@ -36,7 +37,8 @@ describe('PHASE 6F.1: Catalog Image Management & Resolution', () => {
   });
 
   it('3. imageUrl has ZERO impact on pricing calculation', () => {
-    const baseService = COMPREHENSIVE_DATASET.services[0];
+    const hargaUji = datasetHargaUji();
+    const baseService = hargaUji.services[0];
     const input = {
       serviceId: baseService.id,
       length: 5,
@@ -48,12 +50,12 @@ describe('PHASE 6F.1: Catalog Image Management & Resolution', () => {
       addonIds: [],
     };
 
-    const dsWithoutImage = { ...COMPREHENSIVE_DATASET };
+    const dsWithoutImage = { ...hargaUji };
     const dsWithImage = {
-      ...COMPREHENSIVE_DATASET,
+      ...hargaUji,
       services: [
         { ...baseService, imageUrl: 'https://example.com/custom-image.jpg' },
-        ...COMPREHENSIVE_DATASET.services.slice(1),
+        ...hargaUji.services.slice(1),
       ],
     };
 

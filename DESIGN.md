@@ -140,6 +140,7 @@ kerasa punya 3 Putra, bukan punya template.
 
 | Butuh | Kenapa penting |
 |---|---|
+| Harga borongan, minimum, lama pengerjaan, dan bahan standar tiap layanan | Semua angka bawaan sudah direset karena bukan dari pemilik. Isi lewat `/admin/isi-data`; selama kosong, website nggak nampilin angkanya |
 | Daftar kota yang beneran dilayani | Sekarang cuma Demak dan Semarang, hasil tebakan paling aman |
 | Kota basis / workshop, siapa yang beli | Belum terjawab, ada di bagian Identitas di atas |
 | Foto proyek asli | Section portofolio sekarang kosong; isi lewat `/admin/portofolio` |

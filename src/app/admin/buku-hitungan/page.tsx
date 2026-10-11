@@ -173,7 +173,7 @@ export default function AdminBukuHitunganPage() {
         <div className="p-5 bg-slate-900 text-white rounded-xl flex items-center justify-between">
           <div>
             <div className="text-xs text-slate-400">Total Estimasi Awal Proyek:</div>
-            <div className="text-xs text-amber-400 mt-0.5">Durasi Pengerjaan: {doc.durationText}</div>
+            <div className="text-xs text-amber-400 mt-0.5">Durasi Pengerjaan: {doc.durationText || 'data kosong'}</div>
           </div>
 
           <div className="text-right">

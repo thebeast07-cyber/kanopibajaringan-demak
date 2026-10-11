@@ -8,6 +8,26 @@ import {
   CompleteDataset,
 } from '../../types/domain';
 
+/**
+ * Tarif borongan layanan, atau null kalau pemilik belum mengisinya.
+ * Tarif 0 dianggap kosong: harga Rp 0 tidak pernah boleh tampil ke pelanggan.
+ */
+export function getTarifBorongan(service: ServiceSchema): PricingRuleSchema | null {
+  const rule = service.pricingRules?.[0];
+  return rule && rule.rate > 0 ? rule : null;
+}
+
+export function getMinimumPengerjaan(service: ServiceSchema): number | null {
+  const m = service.minimumBilling;
+  const value =
+    service.measurementType === 'm2'
+      ? m?.minimumArea
+      : service.measurementType === 'meter'
+      ? m?.minimumLength
+      : m?.minimumQuantity;
+  return value && value > 0 ? value : null;
+}
+
 export function calculateBillableUnits(
   input: EstimatorInput,
   service: ServiceSchema
@@ -67,8 +87,9 @@ export function calculateDurationRange(
   billableUnits: number,
   service: ServiceSchema
 ): { minDays: number; maxDays: number; text: string } {
+  // Belum diisi pemilik: teks kosong, bukan angka tebakan. Tampilan yang cek `text`.
   if (!service.durationRanges || service.durationRanges.length === 0) {
-    return { minDays: 2, maxDays: 4, text: '2 - 4 hari kerja' };
+    return { minDays: 0, maxDays: 0, text: '' };
   }
 
   for (const range of service.durationRanges) {

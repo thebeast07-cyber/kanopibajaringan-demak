@@ -2,8 +2,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { CompleteDataset, EstimatorInput, ServiceSchema } from '@/types/domain';
-import { calculateEstimate } from '@/lib/estimator/pricingEngine';
-import { buildWhatsAppLeadUrl, formatRupiah } from '@/lib/whatsapp';
+import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
+import { buildWhatsAppLeadUrl, formatRupiah, teksBahanStandar } from '@/lib/whatsapp';
 
 interface EstimatorWizardProps {
   dataset: CompleteDataset;
@@ -71,8 +71,11 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
     }
   }, [currentInput, dataset, activeService, adaUkuran]);
 
-  // Tarif borongan layanan aktif, buat ditampilkan sebagai "785.000 / m²"
-  const borongan = activeService?.pricingRules?.[0];
+  // Tarif borongan layanan aktif, buat ditampilkan sebagai "785.000 / m²".
+  // null kalau pemilik belum mengisi harga: kalkulator jangan menampilkan Rp 0.
+  const borongan = activeService ? getTarifBorongan(activeService) : null;
+  const adaHargaSama = services.some((s) => getTarifBorongan(s) !== null);
+  const bahanStandar = teksBahanStandar(activeService?.bahanStandar);
   const unitLabel =
     borongan?.unitLabel ?? (measurement === 'm2' ? 'm²' : measurement === 'meter' ? 'meter' : 'unit');
 
@@ -127,7 +130,9 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
             Berapa biayanya?
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
-            Pilih layanan, masukkan ukuran, harganya langsung muncul di sebelah.
+            {adaHargaSama
+              ? 'Pilih layanan, masukkan ukuran, harganya langsung muncul di sebelah.'
+              : 'Pilih layanan dan masukkan ukurannya, lalu kirim lewat WhatsApp. Kami hitungkan harganya.'}
           </p>
         </div>
 
@@ -236,8 +241,8 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
             </div>
 
             <p className="text-sm text-tinta-lembut leading-relaxed bg-kertas-dalam rounded-xl p-4">
-              Pilihan bahan, warna, dan pekerjaan tambahan (talang, bongkar atap lama) dibahas
-              langsung di WhatsApp, biar nggak ribet di sini.
+              Mau bahan atau warna lain, atau ada pekerjaan tambahan kayak talang dan bongkar atap
+              lama? Tulis di catatan, nanti dibahas di WhatsApp.
             </p>
           </div>
 
@@ -253,9 +258,14 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 {/* Aksen amber mendarat di sini. Versi terang karena di atas hijau tua.
                     Tanpa ukuran, slot ini diisi kalimat, bukan tanda baca: pengunjung
                     perlu tahu apa yang kurang, bukan menebak garis panjang artinya apa. */}
-                {snapshot ? (
+                {snapshot && borongan ? (
                   <p className="font-heading text-4xl sm:text-5xl leading-none font-bold tracking-tight text-amber-terang">
                     {formatRupiah(snapshot.breakdown.total)}
+                  </p>
+                ) : !borongan ? (
+                  <p className="font-heading text-xl font-semibold text-white leading-snug">
+                    Harga {activeService.title} belum dipasang di sini. Kirim ukurannya lewat
+                    WhatsApp, nanti kami hitungkan.
                   </p>
                 ) : (
                   <p className="font-heading text-xl font-semibold text-hutan-kabut leading-snug">
@@ -270,7 +280,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 )}
               </div>
 
-              {minimumApplied && snapshot && (
+              {minimumApplied && snapshot && borongan && (
                 <p className="text-sm text-hutan-kabut leading-relaxed bg-hutan-tua rounded-xl p-4">
                   Ukuran kamu {snapshot.billableUnits.actual} {unitLabel}, tapi layanan ini minimum{' '}
                   <strong className="text-white">
@@ -280,16 +290,25 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 </p>
               )}
 
-              {snapshot && (
+              {snapshot && snapshot.duration.text && (
                 <p className="text-sm text-hutan-kabut pt-4 border-t border-hutan-muda">
                   Estimasi pengerjaan {snapshot.duration.text}.
                 </p>
               )}
 
-              <p className="text-sm text-hutan-kabut leading-relaxed">
-                Harga borongan, sudah termasuk bahan, rangka, upah pasang, dan finishing. Masih
-                ancer-ancer; harga pastinya setelah survei lokasi.
-              </p>
+              {bahanStandar && (
+                <p className="text-sm text-hutan-kabut leading-relaxed">
+                  <span className="text-white font-semibold">Bahan standar:</span> {bahanStandar}.
+                  Mau bahan lain? Tulis di catatan.
+                </p>
+              )}
+
+              {borongan && (
+                <p className="text-sm text-hutan-kabut leading-relaxed">
+                  Harga borongan, sudah termasuk bahan, rangka, upah pasang, dan finishing. Masih
+                  ancer-ancer; harga pastinya setelah survei lokasi.
+                </p>
+              )}
             </div>
 
             <form
@@ -334,7 +353,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                   rows={2}
                   value={additionalNotes}
                   onChange={(e) => setAdditionalNotes(e.target.value)}
-                  placeholder="Warna, model, atau permintaan khusus"
+                  placeholder="Bahan lain, warna, atau permintaan khusus"
                   className={`${textField} py-3 resize-none`}
                 />
               </div>

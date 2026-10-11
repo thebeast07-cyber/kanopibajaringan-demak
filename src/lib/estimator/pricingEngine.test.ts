@@ -6,13 +6,17 @@ import {
   calculateBillableUnits,
   evaluatePricingRule,
   calculateDurationRange,
+  getTarifBorongan,
+  getMinimumPengerjaan,
 } from './pricingEngine';
+import { datasetHargaUji } from './fixtureHargaUji';
 import { EstimatorInput, PricingRuleSchema } from '../../types/domain';
 
 describe('Pricing Engine Unit Tests', () => {
+  const HARGA_UJI = datasetHargaUji();
 
   test('1. Minimum Billing Rule: Override actual area if below threshold', () => {
-    const service = COMPREHENSIVE_DATASET.services.find((s) => s.id === 'svc-kanopi-alderon')!;
+    const service = HARGA_UJI.services.find((s) => s.id === 'svc-kanopi-alderon')!;
     // Service minimumArea is 12 m². Input is 2m x 4m = 8 m²
     const input: EstimatorInput = {
       serviceId: service.id,
@@ -27,7 +31,7 @@ describe('Pricing Engine Unit Tests', () => {
   });
 
   test('2. Billable Units: Linear meter calculation', () => {
-    const service = COMPREHENSIVE_DATASET.services.find((s) => s.id === 'svc-pagar-minimalis')!;
+    const service = HARGA_UJI.services.find((s) => s.id === 'svc-pagar-minimalis')!;
     // Service minimumLength is 4m. Input is 6m
     const input: EstimatorInput = {
       serviceId: service.id,
@@ -66,7 +70,7 @@ describe('Pricing Engine Unit Tests', () => {
   });
 
   test('4. Range-based Duration Lookup (JSON-safe maxUnits null)', () => {
-    const service = COMPREHENSIVE_DATASET.services.find((s) => s.id === 'svc-kanopi-alderon')!;
+    const service = HARGA_UJI.services.find((s) => s.id === 'svc-kanopi-alderon')!;
     // 15 m² falls in 0-20 m² range (2-3 days)
     const dur1 = calculateDurationRange(15, service);
     assert.strictEqual(dur1.minDays, 2);
@@ -96,7 +100,7 @@ describe('Pricing Engine Unit Tests', () => {
       notes: 'Lokasi rumah cluster jalan lebar.',
     };
 
-    const { snapshot } = calculateEstimate(input, COMPREHENSIVE_DATASET);
+    const { snapshot } = calculateEstimate(input, HARGA_UJI);
 
     assert.ok(snapshot.estimateId.startsWith('EST-'));
     assert.strictEqual(snapshot.pricingVersion, COMPREHENSIVE_DATASET.businessConfig.pricingVersion);
@@ -126,25 +130,12 @@ describe('Pricing Engine Unit Tests', () => {
     assert.strictEqual(snapshot.estimate.max, 20010000);
   });
 
-  test('6. Setiap layanan aktif punya tepat satu tarif borongan', () => {
-    for (const svc of COMPREHENSIVE_DATASET.services.filter((s) => s.status === 'active')) {
-      assert.strictEqual(
-        svc.pricingRules.length,
-        1,
-        `${svc.title} harus punya tepat 1 tarif borongan, bukan ${svc.pricingRules.length}`
-      );
-
-      const rule = svc.pricingRules[0];
-      assert.ok(rule.rate > 0, `${svc.title} tarifnya harus lebih dari 0`);
-
-      // satuan tarif harus cocok dengan cara layanan diukur
-      const expected =
-        svc.measurementType === 'm2' ? 'per_m2' : svc.measurementType === 'meter' ? 'per_m' : 'per_unit';
-      assert.strictEqual(
-        rule.model,
-        expected,
-        `${svc.title} diukur per ${svc.measurementType} tapi tarifnya ${rule.model}`
-      );
+  test('6. Data bawaan tidak membawa harga karangan dan tidak ada komponen nyangkut', () => {
+    for (const svc of COMPREHENSIVE_DATASET.services) {
+      // Harga, minimum, dan lama pengerjaan diisi pemilik lewat /admin/isi-data.
+      assert.strictEqual(svc.pricingRules.length, 0, `${svc.title} masih membawa tarif bawaan`);
+      assert.strictEqual(getMinimumPengerjaan(svc), null, `${svc.title} masih membawa minimum bawaan`);
+      assert.strictEqual(svc.durationRanges.length, 0, `${svc.title} masih membawa lama pengerjaan bawaan`);
 
       // tidak boleh ada komponen nyangkut yang bikin harga dobel
       assert.strictEqual(svc.allowedMaterialIds.length, 0, `${svc.title} masih punya bahan terpasang`);
@@ -152,5 +143,28 @@ describe('Pricing Engine Unit Tests', () => {
       assert.strictEqual(svc.allowedLaborIds.length, 0, `${svc.title} masih punya upah terpasang`);
       assert.strictEqual(svc.allowedFinishingIds.length, 0, `${svc.title} masih punya finishing terpasang`);
     }
+  });
+
+  test('7. Tarif kosong atau 0 dianggap belum diisi', () => {
+    const svc = COMPREHENSIVE_DATASET.services[0];
+    assert.strictEqual(getTarifBorongan(svc), null);
+
+    const tarifNol = {
+      ...svc,
+      pricingRules: [{ id: 'r0', targetComponent: 'base' as const, model: 'per_m2' as const, rate: 0 }],
+    };
+    assert.strictEqual(getTarifBorongan(tarifNol), null, 'Rp 0 tidak boleh dianggap harga');
+
+    const alderon = HARGA_UJI.services.find((s) => s.id === 'svc-kanopi-alderon')!;
+    assert.strictEqual(getTarifBorongan(alderon)?.rate, 785000);
+    assert.strictEqual(getMinimumPengerjaan(alderon), 12);
+  });
+
+  test('8. Lama pengerjaan kosong menghasilkan teks kosong, bukan angka tebakan', () => {
+    const svc = COMPREHENSIVE_DATASET.services[0];
+    const dur = calculateDurationRange(20, svc);
+    assert.strictEqual(dur.text, '');
+    assert.strictEqual(dur.minDays, 0);
+    assert.strictEqual(dur.maxDays, 0);
   });
 });
