@@ -154,6 +154,25 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
         </div>
       </div>
 
+      <div className="flex items-start gap-3">
+        <input
+          id={id('tampil')}
+          type="checkbox"
+          checked={isian.tampil}
+          onChange={(e) => ubah({ tampil: e.target.checked })}
+          aria-describedby={id('tampil-bantuan')}
+          className="mt-3 h-5 w-5 shrink-0 accent-hutan"
+        />
+        <div>
+          <label htmlFor={id('tampil')} className="flex items-center min-h-[44px] text-sm font-semibold text-tinta cursor-pointer">
+            Tampilkan di website
+          </label>
+          <p id={id('tampil-bantuan')} className={kelasBantuan}>
+            Hapus centang kalau layanan ini lagi nggak dikerjakan. Datanya tetap tersimpan.
+          </p>
+        </div>
+      </div>
+
       <fieldset className="space-y-2">
         <legend className={kelasLabel}>Dihitung per</legend>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -228,9 +247,9 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
       </div>
 
       <fieldset className="space-y-2" aria-describedby={deskripsi(id('lama-bantuan'), salah.lama && id('lama-salah'))}>
-        <legend className={kelasLabel}>Lama pengerjaan</legend>
+        <legend className={kelasLabel}>Lama pengerjaan (boleh kosong)</legend>
         <p id={id('lama-bantuan')} className={kelasBantuan}>
-          Dalam hari kerja. Kosongkan dua-duanya kalau belum tahu.
+          Dalam hari kerja. Kalau diisi, website menulisnya sebagai perkiraan yang dipastikan setelah survei.
         </p>
         <div className="grid grid-cols-2 gap-3 sm:max-w-sm">
           <div className="space-y-1">

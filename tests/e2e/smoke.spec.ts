@@ -1,20 +1,17 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('SMOKE-01: Public Landing Page Availability', () => {
-  test('should load the public landing page successfully without errors', async ({ page }) => {
-    // 1. Open public landing page route /
-    const response = await page.goto('/');
+test.describe('Halaman depan', () => {
+  test('terbuka tanpa error dan tidak pernah menampilkan Rp 0', async ({ page }) => {
+    const galat: string[] = [];
+    page.on('pageerror', (e) => galat.push(e.message));
 
-    // 2. Verify HTTP response status is successful (200 OK)
-    expect(response?.status()).toBe(200);
+    const res = await page.goto('/');
+    expect(res?.status()).toBe(200);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Mau pasang kanopi?');
+    await expect(page.locator('#kalkulator')).toBeVisible();
 
-    // 3. Verify stable visible primary heading element
-    const mainHeading = page.getByRole('heading', { level: 1 }).first();
-    await expect(mainHeading).toBeVisible();
-    await expect(mainHeading).toContainText('Jasa Pasang Kanopi & Atap Baja Ringan');
-
-    // 4. Verify no obvious Next.js error overlay or crash fallback
-    const errorOverlay = page.locator('#next-react-build-error-overlay');
-    await expect(errorOverlay).not.toBeVisible();
+    const teks = (await page.locator('body').innerText()).replace(/ /g, ' ');
+    expect(teks).not.toMatch(/Rp 0(?![\d.])/);
+    expect(galat).toEqual([]);
   });
 });

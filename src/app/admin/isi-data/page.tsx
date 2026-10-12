@@ -5,6 +5,7 @@ import { defaultCmsRepository } from '../../../lib/cms/repository';
 import { ambilStatusSimpan, langgananStatusSimpan, simpanSekarang } from '../../../lib/cms/sinkronServer';
 import { ServiceSchema } from '../../../types/domain';
 import {
+  adaIsian,
   daftarKolomKosong,
   kolomKosong,
   layananBaru,
@@ -41,7 +42,7 @@ function Ringkasan({ service }: { service: ServiceSchema }) {
       <dd className="text-tinta">{minimum ?? <DataKosong />}</dd>
 
       <dt className="text-tinta-lembut">Lama pengerjaan</dt>
-      <dd className="text-tinta">{lama ?? <DataKosong />}</dd>
+      <dd className="text-tinta">{lama ?? <span className="text-tinta-lembut">Nggak diisi (boleh kosong)</span>}</dd>
 
       <dt className="text-tinta-lembut">Foto</dt>
       <dd className="text-tinta">
@@ -146,7 +147,7 @@ export default function AdminIsiDataPage() {
       <div className="space-y-3">
         <h1 className="font-heading text-2xl sm:text-3xl font-semibold text-hutan">Isi data layanan</h1>
         <p className="text-tinta-lembut leading-relaxed">
-          Harga, lama pengerjaan, dan bahan di website diambil dari sini. Yang belum diisi ditandai{' '}
+          Harga, bahan, dan foto di website diambil dari sini. Yang belum diisi ditandai{' '}
           <DataKosong />. Selama kosong, website nggak nampilin angkanya dan pelanggan diarahkan tanya
           lewat WhatsApp.
         </p>
@@ -168,7 +169,7 @@ export default function AdminIsiDataPage() {
           const kosong = daftarKolomKosong(svc);
           const isOpen = terbuka === svc.id;
           const idForm = `form-${svc.id}`;
-          const adaIsi = kolomKosong(svc).length < 3;
+          const adaIsi = adaIsian(svc);
 
           return (
             <li key={svc.id} className="bg-white border border-kertas-garis rounded-xl p-4 sm:p-6 space-y-4">

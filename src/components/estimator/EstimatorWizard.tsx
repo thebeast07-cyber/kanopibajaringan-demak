@@ -292,7 +292,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
               {snapshot && snapshot.duration.text && (
                 <p className="text-sm text-hutan-kabut pt-4 border-t border-hutan-muda">
-                  Estimasi pengerjaan {snapshot.duration.text}.
+                  Perkiraan pengerjaan {snapshot.duration.text}, dipastikan setelah survei.
                 </p>
               )}
 

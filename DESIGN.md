@@ -140,11 +140,11 @@ kerasa punya 3 Putra, bukan punya template.
 
 | Butuh | Kenapa penting |
 |---|---|
-| Harga borongan, minimum, lama pengerjaan, dan bahan standar tiap layanan | Semua angka bawaan sudah direset karena bukan dari pemilik. Isi lewat `/admin/isi-data`; selama kosong, website nggak nampilin angkanya |
+| Harga borongan, minimum, dan bahan standar tiap layanan | Semua angka bawaan sudah direset karena bukan dari pemilik. Isi lewat `/admin/isi-data`; selama kosong, website nggak nampilin angkanya. Lama pengerjaan boleh kosong |
 | Daftar kota yang beneran dilayani | Sekarang cuma Demak dan Semarang, hasil tebakan paling aman |
 | Kota basis / workshop, siapa yang beli | Belum terjawab, ada di bagian Identitas di atas |
-| Foto proyek asli | Section portofolio sekarang kosong; isi lewat `/admin/portofolio` |
+| Foto proyek asli | Unggah per layanan di `/admin/isi-data`, tampil sebagai galeri geser di kartu layanan |
 | Ketentuan garansi yang sebenarnya | Kalau ada, isi `guaranteeTerms` di `businessConfig` |
-| Bukti SNI dan garansi pabrik di master data bahan | `materials` dan `frames` masih menyimpan `Standar SNI`, `Sertifikat SNI Tempered Glass`, dan `Garansi pabrik 10 tahun`. Belum tampil ke pengunjung karena harganya borongan, tapi tetap klaim yang belum dibuktikan. Bereskan lewat `/admin` |
+| Bukti SNI dan garansi pabrik di master data bahan | `materials` dan `frames` masih menyimpan `Standar SNI`, `Sertifikat SNI Tempered Glass`, dan `Garansi pabrik 10 tahun`. Nggak tampil di mana pun dan halaman pengaturnya sudah dihapus, jadi aman dibuang dari dataset |
 
 Nomor WhatsApp asli: 082228132455.

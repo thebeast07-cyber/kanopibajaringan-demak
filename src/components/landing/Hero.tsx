@@ -79,7 +79,7 @@ export function Hero({ config, dataset }: HeroProps) {
 
                 <p className="text-sm text-tinta-lembut mt-3 leading-relaxed">
                   Sudah termasuk bahan, rangka, upah pasang, dan finishing.
-                  {contoh.duration.text && ` Estimasi pengerjaan ${contoh.duration.text}.`}
+                  {contoh.duration.text && ` Perkiraan pengerjaan ${contoh.duration.text}, dipastikan setelah survei.`}
                 </p>
 
                 <a

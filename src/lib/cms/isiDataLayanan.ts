@@ -22,6 +22,7 @@ export interface IsianLayanan {
   bahan: BahanStandarSchema[];
   fotos: FotoLayananSchema[];
   featured: boolean;
+  tampil: boolean;
 }
 
 export const BATAS_FOTO = 10;
@@ -35,20 +36,30 @@ export function geserFoto(fotos: FotoLayananSchema[], i: number, arah: -1 | 1): 
   return hasil;
 }
 
-export type KolomWajib = 'harga' | 'lama' | 'bahan';
+// Lama pengerjaan sengaja tidak wajib: tergantung medan dan kerumitan, jadi dipastikan saat survei.
+export type KolomWajib = 'harga' | 'bahan';
 
 const NAMA_KOLOM: Record<KolomWajib, string> = {
   harga: 'harga',
-  lama: 'lama pengerjaan',
   bahan: 'bahan standar',
 };
 
 export function kolomKosong(service: ServiceSchema): KolomWajib[] {
   const kosong: KolomWajib[] = [];
   if (!getTarifBorongan(service)) kosong.push('harga');
-  if (!service.durationRanges?.length) kosong.push('lama');
   if (!service.bahanStandar?.length) kosong.push('bahan');
   return kosong;
+}
+
+/** Sudah ada yang diisi pemilik, walau belum lengkap. Menentukan tombol "Isi data" atau "Ubah data". */
+export function adaIsian(service: ServiceSchema): boolean {
+  return Boolean(
+    getTarifBorongan(service) ||
+      getMinimumPengerjaan(service) ||
+      service.durationRanges?.length ||
+      service.bahanStandar?.length ||
+      service.fotos?.length
+  );
 }
 
 export function daftarKolomKosong(service: ServiceSchema): string {
@@ -91,6 +102,7 @@ export function isianDariLayanan(service: ServiceSchema): IsianLayanan {
     bahan: service.bahanStandar?.length ? service.bahanStandar.map((b) => ({ ...b })) : [],
     fotos: (service.fotos ?? []).map((f) => ({ ...f })),
     featured: service.featured,
+    tampil: service.status === 'active',
   };
 }
 
@@ -164,6 +176,7 @@ export function terapkanIsian(service: ServiceSchema, isian: IsianLayanan): Serv
       ...(f.keterangan?.trim() ? { keterangan: f.keterangan.trim() } : {}),
     })),
     featured: isian.featured,
+    status: isian.tampil ? 'active' : 'placeholder',
     source: 'owner',
   };
 }

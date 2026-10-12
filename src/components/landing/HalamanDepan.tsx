@@ -48,7 +48,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
         <FaqSection faqs={faqs} />
 
         {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
-            testimoni palsu. Pasang lagi lewat /admin/portofolio setelah ada foto asli. */}
+            testimoni palsu. Foto proyek asli sekarang tampil di kartu layanan (/admin/isi-data). */}
 
         <section className="bg-hutan text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">

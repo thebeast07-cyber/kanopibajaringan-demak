@@ -13,16 +13,17 @@ import {
   teksLama,
   geserFoto,
   layananBaru,
+  adaIsian,
 } from './isiDataLayanan';
 
 const alderon = () => JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET.services[0]));
 
 describe('Isi data layanan', () => {
-  it('1. Layanan bawaan tercatat kosong di harga, lama pengerjaan, dan bahan', () => {
+  it('1. Layanan bawaan tercatat kosong di harga dan bahan (lama pengerjaan boleh kosong)', () => {
     for (const svc of COMPREHENSIVE_DATASET.services) {
-      assert.deepEqual(kolomKosong(svc), ['harga', 'lama', 'bahan']);
+      assert.deepEqual(kolomKosong(svc), ['harga', 'bahan']);
     }
-    assert.equal(daftarKolomKosong(alderon()), 'harga, lama pengerjaan, bahan standar');
+    assert.equal(daftarKolomKosong(alderon()), 'harga, bahan standar');
   });
 
   it('2. Isian kosong tidak berubah jadi angka 0', () => {
@@ -133,6 +134,29 @@ describe('Isi data layanan', () => {
     const baru = layananBaru();
     assert.deepEqual(baru.fotos, []);
     assert.equal(baru.featured, true);
-    assert.deepEqual(kolomKosong(baru), ['harga', 'lama', 'bahan']);
+    assert.deepEqual(kolomKosong(baru), ['harga', 'bahan']);
+  });
+
+  it('11. Harga dan bahan terisi sudah lengkap walau lama pengerjaan kosong', () => {
+    const svc = terapkanIsian(alderon(), {
+      ...isianDariLayanan(alderon()),
+      harga: '800000',
+      bahan: [{ bagian: 'Atap', bahan: 'Alderon RS' }],
+    });
+    assert.deepEqual(kolomKosong(svc), []);
+    assert.equal(teksLama(svc), null);
+  });
+
+  it('12. Layanan bisa disembunyikan dan ditampilkan lagi', () => {
+    const sembunyi = terapkanIsian(alderon(), { ...isianDariLayanan(alderon()), tampil: false });
+    assert.equal(sembunyi.status, 'placeholder');
+    assert.equal(isianDariLayanan(sembunyi).tampil, false);
+    assert.equal(terapkanIsian(sembunyi, { ...isianDariLayanan(sembunyi), tampil: true }).status, 'active');
+  });
+
+  it('13. Tombol isi/ubah: kosong semua berarti belum ada isian', () => {
+    assert.equal(adaIsian(alderon()), false);
+    assert.equal(adaIsian(terapkanIsian(alderon(), { ...isianDariLayanan(alderon()), hariMin: '2', hariMax: '3' })), true);
+    assert.equal(adaIsian({ ...alderon(), fotos: [{ url: 'x' }] }), true);
   });
 });

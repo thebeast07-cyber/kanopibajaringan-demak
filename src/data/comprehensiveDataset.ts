@@ -649,7 +649,7 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
   // Kosong sampai ada foto proyek asli milik 3 Putra.
   // Sebelumnya berisi 3 proyek karangan (BSD City, Bintaro, Kebayoran) lengkap dengan
   // testimoni pelanggan karangan dan foto stok Unsplash, dipajang sebagai "bukti pengerjaan".
-  // Isi lewat /admin/portofolio kalau fotonya sudah ada. Jangan dikarang lagi (R-18, R-38).
+  // Foto proyek asli diunggah per layanan di /admin/isi-data. Jangan dikarang lagi (R-18, R-38).
   portfolios: [],
 
 
