@@ -159,4 +159,19 @@ describe('Isi data layanan', () => {
     assert.equal(adaIsian(terapkanIsian(alderon(), { ...isianDariLayanan(alderon()), hariMin: '2', hariMax: '3' })), true);
     assert.equal(adaIsian({ ...alderon(), fotos: [{ url: 'x' }] }), true);
   });
+
+  it('14. Ukuran di pesan WhatsApp pakai pola DESIGN.md, tanpa istilah "Min Billing"', () => {
+    const pesanUntuk = (svc: ReturnType<typeof alderon>, input: Record<string, number>) => {
+      const ds = { ...COMPREHENSIVE_DATASET, services: [svc] };
+      const { snapshot } = calculateEstimate({ serviceId: svc.id, ...input }, ds);
+      return decodeURIComponent(buildWhatsAppLeadUrl(snapshot, { customerName: 'Budi', cityOrDistrict: 'Sayung' }, ds).split('?text=')[1]);
+    };
+    const m2 = terapkanIsian(alderon(), { ...isianDariLayanan(alderon()), harga: '800000', minimum: '12' });
+    assert.ok(pesanUntuk(m2, { length: 5, width: 2 }).includes('Ukuran: 5 m × 2 m (10 m² → ditagih 12 m²)'));
+    assert.ok(pesanUntuk(m2, { length: 5, width: 4 }).includes('Ukuran: 5 m × 4 m (20 m²)'));
+
+    const meter = terapkanIsian(alderon(), { ...isianDariLayanan(alderon()), measurementType: 'meter', harga: '630000', minimum: '4' });
+    assert.ok(pesanUntuk(meter, { length: 3 }).includes('Ukuran: 3 meter (ditagih 4 meter)'));
+    assert.ok(!pesanUntuk(meter, { length: 3 }).includes('Min Billing'));
+  });
 });

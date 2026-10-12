@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AnalitikPengunjung } from '@/components/AnalitikPengunjung';
 
 export const metadata: Metadata = {
-  // Nama resmi dipakai utuh di sini karena ini yang muncul di tab browser dan hasil
-  // pencarian. Di dalam halaman nama dipecah jadi businessName + tagline.
-  title: '3 Putra Spesialis Kanopi dan Baja Ringan | Cek Harga Borongan',
-  description:
-    'Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di Demak dan Semarang. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.',
+  // Cadangan untuk admin dan login. Beranda punya generateMetadata sendiri yang ikut
+  // kondisi data, jadi kalimat soal harga tidak ditulis di sini.
+  title: '3 Putra Spesialis Kanopi dan Baja Ringan',
+  description: 'Spesialis kanopi, atap baja ringan, pagar, dan railing di Demak dan Semarang.',
   keywords: [
     'harga kanopi per m2',
     'pasang kanopi demak',
@@ -37,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-kertas text-tinta font-sans antialiased selection:bg-hutan selection:text-white">
         {children}
+        <AnalitikPengunjung />
       </body>
     </html>
   );

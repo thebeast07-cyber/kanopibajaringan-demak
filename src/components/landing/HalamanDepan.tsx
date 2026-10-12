@@ -10,6 +10,8 @@ import { ProcessSection } from '@/components/landing/ProcessSection';
 import { FaqSection } from '@/components/landing/FaqSection';
 import { EstimatorWizard } from '@/components/estimator/EstimatorWizard';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
+import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
+import { catatKlikWa } from '@/lib/jejak';
 
 /** Isi halaman depan. Datanya dari server (penyimpanan online), bukan dari browser. */
 export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
@@ -23,7 +25,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
     setActiveServiceId(serviceId);
   };
 
-  const waHref = `https://wa.me/${config.frontlineContact.whatsappNumber.replace(/\D/g, '')}`;
+  const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
   // Selama pemilik belum mengisi harga satu pun, kalimat yang menjanjikan angka diganti.
   const adaHarga = services.some((s) => getTarifBorongan(s) !== null);
 
@@ -66,6 +68,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => catatKlikWa('ajakan-bawah')}
                 className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-8 bg-amber-gelap hover:bg-amber-tua text-white font-semibold rounded-xl transition-colors"
               >
                 Chat WhatsApp

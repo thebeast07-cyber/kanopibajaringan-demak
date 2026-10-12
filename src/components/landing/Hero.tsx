@@ -1,7 +1,8 @@
 import React from 'react';
 import { BusinessConfigSchema, CompleteDataset } from '@/types/domain';
 import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
-import { formatRupiah } from '@/lib/whatsapp';
+import { formatRupiah, sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
+import { catatKlikWa } from '@/lib/jejak';
 
 interface HeroProps {
   config: BusinessConfigSchema;
@@ -9,7 +10,7 @@ interface HeroProps {
 }
 
 export function Hero({ config, dataset }: HeroProps) {
-  const waHref = `https://wa.me/${config.frontlineContact.whatsappNumber.replace(/\D/g, '')}`;
+  const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
 
   // Contoh dihitung dari data yang sama dengan kalkulator, bukan angka yang diketik
   // tangan. Dulu di sini tertulis Rp 17.400.000 yang sudah basi tiga model harga lalu.
@@ -50,6 +51,7 @@ export function Hero({ config, dataset }: HeroProps) {
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => catatKlikWa('hero')}
                 className="flex items-center justify-center min-h-[52px] px-7 border border-kertas-garis bg-white hover:bg-kertas-dalam text-hutan font-semibold rounded-xl transition-colors"
               >
                 Tanya dulu lewat WhatsApp

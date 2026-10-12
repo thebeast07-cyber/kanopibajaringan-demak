@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { BusinessConfigSchema } from '@/types/domain';
+import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
+import { catatKlikWa } from '@/lib/jejak';
 
 interface NavbarProps {
   config: BusinessConfigSchema;
@@ -19,7 +21,20 @@ const NAV_LINKS = [
 
 export function Navbar({ config }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const waHref = `https://wa.me/${config.frontlineContact.whatsappNumber.replace(/\D/g, '')}`;
+  const tombolMenuRef = useRef<HTMLButtonElement>(null);
+  const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
+
+  // Menu HP bisa ditutup pakai Escape, lalu fokus balik ke tombol menu (R-32).
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const tutup = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setMobileMenuOpen(false);
+      tombolMenuRef.current?.focus();
+    };
+    document.addEventListener('keydown', tutup);
+    return () => document.removeEventListener('keydown', tutup);
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -42,7 +57,7 @@ export function Navbar({ config }: NavbarProps) {
 
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-tinta-lembut">
             {NAV_LINKS.map((link) => (
-              <a key={link.href} href={link.href} className="hover:text-hutan transition-colors py-2">
+              <a key={link.href} href={link.href} className="inline-flex items-center min-h-[44px] hover:text-hutan transition-colors">
                 {link.label}
               </a>
             ))}
@@ -53,12 +68,15 @@ export function Navbar({ config }: NavbarProps) {
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center bg-amber-gelap hover:bg-amber-tua text-white font-semibold px-4 py-2.5 rounded-lg text-sm transition-colors"
+            onClick={() => catatKlikWa('navbar')}
+            className="hidden sm:flex items-center min-h-[44px] bg-amber-gelap hover:bg-amber-tua text-white font-semibold px-4 rounded-lg text-sm transition-colors"
           >
             Chat WhatsApp
           </a>
 
           <button
+            ref={tombolMenuRef}
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={mobileMenuOpen}
@@ -84,6 +102,7 @@ export function Navbar({ config }: NavbarProps) {
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => catatKlikWa('menu-hp')}
               className="flex items-center justify-center min-h-[44px] bg-amber-gelap text-white font-semibold w-full rounded-lg mt-4"
             >
               Chat WhatsApp

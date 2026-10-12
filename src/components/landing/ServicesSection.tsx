@@ -5,6 +5,7 @@ import { ServiceSchema } from '@/types/domain';
 import { formatRupiah, waTanyaUrl } from '@/lib/whatsapp';
 import { getMinimumPengerjaan, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { GaleriFoto } from './GaleriFoto';
+import { catatKlikWa } from '@/lib/jejak';
 
 interface ServicesSectionProps {
   services: ServiceSchema[];
@@ -46,7 +47,8 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
         </div>
 
         {/* Layanan unggulan. Harganya ditaruh paling menonjol karena itu yang dicari. */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* items-start: kartu tanpa foto/harga tidak ikut meregang setinggi kartu sebelahnya. */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {utama.map((svc) => {
             const tarif = getTarifBorongan(svc);
             const min = getMinimumPengerjaan(svc);
@@ -91,7 +93,13 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                   ) : (
                     <p className="text-tinta leading-relaxed">
                       Harganya belum dipasang di sini.{' '}
-                      <a href={tanyaHarga(svc)} target="_blank" rel="noopener noreferrer" className={kelasLinkWa}>
+                      <a
+                        href={tanyaHarga(svc)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => catatKlikWa('kartu-tanya-harga', svc.title)}
+                        className={kelasLinkWa}
+                      >
                         Tanya harga lewat WhatsApp
                       </a>
                     </p>
@@ -102,7 +110,13 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                     </p>
                   ) : null}
                   {bahan.length > 0 && (
-                    <a href={tanyaBahan(svc)} target="_blank" rel="noopener noreferrer" className={`${kelasLinkWa} text-sm mt-1`}>
+                    <a
+                      href={tanyaBahan(svc)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => catatKlikWa('kartu-bahan-lain', svc.title)}
+                      className={`${kelasLinkWa} text-sm mt-1`}
+                    >
                       Mau bahan lain? Tanya lewat WhatsApp
                     </a>
                   )}
@@ -154,7 +168,13 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                           <span className="text-sm font-normal text-tinta-lembut"> / {satuan(svc)}</span>
                         </span>
                       ) : (
-                        <a href={tanyaHarga(svc)} target="_blank" rel="noopener noreferrer" className={`${kelasLinkWa} text-sm`}>
+                        <a
+                          href={tanyaHarga(svc)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => catatKlikWa('daftar-tanya-harga', svc.title)}
+                          className={`${kelasLinkWa} text-sm`}
+                        >
                           Tanya harga lewat WhatsApp
                         </a>
                       )}

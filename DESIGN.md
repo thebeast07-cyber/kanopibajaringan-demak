@@ -136,6 +136,16 @@ kerasa punya 3 Putra, bukan punya template.
   di angka harga kalkulator. Sekarang di situ ada kalimat: "Isi ukurannya dulu, harganya nanti
   muncul di sini."
 
+## Sudah dikonfirmasi pemilik
+
+- Survei lokasi gratis.
+- Pelanggan boleh batal tanpa biaya kalau harga final setelah survei nggak cocok.
+- Sebelum setuju harga final, pelanggan belum terikat apa-apa.
+
+Kalimat-kalimat itu di hero, alur kerja, FAQ, dan ajakan bawah boleh tetap tampil.
+Deskripsi singkat tiap layanan (mis. "kedap suara hujan", "anti rayap") masih isian lama
+dan akan direvisi sesuai arahan pemilik lewat `/admin/isi-data`.
+
 ## Yang masih kosong dan perlu diisi pemilik
 
 | Butuh | Kenapa penting |

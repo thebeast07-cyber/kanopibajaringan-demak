@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { CompleteDataset, EstimatorInput, ServiceSchema } from '@/types/domain';
 import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { buildWhatsAppLeadUrl, formatRupiah, teksBahanStandar } from '@/lib/whatsapp';
+import { catatIsiUkuran, catatKlikWa } from '@/lib/jejak';
 
 interface EstimatorWizardProps {
   dataset: CompleteDataset;
@@ -101,6 +102,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
       { customerName, cityOrDistrict, additionalNotes },
       dataset
     );
+    catatKlikWa('kalkulator', activeService?.title);
     window.open(url, '_blank');
   };
 
@@ -178,7 +180,10 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                       min={0}
                       step={0.5}
                       value={lengthInput}
-                      onChange={(e) => setLengthInput(Number(e.target.value) || 0)}
+                      onChange={(e) => {
+                        setLengthInput(Number(e.target.value) || 0);
+                        catatIsiUkuran(activeService.title);
+                      }}
                       className={numberField}
                     />
                   </div>
@@ -192,7 +197,10 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                       min={0}
                       step={0.5}
                       value={widthInput}
-                      onChange={(e) => setWidthInput(Number(e.target.value) || 0)}
+                      onChange={(e) => {
+                        setWidthInput(Number(e.target.value) || 0);
+                        catatIsiUkuran(activeService.title);
+                      }}
                       className={numberField}
                     />
                   </div>
@@ -210,7 +218,10 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     min={0}
                     step={0.5}
                     value={lengthInput}
-                    onChange={(e) => setLengthInput(Number(e.target.value) || 0)}
+                    onChange={(e) => {
+                        setLengthInput(Number(e.target.value) || 0);
+                        catatIsiUkuran(activeService.title);
+                      }}
                     className={numberField}
                   />
                 </div>
@@ -227,7 +238,10 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     min={1}
                     step={1}
                     value={quantityInput}
-                    onChange={(e) => setQuantityInput(Number(e.target.value) || 1)}
+                    onChange={(e) => {
+                      setQuantityInput(Number(e.target.value) || 1);
+                      catatIsiUkuran(activeService.title);
+                    }}
                     className={numberField}
                   />
                 </div>

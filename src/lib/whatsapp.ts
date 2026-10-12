@@ -19,6 +19,10 @@ export function teksBahanStandar(bahan: BahanStandarSchema[] | undefined): strin
   return (bahan ?? []).map((b) => `${b.bagian}: ${b.bahan}`).join('; ');
 }
 
+export function sapaanUmum(namaUsaha: string): string {
+  return `Halo ${namaUsaha}, saya mau tanya soal pemasangan.`;
+}
+
 /** Link WhatsApp dengan pesan pembuka yang sudah terisi. */
 export function waTanyaUrl(whatsappNumber: string, pesan: string): string {
   return `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(pesan)}`;
@@ -45,20 +49,18 @@ export function buildWhatsAppLeadUrl(
     .map((id) => dataset.siteConditions.find((c) => c.id === id)?.name)
     .filter(Boolean);
 
+  // Pola ukuran sama dengan di halaman (DESIGN.md): "5 m × 2 m (10 m² → ditagih 12 m²)".
+  const { actual, applied, unitType } = snapshot.billableUnits;
+  const kenaMinimum = applied > actual;
   let dimensionStr = '';
-  if (snapshot.billableUnits.unitType === 'm2') {
-    dimensionStr = `${snapshot.input.length || 0}m × ${snapshot.input.width || 0}m (${snapshot.billableUnits.actual} m²`;
-    if (snapshot.billableUnits.applied > snapshot.billableUnits.actual) {
-      dimensionStr += ` → Min Billing ${snapshot.billableUnits.applied} m²`;
-    }
-    dimensionStr += ')';
-  } else if (snapshot.billableUnits.unitType === 'meter') {
-    dimensionStr = `${snapshot.input.length || 0} meter`;
-    if (snapshot.billableUnits.applied > snapshot.billableUnits.actual) {
-      dimensionStr += ` (Min Billing ${snapshot.billableUnits.applied} m)`;
-    }
+  if (unitType === 'm2') {
+    dimensionStr = `${snapshot.input.length || 0} m × ${snapshot.input.width || 0} m (${actual} m²${
+      kenaMinimum ? ` → ditagih ${applied} m²` : ''
+    })`;
+  } else if (unitType === 'meter') {
+    dimensionStr = `${snapshot.input.length || 0} meter${kenaMinimum ? ` (ditagih ${applied} meter)` : ''}`;
   } else {
-    dimensionStr = `${snapshot.input.quantity || 1} unit`;
+    dimensionStr = `${snapshot.input.quantity || 1} unit${kenaMinimum ? ` (ditagih ${applied} unit)` : ''}`;
   }
 
   // Pesan ini yang pertama dibaca pemilik di HP-nya. Ditulis seperti orang ngetik
