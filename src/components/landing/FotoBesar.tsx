@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useGeserFoto } from './useGeserFoto';
 import { FotoLayananSchema } from '@/types/domain';
 
 interface FotoBesarProps {
@@ -17,12 +18,9 @@ const kelasTombol =
 
 /** Foto layanan layar penuh. Utuh tanpa terpotong, bisa digeser ke foto lain. */
 export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
-  const jalurRef = useRef<HTMLUListElement>(null);
+  const { jalurRef, aktif, aktifRef, geser, saatGeser } = useGeserFoto(fotos.length, mulai);
   const lembarRef = useRef<HTMLDivElement>(null);
   const tutupRef = useRef<HTMLButtonElement>(null);
-  const [aktif, setAktif] = useState(mulai);
-  const aktifRef = useRef(mulai);
-  aktifRef.current = aktif;
   const banyak = fotos.length > 1;
 
   // Langsung di foto yang diketuk, tanpa animasi geser dari foto pertama.
@@ -30,13 +28,6 @@ export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
     const jalur = jalurRef.current;
     if (jalur) jalur.scrollLeft = mulai * jalur.clientWidth;
   }, [mulai]);
-
-  const keFoto = (i: number) => {
-    const jalur = jalurRef.current;
-    if (!jalur || i < 0 || i >= fotos.length) return;
-    const kurangiGerak = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    jalur.scrollTo({ left: i * jalur.clientWidth, behavior: kurangiGerak ? 'auto' : 'smooth' });
-  };
 
   useEffect(() => {
     tutupRef.current?.focus();
@@ -48,7 +39,7 @@ export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.stopPropagation();
         e.preventDefault();
-        keFoto(aktifRef.current + (e.key === 'ArrowRight' ? 1 : -1));
+        geser(e.key === 'ArrowRight' ? 1 : -1);
       } else if (e.key === 'Tab' && lembarRef.current) {
         e.stopPropagation();
         const bisa = Array.from(lembarRef.current.querySelectorAll<HTMLButtonElement>('button:not([disabled])'));
@@ -65,14 +56,10 @@ export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
       window.removeEventListener('keydown', tombol, true);
       document.body.style.overflow = overflowLama;
     };
-    // keFoto dan onTutup cukup dibaca saat tombol ditekan; aktif dibaca lewat ref.
+    // geser dan onTutup cukup dibaca saat tombol ditekan; aktif dibaca lewat ref.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saatGeser = () => {
-    const jalur = jalurRef.current;
-    if (jalur) setAktif(Math.round(jalur.scrollLeft / jalur.clientWidth));
-  };
 
   const foto = fotos[aktif];
 
@@ -113,7 +100,7 @@ export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
 
       <div className="px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">
         {banyak ? (
-          <button type="button" onClick={() => keFoto(aktif - 1)} disabled={aktif === 0} aria-label="Foto sebelumnya" className={kelasTombol}>
+          <button type="button" onClick={() => geser(-1)} disabled={aktif === 0} aria-label="Foto sebelumnya" className={kelasTombol}>
             ←
           </button>
         ) : (
@@ -125,7 +112,7 @@ export function FotoBesar({ fotos, judul, mulai, onTutup }: FotoBesarProps) {
         {banyak ? (
           <button
             type="button"
-            onClick={() => keFoto(aktif + 1)}
+            onClick={() => geser(1)}
             disabled={aktif === fotos.length - 1}
             aria-label="Foto berikutnya"
             className={kelasTombol}

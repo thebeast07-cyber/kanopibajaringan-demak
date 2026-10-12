@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { deflateSync } from 'zlib';
 
 // PNG polos dibuat di sini supaya tes tidak bergantung berkas gambar di repo.
-function buatPng(lebar: number, tinggi: number): Buffer {
+function buatPng(lebar: number, tinggi: number, warna = 0x45): Buffer {
   const crcTabel = Array.from({ length: 256 }, (_, n) => {
     let c = n;
     for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
@@ -27,7 +27,7 @@ function buatPng(lebar: number, tinggi: number): Buffer {
   ihdr.writeUInt32BE(tinggi, 4);
   ihdr[8] = 8; // 8 bit per kanal
   ihdr[9] = 2; // RGB
-  const baris = Buffer.concat([Buffer.from([0]), Buffer.alloc(lebar * 3, 0x45)]);
+  const baris = Buffer.concat([Buffer.from([0]), Buffer.alloc(lebar * 3, warna)]);
   const piksel = Buffer.concat(Array.from({ length: tinggi }, () => baris));
   return Buffer.concat([
     Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
@@ -38,6 +38,13 @@ function buatPng(lebar: number, tinggi: number): Buffer {
 }
 
 const PNG = buatPng(400, 300);
+// Foto tambahan: ukuran dan warna beda-beda, termasuk foto tegak, biar urutan dan tampilan kebaca.
+const FOTO_TAMBAHAN = [
+  { name: 'depan.png', buffer: buatPng(600, 400, 0x30), keterangan: 'Tampak depan' },
+  { name: 'samping.png', buffer: buatPng(300, 500, 0x70), keterangan: 'Tampak samping' },
+  { name: 'rangka.png', buffer: buatPng(500, 500, 0xa0), keterangan: 'Rangka sebelum atap' },
+  { name: 'malam.png', buffer: buatPng(640, 360, 0xd0), keterangan: 'Malam hari' },
+];
 
 test.describe.configure({ mode: 'serial' });
 
@@ -146,6 +153,99 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await expect(footer).toContainText('Spesialis kanopi Demak');
     await expect(footer).toContainText('Kudus');
     await expect(footer.getByRole('link', { name: /WhatsApp 082228132455/ })).toHaveAttribute('href', /wa\.me\/6282228132455/);
+    await pelanggan.close();
+  });
+
+  test('pemilik menambah sampai 5 foto dengan keterangan, dan foto besar di Lihat hasil', async ({ page }) => {
+    await page.goto('/admin/layanan/svc-kanopi-alderon');
+    await page
+      .locator('input[type=file]')
+      .setInputFiles(FOTO_TAMBAHAN.map((f) => ({ name: f.name, mimeType: 'image/png', buffer: f.buffer })));
+    await expect(page.getByRole('img', { name: 'Foto 5' })).toBeVisible({ timeout: 20000 });
+    await page.getByLabel('Foto 1 · tampil pertama').fill('Carport rumah');
+    for (let i = 0; i < FOTO_TAMBAHAN.length; i++) {
+      await page.getByLabel(`Foto ${i + 2}`, { exact: true }).fill(FOTO_TAMBAHAN[i].keterangan);
+    }
+
+    // Lihat hasil: foto besar bisa dibuka, dan Escape cuma menutup foto besar, bukan lembarnya.
+    await page.getByRole('button', { name: 'Lihat hasil' }).click();
+    const lembar = page.getByRole('dialog', { name: 'Begini tampilannya di website' });
+    await lembar.getByRole('button', { name: /Perbesar foto 1/ }).click();
+    const besar = page.getByRole('dialog', { name: /ukuran besar/ });
+    await expect(besar).toContainText('1 / 5');
+    await page.keyboard.press('Escape');
+    await expect(besar).toHaveCount(0);
+    await expect(lembar).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(lembar).toHaveCount(0);
+
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Tersimpan. Website sudah pakai data barunya.')).toBeVisible();
+  });
+
+  test('pelanggan membuka foto ke-3 dari 5, menggeser, lalu kartu ikut ke foto terakhir dilihat', async ({ browser }) => {
+    const pelanggan = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const page = await pelanggan.newPage();
+    const galat: string[] = [];
+    page.on('pageerror', (e) => galat.push(e.message));
+    await page.goto('/');
+
+    const kartu = page.locator('#layanan > div > div.grid > div').first();
+    await expect(kartu.locator('ul img')).toHaveCount(5);
+    await expect(kartu).toContainText('Carport rumah · 1 / 5');
+
+    // Geser galeri kartu ke foto ke-3, lalu ketuk foto itu.
+    await kartu.getByRole('button', { name: 'Foto berikutnya' }).click();
+    await kartu.getByRole('button', { name: 'Foto berikutnya' }).click();
+    await expect(kartu).toContainText('Tampak samping · 3 / 5');
+    await kartu.getByRole('button', { name: /Perbesar foto 3/ }).click();
+
+    const besar = page.getByRole('dialog', { name: /ukuran besar/ });
+    await expect(besar).toContainText('3 / 5');
+    await expect(besar).toContainText('Tampak samping');
+    // Foto yang tampil benar-benar foto ke-3 (ada di layar), bukan foto pertama.
+    await expect(besar.getByRole('img', { name: 'Tampak samping' })).toBeInViewport();
+
+    // Tombol, panah keyboard, dan geser layar.
+    await besar.getByRole('button', { name: 'Foto berikutnya' }).click();
+    await expect(besar).toContainText('4 / 5');
+    await page.keyboard.press('ArrowRight');
+    await expect(besar).toContainText('5 / 5');
+    await expect(besar).toContainText('Malam hari');
+    await expect(besar.getByRole('button', { name: 'Foto berikutnya' })).toBeDisabled();
+    await page.keyboard.press('ArrowRight');
+    await expect(besar).toContainText('5 / 5');
+
+    await besar.locator('ul').evaluate((ul) => ul.scrollTo({ left: 0, behavior: 'auto' }));
+    await expect(besar).toContainText('1 / 5');
+    await expect(besar.getByRole('button', { name: 'Foto sebelumnya' })).toBeDisabled();
+    await page.keyboard.press('ArrowLeft');
+    await expect(besar).toContainText('1 / 5');
+
+    await besar.locator('ul').evaluate((ul) => ul.scrollTo({ left: ul.clientWidth * 3, behavior: 'auto' }));
+    await expect(besar).toContainText('4 / 5');
+    await expect(besar).toContainText('Rangka sebelum atap');
+
+    // Tombol di lembar besar tetap 44 px buat jempol.
+    for (const nama of ['Tutup', 'Foto sebelumnya', 'Foto berikutnya']) {
+      const kotak = await besar.getByRole('button', { name: nama }).boundingBox();
+      expect(kotak!.height).toBeGreaterThanOrEqual(44);
+      expect(kotak!.width).toBeGreaterThanOrEqual(44);
+    }
+
+    // Tutup: kartu ikut ke foto ke-4, fokus balik ke foto itu, halaman bisa di-scroll lagi.
+    await besar.getByRole('button', { name: 'Tutup' }).click();
+    await expect(besar).toHaveCount(0);
+    await expect(kartu).toContainText('Rangka sebelum atap · 4 / 5');
+    await expect(kartu.getByRole('button', { name: /Perbesar foto 4/ })).toBeFocused();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe('');
+
+    // Buka lagi dari foto ke-4: langsung di 4, tanpa sisa dari bukaan sebelumnya.
+    await kartu.getByRole('button', { name: /Perbesar foto 4/ }).click();
+    await expect(page.getByRole('dialog', { name: /ukuran besar/ })).toContainText('4 / 5');
+    await page.keyboard.press('Escape');
+
+    expect(galat).toEqual([]);
     await pelanggan.close();
   });
 

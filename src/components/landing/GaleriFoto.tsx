@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { FotoLayananSchema } from '@/types/domain';
 import { FotoBesar } from './FotoBesar';
+import { useGeserFoto } from './useGeserFoto';
 
 interface GaleriFotoProps {
   fotos: FotoLayananSchema[];
@@ -13,18 +14,9 @@ const kelasTombol =
   'inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-kertas-garis bg-white hover:bg-kertas-dalam text-navy font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
 
 export function GaleriFoto({ fotos, judul }: GaleriFotoProps) {
-  const jalurRef = useRef<HTMLUListElement>(null);
-  const [aktif, setAktif] = useState(0);
+  const { jalurRef, aktif, keFoto, geser, saatGeser } = useGeserFoto(fotos.length);
   const [besar, setBesar] = useState<number | null>(null);
   const banyak = fotos.length > 1;
-
-  const keFoto = (i: number, instan = false) => {
-    const jalur = jalurRef.current;
-    if (!jalur) return;
-    // Gerak halus cuma buat menunjukkan arah pindahnya; dimatikan kalau pengguna minta gerak dikurangi.
-    const kurangiGerak = instan || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    jalur.scrollTo({ left: i * jalur.clientWidth, behavior: kurangiGerak ? 'auto' : 'smooth' });
-  };
 
   const tutupBesar = (terakhir: number) => {
     setBesar(null);
@@ -35,10 +27,6 @@ export function GaleriFoto({ fotos, judul }: GaleriFotoProps) {
     });
   };
 
-  const saatGeser = () => {
-    const jalur = jalurRef.current;
-    if (jalur) setAktif(Math.round(jalur.scrollLeft / jalur.clientWidth));
-  };
 
   return (
     <div className="space-y-2">
@@ -82,7 +70,7 @@ export function GaleriFoto({ fotos, judul }: GaleriFotoProps) {
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            onClick={() => keFoto(aktif - 1)}
+            onClick={() => geser(-1)}
             disabled={aktif === 0}
             aria-label="Foto sebelumnya"
             className={kelasTombol}
@@ -95,7 +83,7 @@ export function GaleriFoto({ fotos, judul }: GaleriFotoProps) {
           </p>
           <button
             type="button"
-            onClick={() => keFoto(aktif + 1)}
+            onClick={() => geser(1)}
             disabled={aktif === fotos.length - 1}
             aria-label="Foto berikutnya"
             className={kelasTombol}
