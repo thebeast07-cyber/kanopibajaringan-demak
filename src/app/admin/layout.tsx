@@ -40,8 +40,9 @@ function BannerSimpan({ status }: { status: StatusSimpan }) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const halamanMasuk = pathname === '/admin/masuk';
-  // Halaman ubah satu layanan punya bar Simpan sendiri di bawah, jadi tab menu disembunyikan.
-  const halamanUbah = /^\/admin\/layanan\/[^/]+$/.test(pathname);
+  // Halaman ubah satu layanan atau satu proyek galeri punya bar Simpan sendiri di bawah, jadi
+  // tab menu disembunyikan.
+  const halamanUbah = /^\/admin\/(layanan|galeri)\/[^/]+$/.test(pathname);
   const [dataSiap, setDataSiap] = useState(false);
   const [galatMuat, setGalatMuat] = useState('');
   const status = useSyncExternalStore(langgananStatusSimpan, ambilStatusSimpan, ambilStatusSimpan);

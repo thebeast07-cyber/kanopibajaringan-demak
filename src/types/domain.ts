@@ -223,6 +223,8 @@ export interface BahanStandarSchema {
 export interface FotoLayananSchema {
   url: string;
   keterangan?: string; // dipakai juga sebagai teks alternatif gambar
+  /** Versi JPEG 1200x630 untuk preview link di WhatsApp. Hanya dibuat untuk foto galeri. */
+  og?: string;
 }
 
 export interface ServiceSchema {
@@ -318,23 +320,24 @@ export interface CalculationResult {
   snapshot: EstimateSnapshot;
 }
 
-export interface LocationSchema {
-  city: string;
-  district: string;
-  province: string;
-}
-
-export interface PortfolioSchema {
+/** Satu proyek di galeri: foto hasil pemasangan asli, tanpa harga. */
+export interface ProyekGaleriSchema {
   id: string;
-  slug: string;
-  title: string;
-  serviceId: string;
-  location: LocationSchema;
-  completionYear: number;
-  thumbnailUrl: string;
-  galleryImages: string[];
-  specsSummary: string;
-  testimonialQuote?: string;
+  /** Nama yang tampil di galeri dan di pesan WhatsApp, mis. "Kanopi Alderon". */
+  judul: string;
+  /** Layanan terkait, kalau ada. */
+  serviceId?: string;
+  /** Tempat pemasangan, mis. "Sayung, Demak". */
+  lokasi: string;
+  /** Bulan pemasangan, format YYYY-MM. Kosong kalau pemilik tidak mengisi. */
+  dipasang?: string;
+  /** Ukuran bebas, mis. "5 m × 6 m". */
+  ukuran?: string;
+  keterangan?: string;
+  fotos: FotoLayananSchema[];
+  tampil: boolean;
+  /** Waktu dibuat (ISO), buat urutan kalau bulan pemasangannya sama. */
+  dibuat: string;
 }
 
 export interface FaqSchema {
@@ -369,7 +372,8 @@ export interface CompleteDataset {
   finishings: FinishingSchema[];
   addOns: AddOnSchema[];
   siteConditions: SiteConditionSchema[];
-  portfolios: PortfolioSchema[];
+  /** Belum ada di data lama yang tersimpan sebelum galeri dibuat. */
+  galeri?: ProyekGaleriSchema[];
   faqs: FaqSchema[];
   packages?: PackageSchema[];
   calculationConfigs?: ServiceCalculationConfig[];

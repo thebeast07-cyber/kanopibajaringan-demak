@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { defaultCmsRepository } from '../../lib/cms/repository';
 import { kolomKosong } from '../../lib/cms/isiDataLayanan';
-import { ServiceSchema } from '../../types/domain';
+import { ProyekGaleriSchema, ServiceSchema } from '../../types/domain';
+import { proyekTampil } from '../../lib/cms/galeri';
 import { Asal, LABEL_ASAL, LABEL_SUMBER_WA, Ringkasan, SumberWa } from '../../lib/statistik/kejadian';
 import { LINK_PROMOSI, linkPromosi } from '../../lib/linkPromosi';
 import { TombolSalin } from '../../components/admin/TombolSalin';
@@ -25,14 +26,22 @@ function kalimatBanding(sekarang: number, sebelumnya: number, hari: number): str
   return `${sekarang > sebelumnya ? 'Naik' : 'Turun'} dari ${sebelumnya} di ${periode}.`;
 }
 
-function YangKosong({ layanan }: { layanan: ServiceSchema[] }) {
+function YangKosong({ layanan, galeri }: { layanan: ServiceSchema[]; galeri: ProyekGaleriSchema[] }) {
   const aktif = layanan.filter((s) => s.status === 'active');
+  const jumlahLayanan = (jumlah: number, teks: string, href: string) => ({ jumlah, teks: `${jumlah} layanan ${teks}`, aksi: 'Isi', href });
   const baris = [
-    { jumlah: aktif.filter((s) => kolomKosong(s).includes('harga')).length, teks: 'belum ada harga', href: '/admin/layanan?saring=belum-lengkap' },
-    { jumlah: aktif.filter((s) => kolomKosong(s).includes('bahan')).length, teks: 'belum ada bahan standar', href: '/admin/layanan?saring=belum-lengkap' },
+    jumlahLayanan(aktif.filter((s) => kolomKosong(s).includes('harga')).length, 'belum ada harga', '/admin/layanan?saring=belum-lengkap'),
+    jumlahLayanan(aktif.filter((s) => kolomKosong(s).includes('bahan')).length, 'belum ada bahan standar', '/admin/layanan?saring=belum-lengkap'),
     // Foto cuma tampil di kartu besar, jadi yang dihitung kartu besar saja. Foto tidak masuk
     // syarat "lengkap", jadi link-nya ke semua layanan, bukan saringan belum lengkap.
-    { jumlah: aktif.filter((s) => s.featured && !s.fotos?.length).length, teks: 'kartu besar belum ada foto', href: '/admin/layanan' },
+    jumlahLayanan(aktif.filter((s) => s.featured && !s.fotos?.length).length, 'kartu besar belum ada foto', '/admin/layanan'),
+    // Selama galeri kosong, bagiannya tidak tampil di website sama sekali.
+    {
+      jumlah: proyekTampil(galeri).length === 0 ? 1 : 0,
+      teks: 'Galeri belum ada foto proyek',
+      aksi: 'Tambah',
+      href: '/admin/galeri/baru',
+    },
   ].filter((b) => b.jumlah > 0);
 
   return (
@@ -41,7 +50,7 @@ function YangKosong({ layanan }: { layanan: ServiceSchema[] }) {
         Yang masih kosong di website
       </h2>
       {baris.length === 0 ? (
-        <p className="py-3 text-[15px] text-tinta">Semua layanan yang tampil sudah lengkap.</p>
+        <p className="py-3 text-[15px] text-tinta">Semua layanan yang tampil sudah lengkap, galeri juga sudah ada isinya.</p>
       ) : (
         <ul className="divide-y divide-kertas-garis">
           {baris.map((b) => (
@@ -50,10 +59,8 @@ function YangKosong({ layanan }: { layanan: ServiceSchema[] }) {
                 href={b.href}
                 className="flex items-center justify-between gap-3 min-h-[52px] text-[15px] text-tinta hover:text-navy"
               >
-                <span>
-                  {b.jumlah} layanan {b.teks}
-                </span>
-                <span className="text-sm font-semibold text-navy">Isi</span>
+                <span>{b.teks}</span>
+                <span className="text-sm font-semibold text-navy">{b.aksi}</span>
               </Link>
             </li>
           ))}
@@ -80,7 +87,15 @@ function BarisPeringkat({ label, jumlah, maks, satuan }: { label: string; jumlah
   );
 }
 
-function Statistik({ data, layanan }: { data: Extract<DataStatistik, { keadaan: 'ada' }>; layanan: ServiceSchema[] }) {
+function Statistik({
+  data,
+  layanan,
+  galeri,
+}: {
+  data: Extract<DataStatistik, { keadaan: 'ada' }>;
+  layanan: ServiceSchema[];
+  galeri: ProyekGaleriSchema[];
+}) {
   const { sekarang: s, sebelumnya, hari } = data;
   const namaLayanan = (id: string) => layanan.find((l) => l.id === id)?.title ?? 'Layanan yang sudah dihapus';
   const pergi = Math.max(0, s.kunjungan - s.kunjunganBeraksi);
@@ -103,7 +118,7 @@ function Statistik({ data, layanan }: { data: Extract<DataStatistik, { keadaan: 
         </p>
       </section>
 
-      <YangKosong layanan={layanan} />
+      <YangKosong layanan={layanan} galeri={galeri} />
 
       <section className={`${kelasKartu} p-4 space-y-3.5`} aria-labelledby="judul-alur">
         <h2 id="judul-alur" className="text-base font-bold">
@@ -207,9 +222,14 @@ export default function BerandaAdmin() {
   const [hari, setHari] = useState<7 | 30>(7);
   const [data, setData] = useState<DataStatistik>({ keadaan: 'memuat' });
   const [layanan, setLayanan] = useState<ServiceSchema[]>([]);
+  const [galeri, setGaleri] = useState<ProyekGaleriSchema[]>([]);
 
   useEffect(() => {
-    const muat = () => setLayanan(defaultCmsRepository.getWorkingDataset().services);
+    const muat = () => {
+      const data = defaultCmsRepository.getWorkingDataset();
+      setLayanan(data.services);
+      setGaleri(data.galeri ?? []);
+    };
     muat();
     return defaultCmsRepository.subscribe(muat);
   }, []);
@@ -266,7 +286,7 @@ export default function BerandaAdmin() {
             <p className="font-semibold">{data.pesan}</p>
             <p className="text-sm text-tinta-lembut">Data layanan tetap aman, ini cuma statistiknya.</p>
           </div>
-          <YangKosong layanan={layanan} />
+          <YangKosong layanan={layanan} galeri={galeri} />
         </>
       )}
 
@@ -276,7 +296,7 @@ export default function BerandaAdmin() {
             judul="Penghitung kunjungan belum dipasang."
             isi="Sambungkan database Upstash Redis ke project ini di Vercel, lalu deploy ulang. Selama belum dipasang, website tetap jalan normal."
           />
-          <YangKosong layanan={layanan} />
+          <YangKosong layanan={layanan} galeri={galeri} />
         </>
       )}
 
@@ -286,11 +306,11 @@ export default function BerandaAdmin() {
             judul="Belum ada kunjungan tercatat."
             isi="Angkanya muncul di sini begitu ada yang buka website. Biar ketahuan orang datang dari mana, pasang link khusus di bio Instagram dan profil Google Maps."
           />
-          <YangKosong layanan={layanan} />
+          <YangKosong layanan={layanan} galeri={galeri} />
         </>
       )}
 
-      {data.keadaan === 'ada' && !kosong && <Statistik data={data} layanan={layanan} />}
+      {data.keadaan === 'ada' && !kosong && <Statistik data={data} layanan={layanan} galeri={galeri} />}
     </div>
   );
 }

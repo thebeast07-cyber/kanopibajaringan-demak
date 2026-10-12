@@ -288,6 +288,131 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await pelanggan.close();
   });
 
+  test('pemilik menambah proyek galeri, foto preview WhatsApp ikut dibuat', async ({ page }) => {
+    await page.goto('/admin/galeri');
+    await expect(page.getByText('Belum ada proyek di galeri.')).toBeVisible();
+    await page.getByRole('link', { name: 'Tambah proyek' }).click();
+    await expect(page).toHaveURL(/\/admin\/galeri\/baru$/);
+
+    // Pilih layanan: nama produk ikut terisi, lalu dirapikan pemilik.
+    await page.getByLabel('Jenis layanan').selectOption('svc-kanopi-alderon');
+    await expect(page.getByLabel('Nama produk')).toHaveValue('Kanopi Alderon Twinwall / RS');
+    await page.getByLabel('Nama produk').fill('Kanopi Alderon Twinwall');
+
+    // Tanpa foto dan lokasi, Simpan menolak dengan kalimat yang jelas.
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Unggah minimal satu foto. Galeri isinya foto.')).toBeVisible();
+    await expect(page.getByText('Isi lokasi pemasangan, misalnya Sayung, Demak.')).toBeVisible();
+
+    await page
+      .locator('input[type=file]')
+      .setInputFiles(FOTO_TAMBAHAN.slice(0, 2).map((f) => ({ name: f.name, mimeType: 'image/png', buffer: f.buffer })));
+    await expect(page.getByText('2 dari 10 foto', { exact: false })).toBeVisible({ timeout: 20_000 });
+    await page.getByLabel('Lokasi pemasangan').fill('Sayung, Demak');
+    await page.getByLabel(/Bulan dipasang/).fill('2026-05');
+    await page.getByLabel(/^Ukuran/).fill('6 × 4 m');
+    await page.getByLabel(/^Keterangan/).fill('Atap twinwall bening, rangka hollow dicat hitam.');
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Tersimpan. Website sudah pakai data barunya.')).toBeVisible();
+    await expect(page).toHaveURL(/\/admin\/galeri\/gal-[a-z0-9]+$/);
+    await expect(page.getByText('Link halaman proyek')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Hapus proyek' })).toBeVisible();
+
+    // Tiap foto punya versi JPEG 1200×630 kecil buat preview link WhatsApp.
+    const { state } = await (await page.request.get('/api/admin/state')).json();
+    const galeri = state.publishedDataset.galeri;
+    expect(galeri).toHaveLength(1);
+    expect(galeri[0].fotos).toHaveLength(2);
+    for (const foto of galeri[0].fotos) {
+      expect(foto.og).toBeTruthy();
+      const og = await page.request.get(foto.og);
+      expect(og.headers()['content-type']).toBe('image/jpeg');
+      expect((await og.body()).length).toBeLessThanOrEqual(280 * 1024);
+    }
+  });
+
+  test('pelanggan lihat galeri, pesan WhatsApp tanpa harga dan membawa link fotonya', async ({ browser }) => {
+    const pelanggan = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const page = await pelanggan.newPage();
+    await page.goto('/');
+
+    // Di HP menu atas tersembunyi di balik tombol menu.
+    await page.getByRole('button', { name: 'Buka menu' }).click();
+    await expect(page.locator('header').getByRole('link', { name: 'Galeri' })).toHaveAttribute('href', '/#galeri');
+    await page.getByRole('button', { name: 'Tutup menu' }).click();
+    const galeri = page.locator('#galeri');
+    await expect(galeri.getByRole('heading', { name: 'Hasil pemasangan kami' })).toBeVisible();
+    const kartu = galeri.locator('article').first();
+    await expect(kartu).toContainText('Kanopi Alderon Twinwall');
+    await expect(kartu).toContainText('Sayung, Demak · Mei 2026');
+    await expect(kartu).toContainText('2 foto');
+    await expect(kartu).not.toContainText('Rp');
+
+    const hrefWa = (await kartu.getByRole('link', { name: 'Tanya lewat WhatsApp soal Kanopi Alderon Twinwall' }).getAttribute('href')) || '';
+    const pesan = decodeURIComponent(new URL(hrefWa).searchParams.get('text') || '');
+    expect(hrefWa).toMatch(/^https:\/\/wa\.me\/6282228132455\?/);
+    expect(pesan).toContain('foto Kanopi Alderon Twinwall di Sayung, Demak dari galeri website');
+    expect(pesan).not.toMatch(/Rp|\d{3}\.\d{3}/);
+    const linkProyek = pesan.match(/http:\/\/[^\s]+\/galeri\/gal-[a-z0-9]+/)?.[0];
+    expect(linkProyek).toBeTruthy();
+
+    // Halaman proyek: link yang ikut di pesan, preview-nya foto pertama versi JPEG.
+    await kartu.getByRole('link', { name: 'Kanopi Alderon Twinwall', exact: true }).click();
+    await expect(page).toHaveURL(new URL(linkProyek!).pathname);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kanopi Alderon Twinwall');
+    await expect(page.locator('dl')).toContainText('Sayung, Demak');
+    await expect(page.locator('dl')).toContainText('Mei 2026');
+    await expect(page.locator('dl')).toContainText('6 × 4 m');
+    await expect(page.locator('dl')).toContainText('Kanopi Alderon Twinwall / RS');
+    await expect(page.getByText('Atap twinwall bening, rangka hollow dicat hitam.')).toBeVisible();
+    await expect(page.locator('main ul img')).toHaveCount(2);
+
+    const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
+    // URL penuh. Di mode lokal Next dev menulis host-nya localhost; di Vercel fotonya URL Blob.
+    expect(ogImage).toMatch(/^http:\/\/[^/]+\/api\/foto\/.+\.jpg$/);
+    await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '1200');
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /Kanopi Alderon Twinwall di Sayung, Demak/);
+    expect((await page.request.get(new URL(ogImage!).pathname)).headers()['content-type']).toBe('image/jpeg');
+
+    const hrefDetail = (await page.getByRole('link', { name: 'Tanya lewat WhatsApp', exact: true }).getAttribute('href')) || '';
+    expect(decodeURIComponent(new URL(hrefDetail).searchParams.get('text') || '')).toContain(linkProyek!);
+
+    // Tautan menu tetap jalan dari halaman galeri.
+    await expect(page.locator('header a', { hasText: 'Cek harga' }).first()).toHaveAttribute('href', '/#kalkulator');
+    await pelanggan.close();
+  });
+
+  test('proyek yang disembunyikan atau dihapus hilang dari website', async ({ page, browser }) => {
+    await page.goto('/admin/galeri');
+    await page.getByRole('link', { name: /Kanopi Alderon Twinwall/ }).click();
+    const urlAdmin = page.url();
+    const id = urlAdmin.split('/').pop()!;
+
+    await page.getByRole('switch', { name: /Tampilkan di website/ }).click();
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Tersimpan. Website sudah pakai data barunya.')).toBeVisible();
+
+    const pelanggan = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const tamu = await pelanggan.newPage();
+    expect((await tamu.goto(`/galeri/${id}`))!.status()).toBe(404);
+    await tamu.goto('/');
+    await expect(tamu.locator('#galeri')).toHaveCount(0);
+    await expect(tamu.locator('header a[href="/#galeri"]')).toHaveCount(0);
+
+    const { state: sebelum } = await (await page.request.get('/api/admin/state')).json();
+    const urlFoto: string[] = sebelum.publishedDataset.galeri[0].fotos.flatMap((f: { url: string; og: string }) => [f.url, f.og]);
+
+    page.once('dialog', (d) => d.accept());
+    await page.getByRole('button', { name: 'Hapus proyek ini' }).click();
+    await expect(page).toHaveURL(/\/admin\/galeri$/);
+    await expect(page.getByText('Belum ada proyek di galeri.')).toBeVisible();
+    // Berkas fotonya ikut dibersihkan dari penyimpanan.
+    await expect
+      .poll(async () => (await Promise.all(urlFoto.map((u) => page.request.get(u).then((r) => r.status())))).every((s) => s === 404))
+      .toBe(true);
+    await pelanggan.close();
+  });
+
   test('pencatat kunjungan menerima kiriman sah dan menolak sisanya', async ({ request }) => {
     expect((await request.post('/api/jejak', { data: { jenis: 'kunjungan', asal: 'instagram' } })).status()).toBe(204);
     expect((await request.post('/api/jejak', { data: { jenis: 'klik_wa', sumber: 'palsu' } })).status()).toBe(400);

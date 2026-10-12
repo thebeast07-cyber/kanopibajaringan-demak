@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';

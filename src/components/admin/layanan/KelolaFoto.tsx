@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { FotoLayananSchema } from '../../../types/domain';
 import { BATAS_FOTO, geserFoto } from '../../../lib/cms/isiDataLayanan';
-import { kecilkanFoto } from '../../../lib/cms/kecilkanFoto';
+import { buatPratinjauOg, kecilkanFoto } from '../../../lib/cms/kecilkanFoto';
 import { kelasBantuan, kelasTombolKedua } from '../gaya';
 
 const kelasTombolKecil =
@@ -14,10 +14,12 @@ interface KelolaFotoProps {
   idDasar: string;
   fotos: FotoLayananSchema[];
   ubahFotos: (fn: (lama: FotoLayananSchema[]) => FotoLayananSchema[]) => void;
+  /** Foto proyek galeri: ikut buat versi JPEG kecil untuk preview link di WhatsApp. */
+  galeri?: boolean;
 }
 
-async function unggah(file: File, serviceId: string): Promise<string> {
-  const kecil = await kecilkanFoto(file);
+async function unggah(file: File, serviceId: string, blob?: Blob): Promise<string> {
+  const kecil = blob ?? (await kecilkanFoto(file));
   const data = new FormData();
   data.append('foto', kecil, file.name);
   data.append('serviceId', serviceId);
@@ -27,7 +29,7 @@ async function unggah(file: File, serviceId: string): Promise<string> {
   return isi.url;
 }
 
-export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoProps) {
+export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos, galeri = false }: KelolaFotoProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [kemajuan, setKemajuan] = useState('');
   const [galat, setGalat] = useState<string[]>([]);
@@ -41,7 +43,7 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
     const dipakai = semua.slice(0, Math.max(0, sisa));
     const pesan: string[] = [];
     if (dipakai.length < semua.length) {
-      pesan.push(`Maksimal ${BATAS_FOTO} foto per layanan, jadi ${semua.length - dipakai.length} foto nggak ikut diunggah.`);
+      pesan.push(`Maksimal ${BATAS_FOTO} foto per ${galeri ? 'proyek' : 'layanan'}, jadi ${semua.length - dipakai.length} foto nggak ikut diunggah.`);
     }
 
     // Satu per satu, biar HP dengan koneksi pelan nggak kehabisan memori atau timeout.
@@ -49,7 +51,8 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
       setKemajuan(`Mengunggah ${i + 1} dari ${dipakai.length} foto...`);
       try {
         const url = await unggah(dipakai[i], serviceId);
-        ubahFotos((lama) => [...lama, { url }]);
+        const og = galeri ? await unggah(dipakai[i], serviceId, await buatPratinjauOg(dipakai[i])) : undefined;
+        ubahFotos((lama) => [...lama, og ? { url, og } : { url }]);
       } catch (err) {
         pesan.push((err as Error).message);
       }
@@ -77,7 +80,11 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
       </p>
 
       {fotos.length === 0 ? (
-        <p className="text-[15px] text-tinta">Belum ada foto. Selama kosong, kartu layanan tampil tanpa foto.</p>
+        <p className="text-[15px] text-tinta">
+          {galeri
+            ? 'Belum ada foto. Proyek tanpa foto nggak bisa disimpan.'
+            : 'Belum ada foto. Selama kosong, kartu layanan tampil tanpa foto.'}
+        </p>
       ) : (
         <ol className="space-y-3" aria-describedby={`${idDasar}-bantuan`}>
           {fotos.map((foto, i) => (

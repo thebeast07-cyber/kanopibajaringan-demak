@@ -42,7 +42,7 @@ kosongkan `BLOB_READ_WRITE_TOKEN`. Data tersimpan di folder `.data/` (tidak ikut
 
 ## Halaman admin
 
-Admin dibuat untuk HP. Tiga tab di bawah layar:
+Admin dibuat untuk HP. Empat tab di bawah layar:
 
 - **Beranda** (`/admin`): klik ke WhatsApp 7 atau 30 hari terakhir dibanding periode sebelumnya,
   alur kunjungan → isi ukuran → klik WhatsApp, asal pengunjung, layanan yang paling sering ditanya,
@@ -50,6 +50,13 @@ Admin dibuat untuk HP. Tiga tab di bawah layar:
 - **Layanan** (`/admin/layanan`): daftar dengan saringan "Belum lengkap". Tiap layanan punya halaman
   ubah sendiri (`/admin/layanan/<id>`) dengan bagian Harga, Bahan, Foto, Info, Tampilan, tombol
   Simpan yang nempel di bawah, dan "Lihat hasil" yang menampilkan kartu persis seperti di website.
+- **Galeri** (`/admin/galeri`): foto hasil pemasangan asli, tanpa harga. Tiap proyek berisi foto,
+  nama produk, lokasi, bulan dipasang, ukuran, dan keterangan. Waktu foto diunggah, browser juga
+  membuat versi JPEG 1200×630 (maksimal 280 KB) khusus buat preview link di WhatsApp. Di website,
+  galeri tampil di halaman depan (`#galeri`, maksimal 6), di `/galeri`, dan tiap proyek punya
+  halaman sendiri `/galeri/<id>`. Tombol WhatsApp-nya mengirim nama produk plus link halaman
+  proyek, jadi foto yang diklik pelanggan muncul sebagai preview di chat. Selama belum ada proyek
+  yang tampil, bagian galeri dan menu Galeri tidak muncul.
 - **Pengaturan** (`/admin/pengaturan`): nomor WhatsApp, kota yang dilayani, nama usaha, tagline,
   catatan soal harga, dan link promosi siap salin.
 

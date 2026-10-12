@@ -13,6 +13,8 @@ export const SUMBER_WA = [
   'kalkulator',
   'ajakan-bawah',
   'footer',
+  'galeri',
+  'galeri-detail',
 ] as const;
 export type SumberWa = (typeof SUMBER_WA)[number];
 
@@ -116,7 +118,7 @@ export interface Peringkat {
 }
 
 export interface Ringkasan {
-  /** Kunjungan = sesi browser yang membuka halaman depan, bukan orang unik. */
+  /** Kunjungan = sesi browser yang membuka halaman depan atau galeri, bukan orang unik. */
   kunjungan: number;
   isiUkuran: number;
   /** Kunjungan yang klik WhatsApp minimal sekali. */
@@ -204,4 +206,6 @@ export const LABEL_SUMBER_WA: Record<SumberWa, string> = {
   kalkulator: 'Kalkulator',
   'ajakan-bawah': 'Ajakan di bawah',
   footer: 'Footer',
+  galeri: 'Galeri proyek',
+  'galeri-detail': 'Halaman foto proyek',
 };

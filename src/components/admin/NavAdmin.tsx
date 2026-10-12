@@ -28,6 +28,18 @@ const TAB = [
     ),
   },
   {
+    href: '/admin/galeri',
+    label: 'Galeri',
+    aktif: (p: string) => p.startsWith('/admin/galeri'),
+    ikon: (
+      <>
+        <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+        <path d="M3.5 16 L9 11 L13 15 L16 12.5 L20.5 16.5" />
+        <circle cx="15.5" cy="8.5" r="1.5" />
+      </>
+    ),
+  },
+  {
     href: '/admin/pengaturan',
     label: 'Pengaturan',
     aktif: (p: string) => p.startsWith('/admin/pengaturan'),
@@ -49,7 +61,7 @@ export function NavAdmin() {
       aria-label="Menu admin"
       className="fixed inset-x-0 bottom-0 z-30 bg-white border-t border-kertas-garis pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="max-w-xl mx-auto grid grid-cols-3">
+      <ul className="max-w-xl mx-auto grid grid-cols-4">
         {TAB.map((t) => {
           const aktif = t.aktif(pathname);
           return (

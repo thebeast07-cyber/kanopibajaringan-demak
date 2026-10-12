@@ -9,18 +9,24 @@ import { LogoMendatar } from '@/components/brand/Logo';
 
 interface NavbarProps {
   config: BusinessConfigSchema;
+  /** Tautan Galeri cuma muncul kalau ada proyek yang tampil. */
+  adaGaleri?: boolean;
 }
 
 // Hanya section yang benar-benar ada di halaman. Jangan tambah tautan ke
-// section yang belum dibangun (R-24).
-const NAV_LINKS = [
-  { href: '#kalkulator', label: 'Cek harga' },
-  { href: '#layanan', label: 'Layanan' },
-  { href: '#cara-kerja', label: 'Cara kerja' },
-  { href: '#faq', label: 'Tanya jawab' },
-];
+// section yang belum dibangun (R-24). Diawali "/" supaya tetap jalan dari halaman galeri.
+function tautanNav(adaGaleri: boolean) {
+  return [
+    { href: '/#kalkulator', label: 'Cek harga' },
+    { href: '/#layanan', label: 'Layanan' },
+    ...(adaGaleri ? [{ href: '/#galeri', label: 'Galeri' }] : []),
+    { href: '/#cara-kerja', label: 'Cara kerja' },
+    { href: '/#faq', label: 'Tanya jawab' },
+  ];
+}
 
-export function Navbar({ config }: NavbarProps) {
+export function Navbar({ config, adaGaleri = false }: NavbarProps) {
+  const tautan = tautanNav(adaGaleri);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const tombolMenuRef = useRef<HTMLButtonElement>(null);
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
@@ -48,13 +54,13 @@ export function Navbar({ config }: NavbarProps) {
 
       <header className="sticky top-0 z-50 bg-kertas/95 backdrop-blur-sm border-b border-kertas-garis text-tinta">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-          <a href="#" className="shrink-0 flex flex-col justify-center gap-1 min-h-[44px]">
+          <a href="/" className="shrink-0 flex flex-col justify-center gap-1 min-h-[44px]">
             <LogoMendatar className="h-8 sm:h-9 w-auto" />
             <span className="text-xs text-tinta-lembut hidden sm:block">{config.tagline}</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-tinta-lembut">
-            {NAV_LINKS.map((link) => (
+            {tautan.map((link) => (
               <a key={link.href} href={link.href} className="inline-flex items-center min-h-[44px] hover:text-navy transition-colors">
                 {link.label}
               </a>
@@ -86,7 +92,7 @@ export function Navbar({ config }: NavbarProps) {
 
         {mobileMenuOpen && (
           <div className="md:hidden bg-kertas border-b border-kertas-garis px-4 pb-5">
-            {NAV_LINKS.map((link) => (
+            {tautan.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
