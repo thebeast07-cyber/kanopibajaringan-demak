@@ -20,7 +20,7 @@ function satuan(svc: ServiceSchema): string {
 }
 
 const kelasLinkWa =
-  'inline-flex items-center min-h-[44px] text-hutan font-semibold underline underline-offset-4 decoration-hutan-muda hover:decoration-2';
+  'inline-flex items-center min-h-[44px] text-navy font-semibold underline underline-offset-4 decoration-navy-muda hover:decoration-2';
 
 export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectService }: ServicesSectionProps) {
   const utama = services.filter((s) => s.featured);
@@ -35,7 +35,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
     <section id="layanan" className="py-16 sm:py-20 lg:py-24 bg-white text-tinta border-b border-kertas-garis">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="max-w-2xl space-y-3">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-hutan tracking-tight">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy tracking-tight">
             Yang bisa kami kerjakan
           </h2>
           {/* Klaim "bahan standar SNI" dihapus dari kalimat di bawah: pemilik belum punya
@@ -65,7 +65,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                       <GaleriFoto fotos={svc.fotos} judul={svc.title} />
                     </div>
                   )}
-                  <h3 className="font-heading text-xl font-bold text-hutan">{svc.title}</h3>
+                  <h3 className="font-heading text-xl font-bold text-navy">{svc.title}</h3>
                   <p className="text-sm text-tinta-lembut leading-relaxed">{svc.shortDescription}</p>
 
                   {/* Bagian bahan baru muncul kalau pemilik sudah mengisinya, tidak ada isian contoh. */}
@@ -86,7 +86,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
 
                 <div>
                   {tarif ? (
-                    <p className="font-heading text-3xl font-bold text-amber">
+                    <p className="font-heading text-3xl font-bold text-oranye-gelap">
                       {formatRupiah(tarif.rate)}
                       <span className="text-base font-normal text-tinta-lembut"> / {satuan(svc)}</span>
                     </p>
@@ -124,7 +124,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                   <a
                     href="#kalkulator"
                     onClick={() => onSelectService && onSelectService(svc.id)}
-                    className="flex items-center justify-center min-h-[48px] mt-5 bg-hutan hover:bg-hutan-muda text-white font-semibold rounded-xl transition-colors"
+                    className="flex items-center justify-center min-h-[48px] mt-5 bg-navy hover:bg-navy-muda text-white font-semibold rounded-xl transition-colors"
                   >
                     Hitung ukuran kamu
                   </a>
@@ -138,7 +138,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
             lebih rendah, jadi tampilannya ikut lebih ringan (R-14). */}
         {lainnya.length > 0 && (
           <div className="border-t border-kertas-garis pt-8">
-            <h3 className="font-heading text-lg font-bold text-hutan mb-4">Layanan lain</h3>
+            <h3 className="font-heading text-lg font-bold text-navy mb-4">Layanan lain</h3>
             <ul className="divide-y divide-kertas-garis">
               {lainnya.map((svc) => {
                 const tarif = getTarifBorongan(svc);
@@ -160,10 +160,8 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 shrink-0">
-                      {/* text-xl, bukan text-lg: #D97706 cuma lolos AA di ambang teks
-                          besar (18.66px ke atas + tebal). 18px persis masih gagal. */}
                       {tarif ? (
-                        <span className="font-heading text-xl font-bold text-amber">
+                        <span className="font-heading text-xl font-bold text-oranye-gelap">
                           {formatRupiah(tarif.rate)}
                           <span className="text-sm font-normal text-tinta-lembut"> / {satuan(svc)}</span>
                         </span>
@@ -181,7 +179,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                       <a
                         href="#kalkulator"
                         onClick={() => onSelectService && onSelectService(svc.id)}
-                        className="flex items-center justify-center min-h-[44px] px-4 border border-kertas-garis bg-white hover:bg-kertas-dalam text-hutan font-semibold text-sm rounded-lg transition-colors"
+                        className="flex items-center justify-center min-h-[44px] px-4 border border-kertas-garis bg-white hover:bg-kertas-dalam text-navy font-semibold text-sm rounded-lg transition-colors"
                       >
                         Hitung
                       </a>

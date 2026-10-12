@@ -52,12 +52,12 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
         {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
             testimoni palsu. Foto proyek asli sekarang tampil di kartu layanan (/admin/isi-data). */}
 
-        <section className="bg-hutan text-white py-16 sm:py-20">
+        <section className="bg-navy text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold leading-tight">
               {adaHarga ? 'Udah dapat angkanya? Lanjut ngobrol.' : 'Mau tahu harganya? Lanjut ngobrol.'}
             </h2>
-            <p className="text-hutan-kabut leading-relaxed">
+            <p className="text-navy-kabut leading-relaxed">
               {adaHarga
                 ? 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti dan atur jadwal survei.'
                 : 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan hitungannya dan atur jadwal survei.'}{' '}
@@ -69,13 +69,13 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => catatKlikWa('ajakan-bawah')}
-                className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-8 bg-amber-gelap hover:bg-amber-tua text-white font-semibold rounded-xl transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-8 bg-oranye hover:bg-oranye-tua text-navy font-semibold rounded-xl transition-colors"
               >
                 Chat WhatsApp
               </a>
               <a
                 href="#kalkulator"
-                className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-7 bg-hutan-tua hover:bg-hutan-muda text-white font-semibold rounded-xl border border-hutan-muda transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-7 bg-navy-tua hover:bg-navy-muda text-white font-semibold rounded-xl border border-navy-muda transition-colors"
               >
                 {adaHarga ? 'Hitung ulang' : 'Isi ukuran'}
               </a>

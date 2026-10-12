@@ -36,22 +36,22 @@ h1, h2, h3, h4, h5, h6 {
   background: #A8A095;
 }
 
-/* Cincin fokus keyboard. Hijau hutan, bukan hijau WhatsApp. */
+/* Cincin fokus keyboard, warna navy logo. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #1B3B2B;
+  outline: 2px solid #0B2D5B;
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* Di atas permukaan hijau tua, cincin hijau nggak kelihatan. */
-.bg-hutan a:focus-visible,
-.bg-hutan button:focus-visible,
-.bg-hutan-tua a:focus-visible,
-.bg-hutan-tua button:focus-visible {
+/* Di atas permukaan navy, cincin navy nggak kelihatan. */
+.bg-navy a:focus-visible,
+.bg-navy button:focus-visible,
+.bg-navy-tua a:focus-visible,
+.bg-navy-tua button:focus-visible {
   outline-color: #FAF8F5;
 }

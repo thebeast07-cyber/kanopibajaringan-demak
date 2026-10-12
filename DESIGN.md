@@ -57,25 +57,44 @@ berapa) lalu lanjut ke WhatsApp. Apa pun yang menghalangi dua hal itu harus ming
 
 ---
 
-## Palet: "Rumah teduh"
+## Palet: ikut logo
 
-Dua warna inti + satu aksen. Netral (putih, hitam, abu) nggak dihitung.
+Dua warna inti + satu aksen, diambil dari logo 3 Putra pilihan pemilik. Netral (putih, hitam, abu) nggak dihitung.
 
 | Peran | Hex | Dipakai di |
 |---|---|---|
 | **Krem** (latar) | `#FAF8F5` | Latar halaman |
-| **Hijau tua** (inti) | `#1B3B2B` | Teks judul, header, footer, permukaan gelap |
-| **Amber** (aksen) | `#D97706` | **Hanya** angka harga dan tombol WhatsApp |
+| **Navy** (inti) | `#0B2D5B` | Teks judul, header, footer, permukaan gelap |
+| **Oranye** (aksen) | `#FF8A3D` | **Hanya** angka harga dan tombol WhatsApp |
 
-Alasan: hijau tua dan krem dibaca sebagai teduh dan rumahan, nyambung sama produknya (kanopi itu
-memang jualan keteduhan). Amber dipakai seiprit supaya yang paling dicari orang, yaitu angka
-harganya, jadi satu-satunya hal paling terang di layar.
+Oranye logo cuma 2.2:1 di atas krem, jadi nggak boleh jadi warna teks di latar terang:
 
-**Yang dibuang:** `brand` biru `#0284C7` di `tailwind.config.ts` (nganggur, cuma 9 dari 1.176
-pemakaian warna) dan amber yang sekarang kesebar ke mana-mana (256 pemakaian). Aksen yang muncul
-di setiap elemen bukan aksen lagi.
+- Tombol WhatsApp: latar oranye `#FF8A3D`, teks navy (5.8:1). Hover `#F37A2A` (4.9:1).
+- Angka harga di latar terang: oranye gelap `#B54A0B` (5.0:1).
+- Angka harga di permukaan navy: oranye logo `#FF8A3D` (5.8:1).
 
-Abu-abu netral (`slate`) tetap boleh buat teks sekunder dan garis, asal nggak jadi warna identitas.
+Oranye dipakai seiprit supaya yang paling dicari orang, yaitu angka harganya dan tombol
+untuk lanjut ngobrol, jadi satu-satunya hal paling terang di layar.
+
+Palet sebelumnya ("Rumah teduh", hijau tua `#1B3B2B` + amber `#D97706`) diganti waktu pemilik
+milih logo navy-oranye, supaya merek di website, seragam, dan truk satu warna.
+
+## Logo
+
+Board logo dari pemilik digambar ulang jadi SVG (bukan tracing otomatis), file-nya di `public/brand/`:
+
+| File | Dipakai di |
+|---|---|
+| `logo-3putra.svg` | Logo lengkap bertumpuk dengan tagline. Cetak, spanduk, dokumen |
+| `logo-3putra-putih.svg` | Versi untuk latar navy atau foto gelap |
+| `logo-3putra-hitam.svg` | Satu warna: stempel, fotokopi, sablon satu warna |
+| `logo-3putra-mendatar.svg` / `-putih.svg` | Tanda + "3 PUTRA" berdampingan. Navbar dan footer website (`src/components/brand/Logo.tsx`) |
+| `ikon-3putra.svg` | Tanda saja, tanpa tulisan |
+| `ikon-3putra-app.svg` / `-oranye.svg` | Ikon kotak: favicon (`src/app/icon.svg`), foto profil WA dan IG |
+| `og-logo.png` | Gambar preview link selama pemilik belum unggah foto layanan |
+
+Tagline di logo "Konstruksi & Metal Work". Di website, tagline teks tetap "Spesialis kanopi dan
+baja ringan" dari `businessConfig`.
 
 ## Tipografi
 
@@ -114,7 +133,7 @@ Seluruh usaha ini dijual per ukuran, dan satu-satunya alasan orang buka halaman 
 angkanya. Jadi angka yang dijadikan motif:
 
 - Harga dan ukuran selalu ditulis pakai **Fraunces 600**, ukuran besar, bukan huruf badan.
-- **Amber hanya muncul di angka harga dan tombol WhatsApp.** Tidak di tempat lain. Sama sekali.
+- **Oranye hanya muncul di angka harga dan tombol WhatsApp.** Tidak di tempat lain. Sama sekali.
 - Ukuran selalu ditulis dengan pola yang sama: `5 m × 2 m` (pakai `×`, bukan `x`), diikuti hasilnya
   dalam kurung kalau kena minimum: `5 m × 2 m (10 m² → ditagih 12 m²)`.
 

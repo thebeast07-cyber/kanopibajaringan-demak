@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
-// Palet "Rumah teduh" dari DESIGN.md: 2 warna inti + 1 aksen.
-// kertas = latar, hutan = teks & permukaan gelap, amber = HANYA harga dan tombol WhatsApp.
+// Palet ikut logo 3 Putra (DESIGN.md): navy + oranye di atas kertas.
+// kertas = latar, navy = teks judul & permukaan gelap, oranye = HANYA harga dan tombol WhatsApp.
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,11 +16,11 @@ const config: Config = {
           dalam: '#F3EFE9',   // latar yang agak masuk ke dalam
           garis: '#E5DFD5',   // garis pemisah
         },
-        hutan: {
-          DEFAULT: '#1B3B2B', // teks judul, header, footer
-          muda: '#2F5C45',    // hover
-          tua: '#122A1E',     // permukaan paling gelap
-          kabut: '#C9DCD1',   // teks di atas permukaan hutan
+        navy: {
+          DEFAULT: '#0B2D5B', // warna logo. Teks judul, header, footer
+          muda: '#16407A',    // hover
+          tua: '#071E3D',     // permukaan paling gelap
+          kabut: '#C5D3E8',   // teks di atas permukaan navy (9:1)
         },
         tinta: {
           DEFAULT: '#1C1917', // teks badan
@@ -30,15 +30,14 @@ const config: Config = {
         },
         // Aksen. Dipakai di angka harga dan tombol WhatsApp. Tidak di tempat lain.
         //
-        // Tiga nilai karena satu oranye tidak bisa lolos kontras di semua tempat:
-        //   DEFAULT  angka harga ukuran besar di atas kertas (3.8:1, lolos batas teks besar)
-        //   gelap    latar tombol dengan teks putih (6.9:1) dan teks kecil di atas kertas
-        //   terang   di atas permukaan hutan; DEFAULT cuma 3.2:1 di sana
-        amber: {
-          DEFAULT: '#D97706',
-          gelap: '#8A4A04',
-          tua: '#6E3B03',     // hover tombol
-          terang: '#F59E0B',
+        // Oranye logo cuma 2.2:1 di atas kertas, jadi untuk teks di kertas pakai versi gelap:
+        //   DEFAULT  oranye logo. Latar tombol dengan teks navy (5.8:1), teks di atas navy (5.8:1)
+        //   tua      hover tombol (teks navy 4.9:1)
+        //   gelap    angka harga dan teks kecil di atas kertas (5.0:1)
+        oranye: {
+          DEFAULT: '#FF8A3D',
+          tua: '#F37A2A',
+          gelap: '#B54A0B',
         },
       },
       fontFamily: {

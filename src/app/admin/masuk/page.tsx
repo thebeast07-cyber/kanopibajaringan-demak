@@ -40,7 +40,7 @@ export default function AdminMasukPage() {
     <main className="min-h-screen bg-kertas text-tinta flex items-center justify-center px-4 py-12">
       <form onSubmit={masuk} noValidate className="w-full max-w-sm bg-white border border-kertas-garis rounded-xl p-6 sm:p-8 space-y-5">
         <div className="space-y-1">
-          <h1 className="font-heading text-2xl font-semibold text-hutan">Masuk ke admin</h1>
+          <h1 className="font-heading text-2xl font-semibold text-navy">Masuk ke admin</h1>
           <p className="text-sm text-tinta-lembut">Khusus pemilik 3 Putra.</p>
         </div>
 
@@ -71,7 +71,7 @@ export default function AdminMasukPage() {
         <button
           type="submit"
           disabled={proses}
-          className="w-full min-h-[44px] rounded-lg bg-hutan hover:bg-hutan-muda text-white font-semibold disabled:opacity-60"
+          className="w-full min-h-[44px] rounded-lg bg-navy hover:bg-navy-muda text-white font-semibold disabled:opacity-60"
         >
           {proses ? 'Memeriksa...' : 'Masuk'}
         </button>

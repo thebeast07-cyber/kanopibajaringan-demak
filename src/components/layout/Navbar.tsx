@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
+import { LogoMendatar } from '@/components/brand/Logo';
 
 interface NavbarProps {
   config: BusinessConfigSchema;
@@ -39,7 +40,7 @@ export function Navbar({ config }: NavbarProps) {
   return (
     <>
       {/* Baris wilayah layanan. Isinya fakta, bukan slogan. */}
-      <div className="bg-hutan text-hutan-kabut text-xs py-2 px-4">
+      <div className="bg-navy text-navy-kabut text-xs py-2 px-4">
         <div className="max-w-7xl mx-auto">
           <span>Survei gratis di {config.serviceAreas.slice(0, 4).join(', ')} dan sekitarnya</span>
         </div>
@@ -47,17 +48,14 @@ export function Navbar({ config }: NavbarProps) {
 
       <header className="sticky top-0 z-50 bg-kertas/95 backdrop-blur-sm border-b border-kertas-garis text-tinta">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-          {/* Wordmark teks, bukan logo karangan (R-23). */}
-          <a href="#" className="shrink-0 flex flex-col justify-center min-h-[44px]">
-            <span className="font-heading font-bold text-xl sm:text-2xl text-hutan tracking-tight">
-              {config.businessName}
-            </span>
-            <p className="text-xs text-tinta-lembut hidden sm:block">{config.tagline}</p>
+          <a href="#" className="shrink-0 flex flex-col justify-center gap-1 min-h-[44px]">
+            <LogoMendatar className="h-8 sm:h-9 w-auto" />
+            <span className="text-xs text-tinta-lembut hidden sm:block">{config.tagline}</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-tinta-lembut">
             {NAV_LINKS.map((link) => (
-              <a key={link.href} href={link.href} className="inline-flex items-center min-h-[44px] hover:text-hutan transition-colors">
+              <a key={link.href} href={link.href} className="inline-flex items-center min-h-[44px] hover:text-navy transition-colors">
                 {link.label}
               </a>
             ))}
@@ -69,7 +67,7 @@ export function Navbar({ config }: NavbarProps) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => catatKlikWa('navbar')}
-            className="hidden sm:flex items-center min-h-[44px] bg-amber-gelap hover:bg-amber-tua text-white font-semibold px-4 rounded-lg text-sm transition-colors"
+            className="hidden sm:flex items-center min-h-[44px] bg-oranye hover:bg-oranye-tua text-navy font-semibold px-4 rounded-lg text-sm transition-colors"
           >
             Chat WhatsApp
           </a>
@@ -80,7 +78,7 @@ export function Navbar({ config }: NavbarProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={mobileMenuOpen}
-            className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-kertas-garis text-hutan hover:bg-kertas-dalam"
+            className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-kertas-garis text-navy hover:bg-kertas-dalam"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -103,7 +101,7 @@ export function Navbar({ config }: NavbarProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => catatKlikWa('menu-hp')}
-              className="flex items-center justify-center min-h-[44px] bg-amber-gelap text-white font-semibold w-full rounded-lg mt-4"
+              className="flex items-center justify-center min-h-[44px] bg-oranye text-navy font-semibold w-full rounded-lg mt-4"
             >
               Chat WhatsApp
             </a>

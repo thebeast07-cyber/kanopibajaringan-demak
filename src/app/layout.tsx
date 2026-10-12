@@ -35,7 +35,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-kertas text-tinta font-sans antialiased selection:bg-hutan selection:text-white">
+      <body className="min-h-screen bg-kertas text-tinta font-sans antialiased selection:bg-navy selection:text-white">
         {children}
         <AnalitikPengunjung />
       </body>

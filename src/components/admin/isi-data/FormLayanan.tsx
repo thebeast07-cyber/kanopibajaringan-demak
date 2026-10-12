@@ -15,9 +15,9 @@ import {
 } from '../../../lib/cms/isiDataLayanan';
 
 export const kelasTombolUtama =
-  'inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-hutan hover:bg-hutan-muda text-white font-semibold transition-colors';
+  'inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-navy hover:bg-navy-muda text-white font-semibold transition-colors';
 export const kelasTombolKedua =
-  'inline-flex items-center justify-center min-h-[44px] px-4 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-hutan font-semibold transition-colors';
+  'inline-flex items-center justify-center min-h-[44px] px-4 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-navy font-semibold transition-colors';
 
 const kelasLabel = 'block text-sm font-semibold text-tinta';
 const kelasBantuan = 'text-sm text-tinta-lembut';
@@ -142,7 +142,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
           checked={isian.featured}
           onChange={(e) => ubah({ featured: e.target.checked })}
           aria-describedby={id('kartu-besar-bantuan')}
-          className="mt-3 h-5 w-5 shrink-0 accent-hutan"
+          className="mt-3 h-5 w-5 shrink-0 accent-navy"
         />
         <div>
           <label htmlFor={id('kartu-besar')} className="flex items-center min-h-[44px] text-sm font-semibold text-tinta cursor-pointer">
@@ -161,7 +161,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
           checked={isian.tampil}
           onChange={(e) => ubah({ tampil: e.target.checked })}
           aria-describedby={id('tampil-bantuan')}
-          className="mt-3 h-5 w-5 shrink-0 accent-hutan"
+          className="mt-3 h-5 w-5 shrink-0 accent-navy"
         />
         <div>
           <label htmlFor={id('tampil')} className="flex items-center min-h-[44px] text-sm font-semibold text-tinta cursor-pointer">
@@ -179,7 +179,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
           {CARA_UKUR.map((opsi) => (
             <label
               key={opsi.value}
-              className="flex items-center gap-2.5 min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white cursor-pointer has-[:checked]:border-2 has-[:checked]:border-hutan"
+              className="flex items-center gap-2.5 min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white cursor-pointer has-[:checked]:border-2 has-[:checked]:border-navy"
             >
               <input
                 type="radio"
@@ -187,7 +187,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
                 value={opsi.value}
                 checked={isian.measurementType === opsi.value}
                 onChange={() => ubah({ measurementType: opsi.value })}
-                className="h-4 w-4 accent-hutan"
+                className="h-4 w-4 accent-navy"
               />
               <span className="text-tinta">{opsi.label}</span>
             </label>
@@ -217,7 +217,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
         {hargaAngka > 0 && (
           <p id={id('harga-tampil')} className="text-sm text-tinta-lembut">
             Tampil di website:{' '}
-            <span className="font-heading text-base font-semibold text-amber-gelap">
+            <span className="font-heading text-base font-semibold text-oranye-gelap">
               {formatRupiah(hargaAngka)} / {satuan}
             </span>
           </p>

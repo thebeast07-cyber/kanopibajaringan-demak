@@ -9,7 +9,7 @@ interface GaleriFotoProps {
 }
 
 const kelasTombol =
-  'inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-kertas-garis bg-white hover:bg-kertas-dalam text-hutan font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-lg border border-kertas-garis bg-white hover:bg-kertas-dalam text-navy font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
 
 export function GaleriFoto({ fotos, judul }: GaleriFotoProps) {
   const jalurRef = useRef<HTMLUListElement>(null);

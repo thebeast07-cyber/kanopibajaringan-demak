@@ -41,7 +41,7 @@ export function ProcessSection({ adaHarga }: { adaHarga: boolean }) {
     <section id="cara-kerja" className="py-16 sm:py-20 lg:py-24 bg-kertas text-tinta border-b border-kertas-garis">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl space-y-3 mb-10">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-hutan tracking-tight">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy tracking-tight">
             Habis ini ngapain?
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
@@ -61,14 +61,14 @@ export function ProcessSection({ adaHarga }: { adaHarga: boolean }) {
             >
               <span
                 className={`font-heading text-2xl font-bold shrink-0 w-8 ${
-                  item.disini ? 'text-amber' : 'text-tinta-samar'
+                  item.disini ? 'text-oranye-gelap' : 'text-tinta-samar'
                 }`}
                 aria-hidden="true"
               >
                 {i + 1}
               </span>
               <div className="space-y-1">
-                <h3 className="font-heading text-lg font-bold text-hutan">{item.judul}</h3>
+                <h3 className="font-heading text-lg font-bold text-navy">{item.judul}</h3>
                 <p className="text-sm text-tinta-lembut leading-relaxed">{item.desc}</p>
               </div>
             </li>

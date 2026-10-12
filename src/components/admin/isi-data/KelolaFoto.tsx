@@ -6,7 +6,7 @@ import { BATAS_FOTO, geserFoto } from '../../../lib/cms/isiDataLayanan';
 import { kecilkanFoto } from '../../../lib/cms/kecilkanFoto';
 
 const kelasTombol =
-  'inline-flex items-center justify-center min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-hutan text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-navy text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
 
 interface KelolaFotoProps {
   serviceId: string;

@@ -35,7 +35,7 @@ function Ringkasan({ service }: { service: ServiceSchema }) {
     <dl className="grid grid-cols-1 sm:grid-cols-[11rem_1fr] gap-x-4 gap-y-2.5 text-sm">
       <dt className="text-tinta-lembut">Harga borongan</dt>
       <dd>
-        {harga ? <span className="font-heading text-base font-semibold text-amber-gelap">{harga}</span> : <DataKosong />}
+        {harga ? <span className="font-heading text-base font-semibold text-oranye-gelap">{harga}</span> : <DataKosong />}
       </dd>
 
       <dt className="text-tinta-lembut">Minimum pengerjaan</dt>
@@ -145,7 +145,7 @@ export default function AdminIsiDataPage() {
   return (
     <div className="max-w-3xl space-y-8 pb-16 text-tinta">
       <div className="space-y-3">
-        <h1 className="font-heading text-2xl sm:text-3xl font-semibold text-hutan">Isi data layanan</h1>
+        <h1 className="font-heading text-2xl sm:text-3xl font-semibold text-navy">Isi data layanan</h1>
         <p className="text-tinta-lembut leading-relaxed">
           Harga, bahan, dan foto di website diambil dari sini. Yang belum diisi ditandai{' '}
           <DataKosong />. Selama kosong, website nggak nampilin angkanya dan pelanggan diarahkan tanya
@@ -175,7 +175,7 @@ export default function AdminIsiDataPage() {
             <li key={svc.id} className="bg-white border border-kertas-garis rounded-xl p-4 sm:p-6 space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="space-y-1">
-                  <h2 className="font-heading text-lg font-semibold text-hutan">{svc.title}</h2>
+                  <h2 className="font-heading text-lg font-semibold text-navy">{svc.title}</h2>
                   <p className="text-sm text-tinta">
                     {kosong ? (
                       <>
@@ -223,7 +223,7 @@ export default function AdminIsiDataPage() {
 
       {draftBaru ? (
         <section className="bg-white border border-kertas-garis rounded-xl p-4 sm:p-6 space-y-4" aria-labelledby="judul-layanan-baru">
-          <h2 id="judul-layanan-baru" className="font-heading text-lg font-semibold text-hutan">
+          <h2 id="judul-layanan-baru" className="font-heading text-lg font-semibold text-navy">
             Layanan baru
           </h2>
           <FormLayanan

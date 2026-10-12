@@ -2,6 +2,7 @@ import React from 'react';
 import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
+import { LogoMendatar } from '@/components/brand/Logo';
 
 interface FooterProps {
   config: BusinessConfigSchema;
@@ -14,18 +15,18 @@ export function Footer({ config }: FooterProps) {
   const waTampil = config.frontlineContact.whatsappNumber.replace(/^62/, '0');
 
   return (
-    <footer className="bg-hutan text-hutan-kabut pt-14 pb-10">
+    <footer className="bg-navy text-navy-kabut pt-14 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 pb-10 border-b border-hutan-muda">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 pb-10 border-b border-navy-muda">
           <div className="space-y-3">
-            <p className="font-heading text-2xl font-bold text-white">{config.businessName}</p>
+            <LogoMendatar terang className="h-10 w-auto" />
             <p className="leading-relaxed max-w-sm">{config.tagline}</p>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => catatKlikWa('footer')}
-              className="inline-flex items-center min-h-[44px] text-white font-semibold underline underline-offset-4 decoration-hutan-kabut hover:decoration-white"
+              className="inline-flex items-center min-h-[44px] text-white font-semibold underline underline-offset-4 decoration-navy-kabut hover:decoration-white"
             >
               WhatsApp {waTampil}
             </a>
@@ -39,7 +40,7 @@ export function Footer({ config }: FooterProps) {
 
         <div className="pt-8 space-y-4 text-sm">
           <p className="leading-relaxed max-w-3xl">{config.surveyDisclaimer}</p>
-          <p className="text-hutan-kabut">
+          <p className="text-navy-kabut">
             © {new Date().getFullYear()} {config.businessName}
           </p>
         </div>

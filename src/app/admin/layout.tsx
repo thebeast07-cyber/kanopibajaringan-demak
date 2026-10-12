@@ -11,7 +11,7 @@ import {
 } from '../../lib/cms/sinkronServer';
 
 const kelasTombol =
-  'inline-flex items-center justify-center min-h-[44px] px-4 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-hutan text-sm font-semibold';
+  'inline-flex items-center justify-center min-h-[44px] px-4 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-navy text-sm font-semibold';
 
 function teksStatus(s: StatusSimpan): string {
   if (s.jenis === 'belum-dipasang') return 'Belum tersambung';
@@ -78,7 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-kertas text-tinta">
       <header className="sticky top-0 z-30 bg-white border-b border-kertas-garis">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-          <p className="font-heading text-lg font-semibold text-hutan">
+          <p className="font-heading text-lg font-semibold text-navy">
             3 Putra <span className="font-sans text-sm font-normal text-tinta-lembut">admin</span>
           </p>
           <div className="flex items-center gap-2">

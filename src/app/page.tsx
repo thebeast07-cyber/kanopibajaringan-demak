@@ -27,7 +27,8 @@ export async function generateMetadata(): Promise<Metadata> {
     ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.`
     : `Pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, kirim lewat WhatsApp, kami hitungkan harganya. Survei lokasi gratis.`;
 
-  // Gambar preview waktu link dibagikan di WhatsApp: foto asli pertama dari pemilik, kalau ada.
+  // Gambar preview waktu link dibagikan di WhatsApp: foto asli pertama dari pemilik,
+  // kalau belum ada pakai logo.
   const layananBerfoto = aktif.find((s) => s.featured && s.fotos?.length);
   const foto = layananBerfoto?.fotos?.[0];
 
@@ -41,9 +42,11 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       locale: 'id_ID',
       siteName: dataset.businessConfig.businessName,
-      ...(foto ? { images: [{ url: foto.url, alt: foto.keterangan || layananBerfoto!.title }] } : {}),
+      images: foto
+        ? [{ url: foto.url, alt: foto.keterangan || layananBerfoto!.title }]
+        : [{ url: '/brand/og-logo.png', width: 1200, height: 630, alt: 'Logo 3 Putra' }],
     },
-    twitter: { card: foto ? 'summary_large_image' : 'summary', title, description },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 

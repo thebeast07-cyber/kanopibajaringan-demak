@@ -109,8 +109,8 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
   if (!activeService) return null;
 
   // outline bawaan dimatikan, jadi penggantinya harus lebih tebal dari sekadar
-  // border yang ganti warna: cincin hijau dua piksel, kelihatan jelas pas di-Tab (R-32).
-  const fokus = 'focus:outline-none focus:border-hutan focus:ring-2 focus:ring-hutan';
+  // border yang ganti warna: cincin navy dua piksel, kelihatan jelas pas di-Tab (R-32).
+  const fokus = 'focus:outline-none focus:border-navy focus:ring-2 focus:ring-navy';
   const numberField = `w-full px-4 min-h-[52px] rounded-xl border border-kertas-garis bg-white text-xl font-heading font-bold text-tinta ${fokus}`;
   const textField = `w-full px-4 min-h-[48px] rounded-xl border border-kertas-garis bg-white text-tinta ${fokus}`;
   const fieldLabel = 'block text-sm font-semibold text-tinta mb-2';
@@ -128,7 +128,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
     <section id="kalkulator" className="py-16 sm:py-20 bg-kertas-dalam text-tinta border-b border-kertas-garis">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl space-y-3 mb-8">
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-hutan tracking-tight">
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-navy tracking-tight">
             Berapa biayanya?
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
@@ -154,8 +154,8 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                       onClick={() => setSelectedServiceId(svc.id)}
                       className={`text-left px-4 min-h-[52px] flex items-center rounded-xl border font-semibold transition-colors ${
                         isActive
-                          ? 'bg-hutan border-hutan text-white'
-                          : 'bg-white border-kertas-garis text-tinta hover:border-hutan-muda'
+                          ? 'bg-navy border-navy text-white'
+                          : 'bg-white border-kertas-garis text-tinta hover:border-navy-muda'
                       }`}
                     >
                       {svc.title}
@@ -262,18 +262,18 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
           {/* ---------- Hasil ---------- */}
           <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-4">
-            <div className="bg-hutan text-white rounded-2xl p-6 sm:p-7 space-y-5">
+            <div className="bg-navy text-white rounded-2xl p-6 sm:p-7 space-y-5">
               <div>
-                <p className="text-sm text-hutan-kabut">Perkiraan biaya</p>
+                <p className="text-sm text-navy-kabut">Perkiraan biaya</p>
                 <p className="font-heading text-lg font-semibold mt-0.5">{activeService.title}</p>
               </div>
 
               <div>
-                {/* Aksen amber mendarat di sini. Versi terang karena di atas hijau tua.
+                {/* Aksen oranye mendarat di sini. Oranye logo lolos kontras di atas navy.
                     Tanpa ukuran, slot ini diisi kalimat, bukan tanda baca: pengunjung
                     perlu tahu apa yang kurang, bukan menebak garis panjang artinya apa. */}
                 {snapshot && borongan ? (
-                  <p className="font-heading text-4xl sm:text-5xl leading-none font-bold tracking-tight text-amber-terang">
+                  <p className="font-heading text-4xl sm:text-5xl leading-none font-bold tracking-tight text-oranye">
                     {formatRupiah(snapshot.breakdown.total)}
                   </p>
                 ) : !borongan ? (
@@ -282,12 +282,12 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     WhatsApp, nanti kami hitungkan.
                   </p>
                 ) : (
-                  <p className="font-heading text-xl font-semibold text-hutan-kabut leading-snug">
+                  <p className="font-heading text-xl font-semibold text-navy-kabut leading-snug">
                     Isi ukurannya dulu, harganya nanti muncul di sini.
                   </p>
                 )}
                 {borongan && snapshot && (
-                  <p className="text-sm text-hutan-kabut mt-3">
+                  <p className="text-sm text-navy-kabut mt-3">
                     {formatRupiah(borongan.rate)} / {unitLabel} × {snapshot.billableUnits.applied}{' '}
                     {unitLabel}
                   </p>
@@ -295,7 +295,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
               </div>
 
               {minimumApplied && snapshot && borongan && (
-                <p className="text-sm text-hutan-kabut leading-relaxed bg-hutan-tua rounded-xl p-4">
+                <p className="text-sm text-navy-kabut leading-relaxed bg-navy-tua rounded-xl p-4">
                   Ukuran kamu {snapshot.billableUnits.actual} {unitLabel}, tapi layanan ini minimum{' '}
                   <strong className="text-white">
                     {snapshot.billableUnits.applied} {unitLabel}
@@ -305,20 +305,20 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
               )}
 
               {snapshot && snapshot.duration.text && (
-                <p className="text-sm text-hutan-kabut pt-4 border-t border-hutan-muda">
+                <p className="text-sm text-navy-kabut pt-4 border-t border-navy-muda">
                   Perkiraan pengerjaan {snapshot.duration.text}, dipastikan setelah survei.
                 </p>
               )}
 
               {bahanStandar && (
-                <p className="text-sm text-hutan-kabut leading-relaxed">
+                <p className="text-sm text-navy-kabut leading-relaxed">
                   <span className="text-white font-semibold">Bahan standar:</span> {bahanStandar}.
                   Mau bahan lain? Tulis di catatan.
                 </p>
               )}
 
               {borongan && (
-                <p className="text-sm text-hutan-kabut leading-relaxed">
+                <p className="text-sm text-navy-kabut leading-relaxed">
                   Harga borongan, sudah termasuk bahan, rangka, upah pasang, dan finishing. Masih
                   ancer-ancer; harga pastinya setelah survei lokasi.
                 </p>
@@ -375,7 +375,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
               {/* Pesan kesalahan muncul di tempat, bukan lewat alert() yang bikin
                   orang kehilangan konteks (R-27). */}
               {formError && (
-                <p role="alert" className="text-sm text-amber-gelap bg-kertas-dalam rounded-xl p-3">
+                <p role="alert" className="text-sm text-oranye-gelap bg-kertas-dalam rounded-xl p-3">
                   {formError}
                 </p>
               )}
@@ -385,7 +385,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                   dan menjawab sendiri kalau ukurannya belum diisi (R-26, R-32). */}
               <button
                 type="submit"
-                className="w-full min-h-[52px] bg-amber-gelap hover:bg-amber-tua text-white font-bold rounded-xl transition-colors"
+                className="w-full min-h-[52px] bg-oranye hover:bg-oranye-tua text-navy font-bold rounded-xl transition-colors"
               >
                 Lanjut chat WhatsApp
               </button>
