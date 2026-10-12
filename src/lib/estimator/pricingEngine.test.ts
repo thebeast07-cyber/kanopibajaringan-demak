@@ -132,7 +132,7 @@ describe('Pricing Engine Unit Tests', () => {
 
   test('6. Data bawaan tidak membawa harga karangan dan tidak ada komponen nyangkut', () => {
     for (const svc of COMPREHENSIVE_DATASET.services) {
-      // Harga, minimum, dan lama pengerjaan diisi pemilik lewat /admin/isi-data.
+      // Harga, minimum, dan lama pengerjaan diisi pemilik lewat /admin/layanan.
       assert.strictEqual(svc.pricingRules.length, 0, `${svc.title} masih membawa tarif bawaan`);
       assert.strictEqual(getMinimumPengerjaan(svc), null, `${svc.title} masih membawa minimum bawaan`);
       assert.strictEqual(svc.durationRanges.length, 0, `${svc.title} masih membawa lama pengerjaan bawaan`);

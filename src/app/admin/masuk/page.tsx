@@ -25,7 +25,7 @@ export default function AdminMasukPage() {
         // Cuma terima tujuan di dalam /admin, biar link masuk nggak bisa dipakai buat
         // mengarahkan orang ke situs lain.
         const lanjut = new URLSearchParams(window.location.search).get('lanjut') || '';
-        window.location.assign(lanjut.startsWith('/admin') ? lanjut : '/admin/isi-data');
+        window.location.assign(lanjut.startsWith('/admin') ? lanjut : '/admin');
         return;
       }
       const isi = await res.json().catch(() => ({}));

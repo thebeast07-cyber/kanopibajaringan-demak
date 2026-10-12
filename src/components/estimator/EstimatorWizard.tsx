@@ -102,7 +102,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
       { customerName, cityOrDistrict, additionalNotes },
       dataset
     );
-    catatKlikWa('kalkulator', activeService?.title);
+    catatKlikWa('kalkulator', activeService?.id);
     window.open(url, '_blank');
   };
 
@@ -182,7 +182,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                       value={lengthInput}
                       onChange={(e) => {
                         setLengthInput(Number(e.target.value) || 0);
-                        catatIsiUkuran(activeService.title);
+                        catatIsiUkuran(activeService.id);
                       }}
                       className={numberField}
                     />
@@ -199,7 +199,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                       value={widthInput}
                       onChange={(e) => {
                         setWidthInput(Number(e.target.value) || 0);
-                        catatIsiUkuran(activeService.title);
+                        catatIsiUkuran(activeService.id);
                       }}
                       className={numberField}
                     />
@@ -220,7 +220,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     value={lengthInput}
                     onChange={(e) => {
                         setLengthInput(Number(e.target.value) || 0);
-                        catatIsiUkuran(activeService.title);
+                        catatIsiUkuran(activeService.id);
                       }}
                     className={numberField}
                   />
@@ -240,7 +240,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     value={quantityInput}
                     onChange={(e) => {
                       setQuantityInput(Number(e.target.value) || 1);
-                      catatIsiUkuran(activeService.title);
+                      catatIsiUkuran(activeService.id);
                     }}
                     className={numberField}
                   />

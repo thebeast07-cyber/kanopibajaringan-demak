@@ -4,9 +4,10 @@ import React, { useRef, useState } from 'react';
 import { FotoLayananSchema } from '../../../types/domain';
 import { BATAS_FOTO, geserFoto } from '../../../lib/cms/isiDataLayanan';
 import { kecilkanFoto } from '../../../lib/cms/kecilkanFoto';
+import { kelasBantuan, kelasTombolKedua } from '../gaya';
 
-const kelasTombol =
-  'inline-flex items-center justify-center min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white hover:bg-kertas-dalam text-navy text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
+const kelasTombolKecil =
+  'inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-3 rounded-lg border border-kertas-garis bg-white hover:bg-kertas-dalam text-navy text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed';
 
 interface KelolaFotoProps {
   serviceId: string;
@@ -69,72 +70,73 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
   };
 
   return (
-    <fieldset className="space-y-3" aria-describedby={`${idDasar}-bantuan`}>
-      <legend className="block text-sm font-semibold text-tinta">Foto layanan</legend>
-      <p id={`${idDasar}-bantuan`} className="text-sm text-tinta-lembut">
-        Foto pertama tampil paling depan, pelanggan bisa menggeser ke foto berikutnya. Maksimal {BATAS_FOTO} foto.
+    <div className="space-y-3">
+      <p id={`${idDasar}-bantuan`} className={kelasBantuan}>
+        {fotos.length} dari {BATAS_FOTO} foto. Foto pertama tampil duluan, pelanggan bisa geser ke foto berikutnya.
         Foto yang dihapus baru benar-benar hilang setelah Simpan.
       </p>
 
       {fotos.length === 0 ? (
-        <p className="text-sm text-tinta-lembut">Belum ada foto. Selama kosong, kartu layanan tampil tanpa foto.</p>
+        <p className="text-[15px] text-tinta">Belum ada foto. Selama kosong, kartu layanan tampil tanpa foto.</p>
       ) : (
-        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <ol className="space-y-3" aria-describedby={`${idDasar}-bantuan`}>
           {fotos.map((foto, i) => (
-            <li key={foto.url} className="rounded-lg border border-kertas-garis p-3 space-y-2">
+            <li key={foto.url} className="flex gap-3 rounded-xl border border-kertas-garis p-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={foto.url}
                 alt={foto.keterangan || `Foto ${i + 1}`}
-                className="w-full aspect-[4/3] object-cover rounded-md bg-kertas-dalam"
+                className="w-24 h-24 shrink-0 object-cover rounded-lg bg-kertas-dalam"
               />
-              <p className="text-sm font-semibold text-tinta">
-                Foto {i + 1}
-                {i === 0 && <span className="font-normal text-tinta-lembut"> (tampil pertama)</span>}
-              </p>
-              <div className="space-y-1">
-                <label htmlFor={`${idDasar}-ket-${i}`} className="block text-sm text-tinta">
-                  Keterangan (boleh kosong)
+              <div className="flex-1 min-w-0 space-y-2">
+                <label htmlFor={`${idDasar}-ket-${i}`} className="block text-sm font-semibold text-tinta">
+                  Foto {i + 1}
+                  {i === 0 && <span className="font-normal text-tinta-lembut"> · tampil pertama</span>}
                 </label>
                 <input
                   id={`${idDasar}-ket-${i}`}
                   type="text"
                   value={foto.keterangan ?? ''}
+                  placeholder="Keterangan (boleh kosong)"
                   onChange={(e) =>
                     ubahFotos((lama) => lama.map((f, idx) => (idx === i ? { ...f, keterangan: e.target.value } : f)))
                   }
-                  className="w-full min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white text-tinta"
+                  className="w-full min-h-[44px] px-3 rounded-lg border border-tinta-batas bg-white text-tinta text-[15px] placeholder:text-tinta-samar"
                 />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  id={`${idDasar}-geser--1-${i}`}
-                  type="button"
-                  onClick={() => geser(i, -1)}
-                  disabled={i === 0}
-                  className={kelasTombol}
-                  aria-label={`Geser foto ${i + 1} ke kiri`}
-                >
-                  ← Geser
-                </button>
-                <button
-                  id={`${idDasar}-geser-1-${i}`}
-                  type="button"
-                  onClick={() => geser(i, 1)}
-                  disabled={i === fotos.length - 1}
-                  className={kelasTombol}
-                  aria-label={`Geser foto ${i + 1} ke kanan`}
-                >
-                  Geser →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => ubahFotos((lama) => lama.filter((_, idx) => idx !== i))}
-                  className={kelasTombol}
-                  aria-label={`Hapus foto ${i + 1}`}
-                >
-                  Hapus
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    id={`${idDasar}-geser--1-${i}`}
+                    type="button"
+                    onClick={() => geser(i, -1)}
+                    disabled={i === 0}
+                    className={kelasTombolKecil}
+                    aria-label={`Geser foto ${i + 1} ke depan`}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                      <path d="M11 4 L6 9 L11 14" />
+                    </svg>
+                  </button>
+                  <button
+                    id={`${idDasar}-geser-1-${i}`}
+                    type="button"
+                    onClick={() => geser(i, 1)}
+                    disabled={i === fotos.length - 1}
+                    className={kelasTombolKecil}
+                    aria-label={`Geser foto ${i + 1} ke belakang`}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                      <path d="M7 4 L12 9 L7 14" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => ubahFotos((lama) => lama.filter((_, idx) => idx !== i))}
+                    className={kelasTombolKecil}
+                    aria-label={`Hapus foto ${i + 1}`}
+                  >
+                    Hapus
+                  </button>
+                </div>
               </div>
             </li>
           ))}
@@ -156,9 +158,9 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={Boolean(kemajuan) || sisa <= 0}
-        className={kelasTombol}
+        className={`${kelasTombolKedua} w-full`}
       >
-        {sisa <= 0 ? `Sudah ${BATAS_FOTO} foto` : fotos.length ? 'Tambah foto lagi' : 'Pilih foto'}
+        {sisa <= 0 ? `Sudah ${BATAS_FOTO} foto` : fotos.length ? 'Tambah foto lagi' : 'Pilih foto dari galeri'}
       </button>
 
       {kemajuan && (
@@ -173,6 +175,6 @@ export function KelolaFoto({ serviceId, idDasar, fotos, ubahFotos }: KelolaFotoP
           ))}
         </ul>
       )}
-    </fieldset>
+    </div>
   );
 }

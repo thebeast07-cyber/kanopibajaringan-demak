@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CompleteDataset } from '@/types/domain';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -11,7 +11,7 @@ import { FaqSection } from '@/components/landing/FaqSection';
 import { EstimatorWizard } from '@/components/estimator/EstimatorWizard';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
-import { catatKlikWa } from '@/lib/jejak';
+import { catatKlikWa, catatKunjungan } from '@/lib/jejak';
 
 /** Isi halaman depan. Datanya dari server (penyimpanan online), bukan dari browser. */
 export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
@@ -20,6 +20,8 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
   const faqs = [...dataset.faqs].sort((a, b) => a.order - b.order);
 
   const [activeServiceId, setActiveServiceId] = useState<string>(services[0]?.id || '');
+
+  useEffect(() => catatKunjungan(), []);
 
   const handleSelectService = (serviceId: string) => {
     setActiveServiceId(serviceId);
@@ -50,7 +52,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
         <FaqSection faqs={faqs} />
 
         {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
-            testimoni palsu. Foto proyek asli sekarang tampil di kartu layanan (/admin/isi-data). */}
+            testimoni palsu. Foto proyek asli sekarang tampil di kartu layanan (/admin/layanan). */}
 
         <section className="bg-navy text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">

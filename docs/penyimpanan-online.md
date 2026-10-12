@@ -33,24 +33,52 @@ halaman depan. Tanpa Blob, admin tetap bisa dibuka tapi tidak bisa menyimpan.
 Salin `.env.example` jadi `.env.local`, isi `ADMIN_PASSWORD` dan `ADMIN_SESSION_SECRET`,
 kosongkan `BLOB_READ_WRITE_TOKEN`. Data tersimpan di folder `.data/` (tidak ikut di-commit).
 
+## Halaman admin
+
+Admin dibuat untuk HP. Tiga tab di bawah layar:
+
+- **Beranda** (`/admin`): klik ke WhatsApp 7 atau 30 hari terakhir dibanding periode sebelumnya,
+  alur kunjungan → isi ukuran → klik WhatsApp, asal pengunjung, layanan yang paling sering ditanya,
+  tombol WhatsApp yang paling sering diklik, dan daftar yang masih kosong di website.
+- **Layanan** (`/admin/layanan`): daftar dengan saringan "Belum lengkap". Tiap layanan punya halaman
+  ubah sendiri (`/admin/layanan/<id>`) dengan bagian Harga, Bahan, Foto, Info, Tampilan, tombol
+  Simpan yang nempel di bawah, dan "Lihat hasil" yang menampilkan kartu persis seperti di website.
+- **Pengaturan** (`/admin/pengaturan`): nomor WhatsApp, kota yang dilayani, nama usaha, tagline,
+  catatan soal harga, dan link promosi siap salin.
+
+Alamat lama `/admin/isi-data` otomatis pindah ke `/admin/layanan`.
+
+## Statistik di Beranda (Upstash Redis)
+
+Vercel Web Analytics paket Hobby tidak menampilkan event custom, jadi klik WhatsApp dihitung sendiri
+di database Upstash Redis (paket Free, 500 ribu perintah per bulan).
+
+- Pasang: Vercel, menu **Storage**, **Create Database**, **Upstash** (Redis), paket Free, region
+  Singapore, sambungkan ke Production dan Preview dengan prefix `KV`. Variabel `KV_REST_API_URL`
+  dan `KV_REST_API_TOKEN` terisi otomatis. Nama `UPSTASH_REDIS_REST_*` juga dibaca.
+- Yang disimpan cuma hitungan per hari (tanggal WIB), tanpa cookie dan tanpa data pribadi. Data
+  lebih dari 400 hari terhapus sendiri.
+- Hitungan Production, Preview, dan lokal dipisah (`jejak:<lingkungan>:<tanggal>`), jadi klik saat
+  coba-coba di Preview tidak masuk angka asli.
+- Browser yang pernah login admin tidak dihitung, termasuk saat membuka halaman depan.
+- "Kunjungan" artinya satu tab browser yang membuka halaman depan, bukan orang unik. Klik WhatsApp di
+  angka utama dihitung sekali per kunjungan.
+- Tanpa Redis, website tetap jalan dan Beranda menulis "Penghitung kunjungan belum dipasang".
+- Pencatat (`/api/jejak`) terbuka untuk umum karena dipanggil dari browser pengunjung. Isinya diperiksa
+  ketat, tapi orang iseng tetap bisa menggelembungkan angka. Kalau angka tiba-tiba melonjak aneh,
+  itu yang dicurigai.
+
 ## Statistik pengunjung (Vercel Web Analytics)
 
-Website sudah mengirim data ke Vercel Web Analytics. Kunjungan ke `/admin` tidak dihitung.
-
-1. Di Vercel, buka project, menu **Analytics**, lalu **Enable**. Setelah itu redeploy.
-2. Yang kelihatan: jumlah pengunjung, halaman, asal pengunjung (referrer), negara, dan perangkat.
-3. Event funnel yang dikirim website:
-   - `isi_ukuran`: pengunjung mengubah ukuran di kalkulator (sekali per kunjungan), dengan nama layanan.
-   - `klik_whatsapp`: pengunjung menekan tombol WhatsApp, dengan `sumber` (tombol mana) dan nama layanan.
-     Nilai `sumber`: `navbar`, `menu-hp`, `hero`, `kalkulator`, `kartu-tanya-harga`, `kartu-bahan-lain`,
-     `daftar-tanya-harga`, `ajakan-bawah`, `footer`.
-
-   Event custom kemungkinan baru bisa dilihat di paket berbayar Vercel; cek di tab Analytics.
+Website juga mengirim data ke Vercel Web Analytics. Kunjungan ke `/admin` dan browser pemilik tidak dihitung.
+Aktifkan di menu **Analytics**, **Enable**, lalu redeploy. Di paket Hobby yang kelihatan: jumlah
+pengunjung, halaman, asal pengunjung, negara, dan perangkat, dengan riwayat 1 bulan.
 
 ### Link berlabel supaya asal pengunjung kebaca
 
 Dari aplikasi Instagram, Facebook, atau WhatsApp, asal pengunjung sering tidak terkirim dan tercatat
-sebagai "langsung". Pakai link berlabel di tiap tempat promosi:
+sebagai "langsung". Pakai link berlabel di tiap tempat promosi. Link-nya siap salin di
+**Pengaturan > Link buat promosi**:
 
 | Dipasang di | Link |
 |---|---|

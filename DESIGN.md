@@ -98,6 +98,17 @@ Tagline di logo "Spesialis Kanopi & Baja Ringan", sama dengan tagline teks di we
 permintaan pemilik supaya satu suara dengan nama resminya. Huruf tagline Montserrat SemiBold yang
 sudah dijadikan path, jadi file logo nggak butuh font terpasang.
 
+## Admin
+
+Pemilik ngurus admin dari HP, tanpa laptop. Jadi admin dirancang buat layar 390 px dulu:
+
+- Tiga tab di bawah layar (Beranda, Layanan, Pengaturan), karena jempol nyampe ke bawah.
+- Satu fokus per layar. Beranda: klik ke WhatsApp. Ubah layanan: harga di bagian paling atas,
+  karena itu yang paling sering diganti.
+- Tombol utama navy. Oranye tetap cuma di angka harga dan angka klik WhatsApp.
+- Angka statistik cuma dari data asli. Kalau kosong, layarnya bilang kosong dan ngasih satu
+  langkah berikutnya, bukan angka contoh.
+
 ## Tipografi
 
 | Peran | Huruf | Berat |
