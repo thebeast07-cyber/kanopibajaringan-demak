@@ -37,7 +37,7 @@ function buatPng(lebar: number, tinggi: number): Buffer {
   ]);
 }
 
-const PNG = buatPng(40, 30);
+const PNG = buatPng(400, 300);
 
 test.describe.configure({ mode: 'serial' });
 
@@ -127,6 +127,17 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await expect(kartu).toContainText('800.000');
     await expect(kartu).toContainText('Alderon RS 1,2 mm');
     await expect(kartu.locator('ul img')).toHaveCount(1);
+
+    // Foto bisa diketuk buat dilihat besar, lalu ditutup dengan Escape.
+    await kartu.getByRole('button', { name: /Perbesar foto 1/ }).click();
+    const besar = page.getByRole('dialog', { name: /ukuran besar/ });
+    await expect(besar).toBeVisible();
+    await expect(besar.getByRole('img')).toBeVisible();
+    await expect(besar.getByRole('button', { name: 'Tutup' })).toBeFocused();
+    if (process.env.FOTO_BESAR_SS) await page.screenshot({ path: process.env.FOTO_BESAR_SS });
+    await page.keyboard.press('Escape');
+    await expect(besar).toHaveCount(0);
+    await expect(kartu.getByRole('button', { name: /Perbesar foto 1/ })).toBeFocused();
 
     // Kalkulator: 5 m × 4 m = 20 m² × 800.000
     await expect(page.locator('#kalkulator')).toContainText('16.000.000');
