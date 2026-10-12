@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
@@ -13,20 +14,25 @@ interface NavbarProps {
   adaGaleri?: boolean;
 }
 
-// Hanya section yang benar-benar ada di halaman. Jangan tambah tautan ke
-// section yang belum dibangun (R-24). Diawali "/" supaya tetap jalan dari halaman galeri.
-function tautanNav(adaGaleri: boolean) {
+/**
+ * Hanya section yang benar-benar ada di halaman. Jangan tambah tautan ke section yang belum
+ * dibangun (R-24). Di halaman depan tetap "#..." supaya tidak memuat ulang halaman (link
+ * promosi membawa ?utm_source); dari halaman lain diawali "/".
+ */
+export function tautanSitus(pathname: string, adaGaleri: boolean) {
+  const awal = pathname === '/' ? '' : '/';
   return [
-    { href: '/#kalkulator', label: 'Cek harga' },
-    { href: '/#layanan', label: 'Layanan' },
-    ...(adaGaleri ? [{ href: '/#galeri', label: 'Galeri' }] : []),
-    { href: '/#cara-kerja', label: 'Cara kerja' },
-    { href: '/#faq', label: 'Tanya jawab' },
+    { href: `${awal}#kalkulator`, label: 'Cek harga' },
+    { href: `${awal}#layanan`, label: 'Layanan' },
+    ...(adaGaleri ? [{ href: '/galeri', label: 'Galeri' }] : []),
+    { href: `${awal}#cara-kerja`, label: 'Cara kerja' },
+    { href: `${awal}#faq`, label: 'Tanya jawab' },
   ];
 }
 
 export function Navbar({ config, adaGaleri = false }: NavbarProps) {
-  const tautan = tautanNav(adaGaleri);
+  const pathname = usePathname();
+  const tautan = tautanSitus(pathname, adaGaleri);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const tombolMenuRef = useRef<HTMLButtonElement>(null);
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
@@ -54,7 +60,7 @@ export function Navbar({ config, adaGaleri = false }: NavbarProps) {
 
       <header className="sticky top-0 z-50 bg-kertas/95 backdrop-blur-sm border-b border-kertas-garis text-tinta">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-          <a href="/" className="shrink-0 flex flex-col justify-center gap-1 min-h-[44px]">
+          <a href={pathname === '/' ? '#' : '/'} className="shrink-0 flex flex-col justify-center gap-1 min-h-[44px]">
             <LogoMendatar className="h-8 sm:h-9 w-auto" />
             <span className="text-xs text-tinta-lembut hidden sm:block">{config.tagline}</span>
           </a>

@@ -336,11 +336,29 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     const page = await pelanggan.newPage();
     await page.goto('/');
 
-    // Di HP menu atas tersembunyi di balik tombol menu.
+    // Halaman depan tetap seperti sebelum ada galeri: tidak ada bagian galeri, link menu tetap "#...".
+    await expect(page.locator('#galeri')).toHaveCount(0);
+    await expect(page.getByText('Hasil pemasangan kami')).toHaveCount(0);
     await page.getByRole('button', { name: 'Buka menu' }).click();
-    await expect(page.locator('header').getByRole('link', { name: 'Galeri' })).toHaveAttribute('href', '/#galeri');
+    const menuAtas = page.locator('header');
+    await expect(menuAtas.getByRole('link', { name: 'Galeri' })).toHaveAttribute('href', '/galeri');
+    await expect(menuAtas.getByRole('link', { name: 'Cek harga' })).toHaveAttribute('href', '#kalkulator');
     await page.getByRole('button', { name: 'Tutup menu' }).click();
-    const galeri = page.locator('#galeri');
+
+    // Menu bawah HP: Layanan, Cek harga, Galeri, WhatsApp.
+    const barBawah = page.getByRole('navigation', { name: 'Menu bawah' });
+    await expect(barBawah.getByRole('link')).toHaveText(['Layanan', 'Cek harga', 'Galeri', 'WhatsApp']);
+    await expect(barBawah.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', /wa\.me\/6282228132455/);
+    // Waktu ngetik di kalkulator, bar disembunyikan biar nggak nutup kolom.
+    await page.locator('#kalkulator').getByLabel('Panjang (meter)').focus();
+    await expect(barBawah).toBeHidden();
+    await page.locator('#kalkulator').getByLabel('Panjang (meter)').blur();
+    await expect(barBawah).toBeVisible();
+
+    await barBawah.getByRole('link', { name: 'Galeri' }).click();
+    await expect(page).toHaveURL(/\/galeri$/);
+    await expect(barBawah.getByRole('link', { name: 'Galeri' })).toHaveAttribute('aria-current', 'page');
+    const galeri = page.locator('main');
     await expect(galeri.getByRole('heading', { name: 'Hasil pemasangan kami' })).toBeVisible();
     const kartu = galeri.locator('article').first();
     await expect(kartu).toContainText('Kanopi Alderon Twinwall');
@@ -376,6 +394,8 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
 
     const hrefDetail = (await page.getByRole('link', { name: 'Tanya lewat WhatsApp', exact: true }).getAttribute('href')) || '';
     expect(decodeURIComponent(new URL(hrefDetail).searchParams.get('text') || '')).toContain(linkProyek!);
+    // Tombol WhatsApp di menu bawah juga membawa proyek ini.
+    await expect(barBawah.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', hrefDetail);
 
     // Tautan menu tetap jalan dari halaman galeri.
     await expect(page.locator('header a', { hasText: 'Cek harga' }).first()).toHaveAttribute('href', '/#kalkulator');
@@ -395,9 +415,10 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     const pelanggan = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const tamu = await pelanggan.newPage();
     expect((await tamu.goto(`/galeri/${id}`))!.status()).toBe(404);
+    expect((await tamu.goto('/galeri'))!.status()).toBe(404);
     await tamu.goto('/');
-    await expect(tamu.locator('#galeri')).toHaveCount(0);
-    await expect(tamu.locator('header a[href="/#galeri"]')).toHaveCount(0);
+    await expect(tamu.locator('a[href="/galeri"]')).toHaveCount(0);
+    await expect(tamu.getByRole('navigation', { name: 'Menu bawah' }).getByRole('link')).toHaveText(['Layanan', 'Cek harga', 'WhatsApp']);
 
     const { state: sebelum } = await (await page.request.get('/api/admin/state')).json();
     const urlFoto: string[] = sebelum.publishedDataset.galeri[0].fotos.flatMap((f: { url: string; og: string }) => [f.url, f.og]);

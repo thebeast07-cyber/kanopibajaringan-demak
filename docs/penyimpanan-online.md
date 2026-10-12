@@ -52,11 +52,11 @@ Admin dibuat untuk HP. Empat tab di bawah layar:
   Simpan yang nempel di bawah, dan "Lihat hasil" yang menampilkan kartu persis seperti di website.
 - **Galeri** (`/admin/galeri`): foto hasil pemasangan asli, tanpa harga. Tiap proyek berisi foto,
   nama produk, lokasi, bulan dipasang, ukuran, dan keterangan. Waktu foto diunggah, browser juga
-  membuat versi JPEG 1200×630 (maksimal 280 KB) khusus buat preview link di WhatsApp. Di website,
-  galeri tampil di halaman depan (`#galeri`, maksimal 6), di `/galeri`, dan tiap proyek punya
-  halaman sendiri `/galeri/<id>`. Tombol WhatsApp-nya mengirim nama produk plus link halaman
+  membuat versi JPEG 1200×630 (maksimal 280 KB) khusus buat preview link di WhatsApp. Galeri punya
+  halaman sendiri, `/galeri`, dan tiap proyek punya halaman `/galeri/<id>`. Halaman depan tidak
+  berubah; galeri dibuka dari menu Galeri (menu atas dan menu bawah di HP). Tombol WhatsApp-nya mengirim nama produk plus link halaman
   proyek, jadi foto yang diklik pelanggan muncul sebagai preview di chat. Selama belum ada proyek
-  yang tampil, bagian galeri dan menu Galeri tidak muncul.
+  yang tampil, menu Galeri tidak muncul dan `/galeri` tidak bisa dibuka.
 - **Pengaturan** (`/admin/pengaturan`): nomor WhatsApp, kota yang dilayani, nama usaha, tagline,
   catatan soal harga, dan link promosi siap salin.
 

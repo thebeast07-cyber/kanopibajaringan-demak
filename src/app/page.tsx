@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { HalamanDepan } from '@/components/landing/HalamanDepan';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
-import { asalPermintaan } from '@/lib/server/asal';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { proyekTampil } from '@/lib/cms/galeri';
 
@@ -58,5 +57,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const dataset = await bacaDatasetTerbit();
-  return <HalamanDepan dataset={dataset} asal={asalPermintaan()} />;
+  return <HalamanDepan dataset={dataset} />;
 }

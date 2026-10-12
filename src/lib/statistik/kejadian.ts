@@ -15,6 +15,7 @@ export const SUMBER_WA = [
   'footer',
   'galeri',
   'galeri-detail',
+  'bar-bawah',
 ] as const;
 export type SumberWa = (typeof SUMBER_WA)[number];
 
@@ -208,4 +209,5 @@ export const LABEL_SUMBER_WA: Record<SumberWa, string> = {
   footer: 'Footer',
   galeri: 'Galeri proyek',
   'galeri-detail': 'Halaman foto proyek',
+  'bar-bawah': 'Menu bawah di HP',
 };

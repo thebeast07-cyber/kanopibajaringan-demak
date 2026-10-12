@@ -5,6 +5,8 @@ import { asalPermintaan } from '@/lib/server/asal';
 import { proyekTampil } from '@/lib/cms/galeri';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { BarBawah } from '@/components/layout/BarBawah';
+import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { KartuProyek } from '@/components/landing/KartuProyek';
 import { CatatKunjungan } from '@/components/landing/CatatKunjungan';
 
@@ -64,6 +66,10 @@ export default async function HalamanGaleri() {
         </div>
       </main>
       <Footer config={config} />
+      <BarBawah
+        adaGaleri
+        wa={{ href: waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName)), sumber: 'bar-bawah' }}
+      />
     </div>
   );
 }

@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
 import { asalPermintaan } from '@/lib/server/asal';
-import { judulProyek, proyekTampil, teksDipasang } from '@/lib/cms/galeri';
+import { judulProyek, pesanWaGaleri, proyekTampil, teksDipasang } from '@/lib/cms/galeri';
 import { CompleteDataset } from '@/types/domain';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { BarBawah } from '@/components/layout/BarBawah';
+import { waTanyaUrl } from '@/lib/whatsapp';
 import { GaleriFoto } from '@/components/landing/GaleriFoto';
 import { KartuProyek, TombolWaProyek } from '@/components/landing/KartuProyek';
 import { CatatKunjungan } from '@/components/landing/CatatKunjungan';
@@ -130,6 +132,15 @@ export default async function HalamanProyek({ params }: { params: { id: string }
         )}
       </main>
       <Footer config={config} />
+      {/* Tombol WhatsApp di menu bawah ikut membawa proyek ini, sama seperti tombol di atas. */}
+      <BarBawah
+        adaGaleri
+        wa={{
+          href: waTanyaUrl(kontak.whatsappNumber, pesanWaGaleri(kontak.namaUsaha, proyek, `${kontak.asal}/galeri/${proyek.id}`)),
+          sumber: 'galeri-detail',
+          layanan: proyek.serviceId,
+        }}
+      />
     </div>
   );
 }

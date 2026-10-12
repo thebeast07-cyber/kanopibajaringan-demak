@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { CompleteDataset } from '@/types/domain';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { BarBawah } from '@/components/layout/BarBawah';
 import { Hero } from '@/components/landing/Hero';
 import { ServicesSection } from '@/components/landing/ServicesSection';
-import { GaleriSection } from '@/components/landing/GaleriSection';
 import { ProcessSection } from '@/components/landing/ProcessSection';
 import { FaqSection } from '@/components/landing/FaqSection';
 import { EstimatorWizard } from '@/components/estimator/EstimatorWizard';
@@ -16,9 +16,9 @@ import { catatKlikWa, catatKunjungan } from '@/lib/jejak';
 import { proyekTampil } from '@/lib/cms/galeri';
 
 /** Isi halaman depan. Datanya dari server (penyimpanan online), bukan dari browser. */
-export function HalamanDepan({ dataset, asal }: { dataset: CompleteDataset; asal: string }) {
+export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
   const config = dataset.businessConfig;
-  const galeri = proyekTampil(dataset.galeri);
+  const adaGaleri = proyekTampil(dataset.galeri).length > 0;
   const services = dataset.services.filter((s) => s.status === 'active');
   const faqs = [...dataset.faqs].sort((a, b) => a.order - b.order);
 
@@ -36,7 +36,7 @@ export function HalamanDepan({ dataset, asal }: { dataset: CompleteDataset; asal
 
   return (
     <div className="min-h-screen flex flex-col bg-kertas text-tinta">
-      <Navbar config={config} adaGaleri={galeri.length > 0} />
+      <Navbar config={config} adaGaleri={adaGaleri} />
 
       <main className="flex-1">
         <Hero config={config} dataset={dataset} />
@@ -51,12 +51,11 @@ export function HalamanDepan({ dataset, asal }: { dataset: CompleteDataset; asal
           whatsappNumber={config.frontlineContact.whatsappNumber}
           onSelectService={handleSelectService}
         />
-        <GaleriSection
-          proyek={galeri}
-          kontak={{ namaUsaha: config.businessName, whatsappNumber: config.frontlineContact.whatsappNumber, asal }}
-        />
         <ProcessSection adaHarga={adaHarga} />
         <FaqSection faqs={faqs} />
+
+        {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
+            testimoni palsu. Foto proyek asli ada di kartu layanan dan di halaman /galeri. */}
 
         <section className="bg-navy text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
@@ -91,6 +90,7 @@ export function HalamanDepan({ dataset, asal }: { dataset: CompleteDataset; asal
       </main>
 
       <Footer config={config} />
+      <BarBawah adaGaleri={adaGaleri} wa={{ href: waHref, sumber: 'bar-bawah' }} />
     </div>
   );
 }
