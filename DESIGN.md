@@ -168,6 +168,12 @@ kerasa punya 3 Putra, bukan punya template.
   di angka harga kalkulator. Sekarang di situ ada kalimat: "Isi ukurannya dulu, harganya nanti
   muncul di sini."
 
+## Ikon
+
+Tidak pakai set ikon siap pakai (lucide dan sejenisnya), pemilik tidak suka. Ikon digambar
+sendiri dari referensi benda aslinya atau dari logo, grid 24×24, garis 2px, ujung bulat,
+`currentColor`. Pilihan ikon ditunjukkan ke pemilik dulu sebelum dipasang.
+
 ## Sudah dikonfirmasi pemilik
 
 - Survei lokasi gratis.

@@ -20,3 +20,25 @@ If the mode is unresolved, ask during/after and end the response; wait for the a
 
 To update antislop later: `claude plugin update antislop@anti-slop`.
 <!-- antislop:end -->
+
+## Preferensi pemilik (wajib diikuti)
+
+### Ikon
+- **Jangan pakai lucide-react atau set ikon siap pakai lain** (Heroicons, Feather, Tabler, dsb.).
+  Pemilik menilainya kelihatan generik ("slop").
+- Alurnya: cari referensi dulu (benda aslinya, logo 3 Putra, atau gaya ikon admin), gambar SVG
+  sendiri, lalu **tunjukkan ke pemilik sebelum dipasang**, misalnya lembar pilihan A/B/C dalam
+  bentuk gambar. Pasang setelah pemilik memilih.
+- Gaya ikon yang sudah dipakai: grid 24×24, garis 2px, ujung dan sudut bulat, `currentColor`,
+  ditulis langsung sebagai `<svg>` di komponen (lihat `NavAdmin.tsx` dan `BarBawah.tsx`).
+- Sisa lucide yang masih ada: panah buka-tutup di `FaqSection.tsx`. Ganti juga kalau pemilik
+  sudah memilih penggantinya.
+
+### Cara kerja
+- Gaya bahasa santai ("bro", "gua/lu"), langsung ke inti: masalah, penyebab, solusi, langkah
+  berikutnya.
+- Kalau pemilik bilang "observasi dulu" atau "no code dulu", jangan ubah file apa pun.
+- Jangan ubah tampilan yang sudah jalan kalau tidak diminta. Fitur baru ditambahkan tanpa
+  menggeser yang lama.
+- Kerja di branch, push, pemilik tes di Preview Vercel. Masuk `main` hanya setelah pemilik
+  bilang "merge".
