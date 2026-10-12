@@ -339,11 +339,11 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     // Halaman depan tetap seperti sebelum ada galeri: tidak ada bagian galeri, link menu tetap "#...".
     await expect(page.locator('#galeri')).toHaveCount(0);
     await expect(page.getByText('Hasil pemasangan kami')).toHaveCount(0);
-    await page.getByRole('button', { name: 'Buka menu' }).click();
-    const menuAtas = page.locator('header');
-    await expect(menuAtas.getByRole('link', { name: 'Galeri' })).toHaveAttribute('href', '/galeri');
-    await expect(menuAtas.getByRole('link', { name: 'Cek harga' })).toHaveAttribute('href', '#kalkulator');
-    await page.getByRole('button', { name: 'Tutup menu' }).click();
+    // Di HP header cuma logo, tanpa tombol garis tiga; menu atas (laptop) ikut punya Galeri.
+    await expect(page.getByRole('button', { name: /menu/i })).toHaveCount(0);
+    const menuAtas = page.locator('header nav');
+    await expect(menuAtas.locator('a', { hasText: 'Galeri' })).toHaveAttribute('href', '/galeri');
+    await expect(menuAtas.locator('a', { hasText: 'Cek harga' })).toHaveAttribute('href', '#kalkulator');
 
     // Menu bawah HP: Layanan, Cek harga, Galeri, WhatsApp.
     const barBawah = page.getByRole('navigation', { name: 'Menu bawah' });

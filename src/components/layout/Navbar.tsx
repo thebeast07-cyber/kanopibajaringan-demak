@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
 import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
@@ -30,24 +29,11 @@ export function tautanSitus(pathname: string, adaGaleri: boolean) {
   ];
 }
 
+// Di HP, menu pindah ke bar bawah (BarBawah), jadi header cuma logo.
 export function Navbar({ config, adaGaleri = false }: NavbarProps) {
   const pathname = usePathname();
   const tautan = tautanSitus(pathname, adaGaleri);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const tombolMenuRef = useRef<HTMLButtonElement>(null);
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
-
-  // Menu HP bisa ditutup pakai Escape, lalu fokus balik ke tombol menu (R-32).
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const tutup = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      setMobileMenuOpen(false);
-      tombolMenuRef.current?.focus();
-    };
-    document.addEventListener('keydown', tutup);
-    return () => document.removeEventListener('keydown', tutup);
-  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -73,52 +59,18 @@ export function Navbar({ config, adaGaleri = false }: NavbarProps) {
             ))}
           </nav>
 
-          {/* Amber muncul di sini karena ini tombol WhatsApp. Lihat DESIGN.md. */}
+          {/* Amber muncul di sini karena ini tombol WhatsApp. Lihat DESIGN.md. Di bawah md
+              tombol WhatsApp-nya ada di bar bawah. */}
           <a
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => catatKlikWa('navbar')}
-            className="hidden sm:flex items-center min-h-[44px] bg-oranye hover:bg-oranye-tua text-navy font-semibold px-4 rounded-lg text-sm transition-colors"
+            className="hidden md:flex items-center min-h-[44px] bg-oranye hover:bg-oranye-tua text-navy font-semibold px-4 rounded-lg text-sm transition-colors"
           >
             Chat WhatsApp
           </a>
-
-          <button
-            ref={tombolMenuRef}
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
-            aria-expanded={mobileMenuOpen}
-            className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-kertas-garis text-navy hover:bg-kertas-dalam"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-kertas border-b border-kertas-garis px-4 pb-5">
-            {tautan.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center min-h-[44px] text-tinta border-b border-kertas-garis"
-              >
-                {link.label}
-              </a>
-            ))}
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => catatKlikWa('menu-hp')}
-              className="flex items-center justify-center min-h-[44px] bg-oranye text-navy font-semibold w-full rounded-lg mt-4"
-            >
-              Chat WhatsApp
-            </a>
-          </div>
-        )}
       </header>
     </>
   );
