@@ -1,5 +1,6 @@
 import { EstimateSnapshot, CompleteDataset, BahanStandarSchema } from '../types/domain';
 import { getTarifBorongan } from './estimator/pricingEngine';
+import { angkaId } from './estimator/ukuran';
 
 export interface CustomerContactInfo {
   customerName: string;
@@ -54,11 +55,11 @@ export function buildWhatsAppLeadUrl(
   const kenaMinimum = applied > actual;
   let dimensionStr = '';
   if (unitType === 'm2') {
-    dimensionStr = `${snapshot.input.length || 0} m × ${snapshot.input.width || 0} m (${actual} m²${
-      kenaMinimum ? ` → ditagih ${applied} m²` : ''
+    dimensionStr = `${angkaId(snapshot.input.length || 0)} m × ${angkaId(snapshot.input.width || 0)} m (${angkaId(actual)} m²${
+      kenaMinimum ? ` → ditagih ${angkaId(applied)} m²` : ''
     })`;
   } else if (unitType === 'meter') {
-    dimensionStr = `${snapshot.input.length || 0} meter${kenaMinimum ? ` (ditagih ${applied} meter)` : ''}`;
+    dimensionStr = `${angkaId(snapshot.input.length || 0)} meter${kenaMinimum ? ` (ditagih ${angkaId(applied)} meter)` : ''}`;
   } else {
     dimensionStr = `${snapshot.input.quantity || 1} unit${kenaMinimum ? ` (ditagih ${applied} unit)` : ''}`;
   }

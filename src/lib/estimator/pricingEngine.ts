@@ -1,3 +1,4 @@
+import { luas } from './ukuran';
 import {
   EstimatorInput,
   ServiceSchema,
@@ -36,7 +37,7 @@ export function calculateBillableUnits(
   let actual = 0;
 
   if (unitType === 'm2') {
-    actual = (input.length || 0) * (input.width || 0);
+    actual = luas(input.length || 0, input.width || 0);
   } else if (unitType === 'meter') {
     actual = input.length || 0;
   } else if (unitType === 'unit') {

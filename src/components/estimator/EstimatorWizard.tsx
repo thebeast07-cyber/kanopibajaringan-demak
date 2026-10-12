@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { angkaId, angkaUkuran, rapikanKetikanUkuran } from '@/lib/estimator/ukuran';
 import { CompleteDataset, EstimatorInput, ServiceSchema } from '@/types/domain';
 import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { buildWhatsAppLeadUrl, formatRupiah, teksBahanStandar } from '@/lib/whatsapp';
@@ -33,9 +34,13 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
   const activeService: ServiceSchema | undefined =
     services.find((s) => s.id === selectedServiceId) || defaultService;
 
-  const [lengthInput, setLengthInput] = useState<number>(5);
-  const [widthInput, setWidthInput] = useState<number>(4);
-  const [quantityInput, setQuantityInput] = useState<number>(3);
+  // Disimpan sebagai teks yang diketik (lihat lib/estimator/ukuran.ts), dibaca jadi angka di bawah.
+  const [panjangTeks, setPanjangTeks] = useState('5');
+  const [lebarTeks, setLebarTeks] = useState('4');
+  const [jumlahTeks, setJumlahTeks] = useState('3');
+  const lengthInput = angkaUkuran(panjangTeks);
+  const widthInput = angkaUkuran(lebarTeks);
+  const quantityInput = angkaUkuran(jumlahTeks);
 
   const [customerName, setCustomerName] = useState<string>('');
   const [cityOrDistrict, setCityOrDistrict] = useState<string>('');
@@ -119,9 +124,9 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
   // Ukuran selalu ditulis dengan pola yang sama di seluruh situs (lihat DESIGN.md).
   const ukuranTeks =
     measurement === 'm2'
-      ? `${lengthInput} m × ${widthInput} m`
+      ? `${angkaId(lengthInput)} m × ${angkaId(widthInput)} m`
       : measurement === 'meter'
-      ? `${lengthInput} meter`
+      ? `${angkaId(lengthInput)} meter`
       : `${quantityInput} unit`;
 
   return (
@@ -167,6 +172,9 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
             <div className="pt-6 border-t border-kertas-garis">
               <p className={fieldLabel}>Ukuran</p>
+              <p id="ukuran-bantuan" className="text-sm text-tinta-lembut -mt-1 mb-3">
+                {measurement === 'unit' ? 'Isi jumlahnya.' : 'Dalam meter. Boleh pakai koma, misalnya 3,5.'}
+              </p>
 
               {measurement === 'm2' && (
                 <div className="grid grid-cols-2 gap-4">
@@ -176,14 +184,16 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     </label>
                     <input
                       id="panjang"
-                      type="number"
-                      min={0}
-                      step={0.5}
-                      value={lengthInput}
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      enterKeyHint="done"
+                      value={panjangTeks}
                       onChange={(e) => {
-                        setLengthInput(Number(e.target.value) || 0);
+                        setPanjangTeks(rapikanKetikanUkuran(e.target.value));
                         catatIsiUkuran(activeService.id);
                       }}
+                      aria-describedby="ukuran-bantuan"
                       className={numberField}
                     />
                   </div>
@@ -193,14 +203,16 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     </label>
                     <input
                       id="lebar"
-                      type="number"
-                      min={0}
-                      step={0.5}
-                      value={widthInput}
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      enterKeyHint="done"
+                      value={lebarTeks}
                       onChange={(e) => {
-                        setWidthInput(Number(e.target.value) || 0);
+                        setLebarTeks(rapikanKetikanUkuran(e.target.value));
                         catatIsiUkuran(activeService.id);
                       }}
+                      aria-describedby="ukuran-bantuan"
                       className={numberField}
                     />
                   </div>
@@ -213,17 +225,19 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     Panjang (meter)
                   </label>
                   <input
-                    id="panjang"
-                    type="number"
-                    min={0}
-                    step={0.5}
-                    value={lengthInput}
-                    onChange={(e) => {
-                        setLengthInput(Number(e.target.value) || 0);
+                      id="panjang"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      enterKeyHint="done"
+                      value={panjangTeks}
+                      onChange={(e) => {
+                        setPanjangTeks(rapikanKetikanUkuran(e.target.value));
                         catatIsiUkuran(activeService.id);
                       }}
-                    className={numberField}
-                  />
+                      aria-describedby="ukuran-bantuan"
+                      className={numberField}
+                    />
                 </div>
               )}
 
@@ -233,23 +247,25 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                     Jumlah unit
                   </label>
                   <input
-                    id="jumlah"
-                    type="number"
-                    min={1}
-                    step={1}
-                    value={quantityInput}
-                    onChange={(e) => {
-                      setQuantityInput(Number(e.target.value) || 1);
-                      catatIsiUkuran(activeService.id);
-                    }}
-                    className={numberField}
-                  />
+                      id="jumlah"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      enterKeyHint="done"
+                      value={jumlahTeks}
+                      onChange={(e) => {
+                        setJumlahTeks(rapikanKetikanUkuran(e.target.value, false));
+                        catatIsiUkuran(activeService.id);
+                      }}
+                      aria-describedby="ukuran-bantuan"
+                      className={numberField}
+                    />
                 </div>
               )}
 
               {snapshot && measurement === 'm2' && (
                 <p className="text-sm text-tinta-lembut mt-3">
-                  {ukuranTeks} = <strong className="text-tinta">{snapshot.billableUnits.actual} m²</strong>
+                  {ukuranTeks} = <strong className="text-tinta">{angkaId(snapshot.billableUnits.actual)} m²</strong>
                 </p>
               )}
             </div>
@@ -296,7 +312,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
               {minimumApplied && snapshot && borongan && (
                 <p className="text-sm text-navy-kabut leading-relaxed bg-navy-tua rounded-xl p-4">
-                  Ukuran kamu {snapshot.billableUnits.actual} {unitLabel}, tapi layanan ini minimum{' '}
+                  Ukuran kamu {angkaId(snapshot.billableUnits.actual)} {unitLabel}, tapi layanan ini minimum{' '}
                   <strong className="text-white">
                     {snapshot.billableUnits.applied} {unitLabel}
                   </strong>

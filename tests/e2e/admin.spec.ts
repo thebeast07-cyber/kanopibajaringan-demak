@@ -149,6 +149,40 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     // Kalkulator: 5 m × 4 m = 20 m² × 800.000
     await expect(page.locator('#kalkulator')).toContainText('16.000.000');
 
+    // Ukuran: dihapus tetap kosong (bukan 0), nol di depan dibuang, koma dan titik dipakai desimal.
+    const kalkulator = page.locator('#kalkulator');
+    const panjang = kalkulator.getByLabel('Panjang (meter)');
+    const lebar = kalkulator.getByLabel('Lebar (meter)');
+    await panjang.fill('');
+    await expect(panjang).toHaveValue('');
+    await expect(kalkulator).not.toContainText('16.000.000');
+    await panjang.pressSequentially('05');
+    await expect(panjang).toHaveValue('5');
+    await panjang.fill('');
+    await panjang.pressSequentially('3,5');
+    await expect(panjang).toHaveValue('3,5');
+    await expect(kalkulator).toContainText('3,5 m × 4 m = 14 m²');
+    await expect(kalkulator).toContainText('11.200.000');
+    await lebar.fill('');
+    await lebar.pressSequentially('2.5');
+    await expect(kalkulator).toContainText('3,5 m × 2,5 m = 8,75 m²');
+    await expect(kalkulator).toContainText('7.000.000');
+
+    // Pesan WhatsApp ikut nulis ukuran pakai koma.
+    await page.evaluate(() => {
+      (window as unknown as { __urlWa?: string }).__urlWa = '';
+      window.open = ((url: string) => {
+        (window as unknown as { __urlWa?: string }).__urlWa = url;
+        return null;
+      }) as typeof window.open;
+    });
+    await kalkulator.getByLabel('Nama').fill('Budi');
+    await kalkulator.getByLabel('Lokasi / kecamatan').fill('Sayung, Demak');
+    await kalkulator.getByRole('button', { name: /Lanjut chat WhatsApp/ }).click();
+    const urlWa = await page.evaluate(() => (window as unknown as { __urlWa?: string }).__urlWa || '');
+    const pesan = decodeURIComponent(new URL(urlWa).searchParams.get('text') || '');
+    expect(pesan).toContain('3,5 m × 2,5 m (8,75 m²)');
+
     const footer = page.locator('footer');
     await expect(footer).toContainText('Spesialis kanopi Demak');
     await expect(footer).toContainText('Kudus');
