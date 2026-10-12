@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { defaultCmsRepository } from '../../../lib/cms/repository';
+import { ambilStatusSimpan, langgananStatusSimpan, simpanSekarang } from '../../../lib/cms/sinkronServer';
 import { ServiceSchema } from '../../../types/domain';
 import {
   daftarKolomKosong,
@@ -42,6 +43,11 @@ function Ringkasan({ service }: { service: ServiceSchema }) {
       <dt className="text-tinta-lembut">Lama pengerjaan</dt>
       <dd className="text-tinta">{lama ?? <DataKosong />}</dd>
 
+      <dt className="text-tinta-lembut">Foto</dt>
+      <dd className="text-tinta">
+        {service.fotos?.length ? `${service.fotos.length} foto` : <DataKosong />}
+      </dd>
+
       <dt className="text-tinta-lembut">Bahan standar</dt>
       <dd className="text-tinta">
         {bahan.length ? (
@@ -60,8 +66,8 @@ function Ringkasan({ service }: { service: ServiceSchema }) {
   );
 }
 
-/** Simpan ke draf lalu langsung terbitkan, supaya pemilik cukup menekan satu tombol. */
-function simpanDanTerbitkan(service: ServiceSchema): string | null {
+/** Simpan ke draf, terbitkan, lalu tunggu penyimpanan online menerimanya. Satu tombol buat pemilik. */
+async function simpanDanTerbitkan(service: ServiceSchema): Promise<string | null> {
   try {
     defaultCmsRepository.saveService(service, 'Owner');
   } catch {
@@ -72,7 +78,20 @@ function simpanDanTerbitkan(service: ServiceSchema): string | null {
   } catch {
     return 'Tersimpan sebagai draf, tapi belum tampil di website karena ada data lain yang belum valid. Cek halaman Versi Harga.';
   }
-  return null;
+  const gagalOnline = await simpanSekarang();
+  return gagalOnline ? `Belum tersimpan online. ${gagalOnline}` : null;
+}
+
+/** Foto yang dibuang dari daftar dihapus juga dari penyimpanan, setelah datanya tersimpan. */
+function hapusFotoTerbuang(lama: ServiceSchema | undefined, baru: ServiceSchema) {
+  const dipakai = new Set((baru.fotos ?? []).map((f) => f.url));
+  const terbuang = (lama?.fotos ?? []).map((f) => f.url).filter((u) => !dipakai.has(u));
+  if (terbuang.length === 0) return;
+  fetch('/api/admin/foto', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ urls: terbuang }),
+  }).catch(() => null);
 }
 
 export default function AdminIsiDataPage() {
@@ -80,6 +99,7 @@ export default function AdminIsiDataPage() {
   const [terbuka, setTerbuka] = useState<string | null>(null);
   const [draftBaru, setDraftBaru] = useState<ServiceSchema | null>(null);
   const [tersimpan, setTersimpan] = useState<{ id: string; nama: string } | null>(null);
+  const statusSimpan = useSyncExternalStore(langgananStatusSimpan, ambilStatusSimpan, ambilStatusSimpan);
 
   useEffect(() => {
     const muat = () => setLayanan(defaultCmsRepository.getWorkingDataset().services);
@@ -103,9 +123,11 @@ export default function AdminIsiDataPage() {
     setTerbuka((sekarang) => (sekarang === id ? null : id));
   };
 
-  const simpan = (service: ServiceSchema) => {
-    const pesanGagal = simpanDanTerbitkan(service);
+  const simpan = async (service: ServiceSchema) => {
+    const lama = layanan.find((s) => s.id === service.id);
+    const pesanGagal = await simpanDanTerbitkan(service);
     if (!pesanGagal) {
+      hapusFotoTerbuang(lama, service);
       setTerbuka(null);
       setDraftBaru(null);
       setTersimpan({ id: service.id, nama: service.title });
@@ -128,10 +150,11 @@ export default function AdminIsiDataPage() {
           <DataKosong />. Selama kosong, website nggak nampilin angkanya dan pelanggan diarahkan tanya
           lewat WhatsApp.
         </p>
-        <p className="text-sm text-tinta bg-kertas-dalam border border-kertas-garis rounded-lg p-3 leading-relaxed">
-          Untuk sekarang data ini tersimpan di browser ini saja. Pelanggan di HP atau laptop lain
-          belum bisa lihat sampai penyimpanan online dipasang.
-        </p>
+        {statusSimpan.jenis === 'lokal' && (
+          <p className="text-sm text-tinta bg-kertas-dalam border border-kertas-garis rounded-lg p-3 leading-relaxed">
+            Mode uji: data disimpan di folder .data di server ini, bukan di Vercel.
+          </p>
+        )}
       </div>
 
       <p className="font-semibold text-tinta">
@@ -181,7 +204,7 @@ export default function AdminIsiDataPage() {
                   tabIndex={-1}
                   className="text-sm text-tinta bg-kertas-dalam rounded-lg p-3"
                 >
-                  {tersimpan.nama} tersimpan. Website di browser ini sudah pakai data barunya.
+                  {tersimpan.nama} tersimpan. Website sudah pakai data barunya.
                 </p>
               )}
 

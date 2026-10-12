@@ -25,7 +25,7 @@ import {
 // v2: harga bawaan direset. Data v1 di browser lama tetap ada, cuma tidak dibaca lagi.
 const STORAGE_KEY = 'kanopi_cms_state_v2';
 
-interface StorageState {
+export interface StorageState {
   publishedDataset: CompleteDataset;
   draftDataset: CompleteDataset | null;
   versions: PricingVersionSchema[];
@@ -38,6 +38,8 @@ export class LocalCmsRepository implements ICmsRepository {
   private versions: PricingVersionSchema[] = [];
   private auditLogs: AuditLogEntry[] = [];
   private listeners: Set<() => void> = new Set();
+  // Dipasang oleh layout admin: tiap perubahan juga dikirim ke penyimpanan online.
+  private penyimpanLuar: ((state: StorageState) => void) | null = null;
 
   constructor(initialData?: CompleteDataset) {
     const base = initialData || COMPREHENSIVE_DATASET;
@@ -204,7 +206,36 @@ export class LocalCmsRepository implements ICmsRepository {
         console.warn('Failed to persist LocalCmsRepository state', e);
       }
     }
+    this.penyimpanLuar?.(this.exportState());
     this.notify();
+  }
+
+  exportState(): StorageState {
+    return JSON.parse(
+      JSON.stringify({
+        publishedDataset: this.publishedDataset,
+        draftDataset: this.draftDataset,
+        versions: this.versions,
+        // Riwayat dipotong supaya berkas di penyimpanan online tidak membengkak.
+        auditLogs: this.auditLogs.slice(0, 500),
+      })
+    );
+  }
+
+  /** Ganti seluruh isi dengan data dari penyimpanan online, tanpa mengirimnya balik. */
+  replaceState(state: StorageState): void {
+    this.publishedDataset = state.publishedDataset;
+    this.draftDataset = state.draftDataset;
+    this.versions = state.versions;
+    this.auditLogs = state.auditLogs;
+    const penyimpan = this.penyimpanLuar;
+    this.penyimpanLuar = null;
+    this.persistState();
+    this.penyimpanLuar = penyimpan;
+  }
+
+  setPenyimpanLuar(fn: ((state: StorageState) => void) | null): void {
+    this.penyimpanLuar = fn;
   }
 
   private notify() {

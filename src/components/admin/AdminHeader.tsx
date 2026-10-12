@@ -1,9 +1,26 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { defaultCmsRepository } from '../../lib/cms/repository';
-import { ShieldCheck, GitCommit, ExternalLink, Menu } from 'lucide-react';
+import { GitCommit, ExternalLink, Menu } from 'lucide-react';
+import { ambilStatusSimpan, langgananStatusSimpan, StatusSimpan } from '../../lib/cms/sinkronServer';
+
+function teksStatus(s: StatusSimpan): string {
+  if (s.jenis === 'belum-dipasang') return 'Belum tersambung';
+  switch (s.keadaan) {
+    case 'memuat':
+      return 'Memuat...';
+    case 'menyimpan':
+      return 'Menyimpan...';
+    case 'gagal':
+      return 'Gagal menyimpan';
+    case 'konflik':
+      return 'Perlu muat ulang';
+    default:
+      return s.jenis === 'lokal' ? 'Tersimpan (uji lokal)' : 'Tersimpan online';
+  }
+}
 
 export interface AdminHeaderProps {
   onToggleMobile?: () => void;
@@ -12,6 +29,12 @@ export interface AdminHeaderProps {
 export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
   const [activeVersion, setActiveVersion] = useState<string>('v1.0.0');
   const [hasDraft, setHasDraft] = useState<boolean>(false);
+  const statusSimpan = useSyncExternalStore(langgananStatusSimpan, ambilStatusSimpan, ambilStatusSimpan);
+
+  const keluar = async () => {
+    await fetch('/api/admin/masuk', { method: 'DELETE' }).catch(() => null);
+    window.location.assign('/admin/masuk');
+  };
 
   useEffect(() => {
     const updateState = () => {
@@ -35,10 +58,12 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
             <Menu className="w-5 h-5" />
           </button>
         )}
-        <div>
-          <h1 className="text-sm font-bold text-slate-800 tracking-tight">
+        {/* Bukan h1: tiap halaman sudah punya judul sendiri. Disembunyikan di HP supaya
+            tombol Keluar dan status simpan muat dalam header 64px. */}
+        <div className="hidden sm:block">
+          <p className="text-sm font-bold text-slate-800 tracking-tight">
             Panel Pengelolaan Harga & Layanan
-          </h1>
+          </p>
           <p className="text-[11px] text-slate-500 hidden sm:block">
             Modul Operasional Pemilik Kontraktor Local
           </p>
@@ -61,11 +86,13 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
           <strong className="text-amber-600 font-bold">{activeVersion}</strong>
         </div>
 
-        {/* Mode Info */}
-        <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg font-semibold">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Edit Aman</span>
-        </div>
+        {/* Status simpan nyata, menggantikan badge "Edit Aman" yang tidak menandai apa-apa. */}
+        <p
+          aria-live="polite"
+          className="hidden sm:block text-xs font-semibold text-tinta px-2.5 py-1 rounded-lg border border-kertas-garis bg-white"
+        >
+          {teksStatus(statusSimpan)}
+        </p>
 
         {/* Direct Link to Public Site */}
         <Link
@@ -77,6 +104,14 @@ export function AdminHeader({ onToggleMobile }: AdminHeaderProps) {
           <span className="hidden sm:inline">Lihat Website</span>
           <ExternalLink className="w-3.5 h-3.5 text-amber-600" />
         </Link>
+
+        <button
+          type="button"
+          onClick={keluar}
+          className="text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg transition"
+        >
+          Keluar
+        </button>
       </div>
     </header>
   );

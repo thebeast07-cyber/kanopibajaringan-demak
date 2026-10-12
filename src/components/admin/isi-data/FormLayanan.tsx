@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { ServiceSchema } from '../../../types/domain';
+import { FotoLayananSchema, ServiceSchema } from '../../../types/domain';
+import { KelolaFoto } from './KelolaFoto';
 import { formatRupiah } from '../../../lib/whatsapp';
 import {
   CaraUkur,
@@ -36,7 +37,7 @@ interface FormLayananProps {
   service: ServiceSchema;
   idForm: string;
   /** Kembalikan pesan gagal, atau null kalau tersimpan. */
-  onSimpan: (service: ServiceSchema) => string | null;
+  onSimpan: (service: ServiceSchema) => Promise<string | null>;
   onBatal: () => void;
 }
 
@@ -48,6 +49,7 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
   });
   const [salah, setSalah] = useState<KesalahanIsian>({});
   const [gagal, setGagal] = useState('');
+  const [menyimpan, setMenyimpan] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const satuan = SATUAN[isian.measurementType];
@@ -66,10 +68,13 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
   };
   const hargaAngka = Number(isian.harga.replace(/\D/g, ''));
 
+  const ubahFotos = (fn: (lama: FotoLayananSchema[]) => FotoLayananSchema[]) =>
+    setIsian((prev) => ({ ...prev, fotos: fn(prev.fotos) }));
+
   const ubahBaris = (i: number, field: 'bagian' | 'bahan', nilai: string) =>
     ubah({ bahan: isian.bahan.map((b, idx) => (idx === i ? { ...b, [field]: nilai } : b)) });
 
-  const kirim = (e: React.FormEvent) => {
+  const kirim = async (e: React.FormEvent) => {
     e.preventDefault();
     const hasilPeriksa = periksaIsian(isian);
     setSalah(hasilPeriksa);
@@ -78,7 +83,9 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
       requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus());
       return;
     }
-    const pesanGagal = onSimpan(terapkanIsian(service, isian));
+    setMenyimpan(true);
+    const pesanGagal = await onSimpan(terapkanIsian(service, isian));
+    setMenyimpan(false);
     setGagal(pesanGagal ?? '');
   };
 
@@ -124,6 +131,27 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
           aria-describedby={id('keterangan-bantuan')}
           className={`${kelasKolom()} py-2.5`}
         />
+      </div>
+
+      <KelolaFoto serviceId={service.id} idDasar={id('foto')} fotos={isian.fotos} ubahFotos={ubahFotos} />
+
+      <div className="flex items-start gap-3">
+        <input
+          id={id('kartu-besar')}
+          type="checkbox"
+          checked={isian.featured}
+          onChange={(e) => ubah({ featured: e.target.checked })}
+          aria-describedby={id('kartu-besar-bantuan')}
+          className="mt-3 h-5 w-5 shrink-0 accent-hutan"
+        />
+        <div>
+          <label htmlFor={id('kartu-besar')} className="flex items-center min-h-[44px] text-sm font-semibold text-tinta cursor-pointer">
+            Tampil sebagai kartu besar di website
+          </label>
+          <p id={id('kartu-besar-bantuan')} className={kelasBantuan}>
+            Foto cuma tampil di kartu besar. Tanpa centang, layanan masuk daftar &ldquo;Layanan lain&rdquo; tanpa foto.
+          </p>
+        </div>
       </div>
 
       <fieldset className="space-y-2">
@@ -310,8 +338,8 @@ export function FormLayanan({ service, idForm, onSimpan, onBatal }: FormLayananP
       )}
 
       <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-kertas-garis">
-        <button type="submit" className={kelasTombolUtama}>
-          Simpan
+        <button type="submit" disabled={menyimpan} className={`${kelasTombolUtama} disabled:opacity-60`}>
+          {menyimpan ? 'Menyimpan...' : 'Simpan'}
         </button>
         <button type="button" onClick={onBatal} className={kelasTombolKedua}>
           Batal

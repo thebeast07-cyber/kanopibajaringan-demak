@@ -4,6 +4,7 @@ import React from 'react';
 import { ServiceSchema } from '@/types/domain';
 import { formatRupiah, waTanyaUrl } from '@/lib/whatsapp';
 import { getMinimumPengerjaan, getTarifBorongan } from '@/lib/estimator/pricingEngine';
+import { GaleriFoto } from './GaleriFoto';
 
 interface ServicesSectionProps {
   services: ServiceSchema[];
@@ -56,6 +57,12 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
                 className="bg-kertas border border-kertas-garis rounded-2xl p-6 sm:p-7 flex flex-col justify-between gap-5"
               >
                 <div className="space-y-3">
+                  {/* Foto asli dari pemilik saja. Tanpa foto, kartu tampil tanpa gambar, bukan foto stok. */}
+                  {svc.fotos && svc.fotos.length > 0 && (
+                    <div className="pb-2">
+                      <GaleriFoto fotos={svc.fotos} judul={svc.title} />
+                    </div>
+                  )}
                   <h3 className="font-heading text-xl font-bold text-hutan">{svc.title}</h3>
                   <p className="text-sm text-tinta-lembut leading-relaxed">{svc.shortDescription}</p>
 

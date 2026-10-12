@@ -1,4 +1,4 @@
-import { BahanStandarSchema, MeasurementType, ServiceSchema } from '../../types/domain';
+import { BahanStandarSchema, FotoLayananSchema, MeasurementType, ServiceSchema } from '../../types/domain';
 import { getMinimumPengerjaan, getTarifBorongan } from '../estimator/pricingEngine';
 import { formatRupiah } from '../whatsapp';
 
@@ -20,6 +20,19 @@ export interface IsianLayanan {
   hariMin: string;
   hariMax: string;
   bahan: BahanStandarSchema[];
+  fotos: FotoLayananSchema[];
+  featured: boolean;
+}
+
+export const BATAS_FOTO = 10;
+
+/** Pindahkan foto ke kiri (-1) atau kanan (+1). Di ujung daftar tidak terjadi apa-apa. */
+export function geserFoto(fotos: FotoLayananSchema[], i: number, arah: -1 | 1): FotoLayananSchema[] {
+  const j = i + arah;
+  if (j < 0 || j >= fotos.length) return fotos;
+  const hasil = [...fotos];
+  [hasil[i], hasil[j]] = [hasil[j], hasil[i]];
+  return hasil;
 }
 
 export type KolomWajib = 'harga' | 'lama' | 'bahan';
@@ -76,6 +89,8 @@ export function isianDariLayanan(service: ServiceSchema): IsianLayanan {
     hariMin: range ? String(range.minDays) : '',
     hariMax: range ? String(range.maxDays) : '',
     bahan: service.bahanStandar?.length ? service.bahanStandar.map((b) => ({ ...b })) : [],
+    fotos: (service.fotos ?? []).map((f) => ({ ...f })),
+    featured: service.featured,
   };
 }
 
@@ -144,6 +159,11 @@ export function terapkanIsian(service: ServiceSchema, isian: IsianLayanan): Serv
     bahanStandar: isian.bahan
       .map((b) => ({ bagian: b.bagian.trim(), bahan: b.bahan.trim() }))
       .filter((b) => b.bagian && b.bahan),
+    fotos: isian.fotos.map((f) => ({
+      url: f.url,
+      ...(f.keterangan?.trim() ? { keterangan: f.keterangan.trim() } : {}),
+    })),
+    featured: isian.featured,
     source: 'owner',
   };
 }
@@ -157,7 +177,8 @@ export function layananBaru(): ServiceSchema {
     shortDescription: '',
     fullDescription: '',
     category: 'other',
-    featured: false,
+    // Layanan baru langsung jadi kartu besar, karena cuma kartu besar yang menampilkan foto.
+    featured: true,
     measurementType: 'm2',
     pricingRules: [],
     allowedMaterialIds: [],
@@ -168,6 +189,7 @@ export function layananBaru(): ServiceSchema {
     allowedSiteConditionIds: [],
     durationRanges: [],
     bahanStandar: [],
+    fotos: [],
     source: 'owner',
     status: 'active',
   };

@@ -11,6 +11,8 @@ import {
   terapkanIsian,
   teksHarga,
   teksLama,
+  geserFoto,
+  layananBaru,
 } from './isiDataLayanan';
 
 const alderon = () => JSON.parse(JSON.stringify(COMPREHENSIVE_DATASET.services[0]));
@@ -106,5 +108,31 @@ describe('Isi data layanan', () => {
     );
     assert.ok(pesan.includes('Bahan standar: Atap: Alderon RS'));
     assert.ok(pesan.includes('16.000.000'));
+  });
+
+  it('8. Foto bisa digeser, ujung daftar tidak berubah', () => {
+    const f = [{ url: 'a' }, { url: 'b' }, { url: 'c' }];
+    assert.deepEqual(geserFoto(f, 0, 1).map((x) => x.url), ['b', 'a', 'c']);
+    assert.deepEqual(geserFoto(f, 2, -1).map((x) => x.url), ['a', 'c', 'b']);
+    assert.equal(geserFoto(f, 0, -1), f);
+    assert.equal(geserFoto(f, 2, 1), f);
+  });
+
+  it('9. Foto, keterangan, dan kartu besar ikut tersimpan; keterangan kosong dibuang', () => {
+    const svc = terapkanIsian(alderon(), {
+      ...isianDariLayanan(alderon()),
+      fotos: [{ url: '/api/foto/a.webp', keterangan: ' Carport Sayung ' }, { url: '/api/foto/b.webp', keterangan: '  ' }],
+      featured: false,
+    });
+    assert.deepEqual(svc.fotos, [{ url: '/api/foto/a.webp', keterangan: 'Carport Sayung' }, { url: '/api/foto/b.webp' }]);
+    assert.equal(svc.featured, false);
+    assert.deepEqual(isianDariLayanan(svc).fotos, svc.fotos);
+  });
+
+  it('10. Layanan baru mulai kosong dan tampil sebagai kartu besar', () => {
+    const baru = layananBaru();
+    assert.deepEqual(baru.fotos, []);
+    assert.equal(baru.featured, true);
+    assert.deepEqual(kolomKosong(baru), ['harga', 'lama', 'bahan']);
   });
 });

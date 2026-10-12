@@ -9,3 +9,8 @@ test-results/
 .DS_Store
 
 tsconfig.tsbuildinfo
+
+# Data uji lokal penyimpanan admin (di Vercel pakai Blob)
+.data/
+tests/e2e/.auth/
+.data-e2e/

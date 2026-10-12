@@ -22,12 +22,7 @@ import {
   MasterDataConfirmDialog,
   StatusFilterOption,
 } from '../../../components/admin/master-data';
-import { Edit3, Power, Wrench, Clock, CheckCircle2, ShieldCheck, Upload, Image as ImageIcon, Trash2, RefreshCw } from 'lucide-react';
-import {
-  validateImageFile,
-  readImageAsDataUrl,
-  getFallbackServiceImage,
-} from '../../../lib/cms/mediaStorage';
+import { Edit3, Power, Wrench, Clock, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 const CATEGORY_OPTIONS = [
   { value: 'canopy', label: 'Kanopi Rumah' },
@@ -106,8 +101,6 @@ export default function AdminLayananPage() {
   const [formState, setFormState] = useState<ServiceFormState | null>(null);
   const [formTab, setFormTab] = useState('info');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [imageValidationError, setImageValidationError] = useState<string>('');
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   // Confirm Status Toggle
   const [toggleTarget, setToggleTarget] = useState<ServiceSchema | null>(null);
@@ -125,38 +118,6 @@ export default function AdminLayananPage() {
     return defaultCmsRepository.subscribe(updateData);
   }, []);
 
-  // Image Upload Handlers
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    console.log('[DEBUG] handleFileChange triggered:', file?.name, file?.type, file?.size);
-    if (!file || !formState) {
-      console.log('[DEBUG] handleFileChange early return: no file or no formState');
-      return;
-    }
-    const valResult = validateImageFile(file);
-    if (!valResult.valid) {
-      console.log('[DEBUG] validation failed:', valResult.error);
-      setImageValidationError(valResult.error || 'File foto tidak valid.');
-      return;
-    }
-    setImageValidationError('');
-    try {
-      const dataUrl = await readImageAsDataUrl(file);
-      console.log('[DEBUG] dataUrl generated successfully, length:', dataUrl.length);
-      setFormState((prev) => (prev ? { ...prev, imageUrl: dataUrl } : null));
-    } catch (err) {
-      console.log('[DEBUG] error reading image dataUrl:', err);
-      setImageValidationError('Gagal membaca file foto.');
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImageValidationError('');
-    setFormState((prev) => (prev ? { ...prev, imageUrl: '' } : null));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
 
   // Filter Logic
   const filteredServices = useMemo(() => {
@@ -208,7 +169,6 @@ export default function AdminLayananPage() {
     });
     setFormTab('info');
     setFormErrors({});
-    setImageValidationError('');
     setIsModalOpen(true);
   };
 
@@ -245,7 +205,6 @@ export default function AdminLayananPage() {
     });
     setFormTab('info');
     setFormErrors({});
-    setImageValidationError('');
     setIsModalOpen(true);
   };
 
@@ -329,6 +288,7 @@ export default function AdminLayananPage() {
       ],
       // Diisi di /admin/isi-data; form ini tidak punya kolomnya, jadi bawa yang lama.
       bahanStandar: services.find((s) => s.id === serviceId)?.bahanStandar ?? [],
+      fotos: services.find((s) => s.id === serviceId)?.fotos ?? [],
       imageUrl: formState.imageUrl && formState.imageUrl.trim().length > 0 ? formState.imageUrl.trim() : undefined,
       source: 'owner',
       status: formState.status,
@@ -569,77 +529,15 @@ export default function AdminLayananPage() {
                 </div>
               </div>
 
-              {/* Foto Katalog Section */}
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="font-semibold text-slate-800 flex items-center gap-1.5 text-xs">
-                    <ImageIcon className="w-4 h-4 text-amber-600" />
-                    <span>Foto Katalog Produk</span>
-                  </label>
-                  {formState.imageUrl ? (
-                    <span className="text-[10px] font-bold uppercase bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
-                      Foto Kustom Aktif
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-medium bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">
-                      Menggunakan Fallback Default
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="w-full sm:w-36 h-28 bg-slate-200 rounded-lg overflow-hidden border border-slate-300 relative shrink-0">
-                    <img
-                      src={formState.imageUrl || getFallbackServiceImage(formState.slug)}
-                      alt="Preview Foto Katalog"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <div className="space-y-2 flex-1 w-full">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={handleFileChange}
-                      onInput={handleFileChange}
-                      className="hidden"
-                    />
-
-                    <div className="flex flex-wrap gap-2">
-                      <AdminButton
-                        type="button"
-                        size="sm"
-                        variant={formState.imageUrl ? 'outline' : 'primary'}
-                        icon={formState.imageUrl ? <RefreshCw className="w-3.5 h-3.5" /> : <Upload className="w-3.5 h-3.5" />}
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        {formState.imageUrl ? 'Ganti Foto' : 'Upload Foto'}
-                      </AdminButton>
-
-                      {formState.imageUrl && (
-                        <AdminButton
-                          type="button"
-                          size="sm"
-                          variant="danger"
-                          icon={<Trash2 className="w-3.5 h-3.5" />}
-                          onClick={handleRemoveImage}
-                        >
-                          Hapus Foto
-                        </AdminButton>
-                      )}
-                    </div>
-
-                    <p className="text-[11px] text-slate-500">
-                      Format didukung: JPG, PNG, WebP (Maksimal 5 MB).
-                    </p>
-
-                    {imageValidationError && (
-                      <p className="text-xs text-rose-600 font-semibold">{imageValidationError}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
+              {/* Upload satu foto lama (data URL di localStorage + foto stok Unsplash kalau kosong)
+                  diganti galeri foto di /admin/isi-data yang tersimpan online. */}
+              <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                Foto layanan diatur di{' '}
+                <a href="/admin/isi-data" className="font-semibold underline underline-offset-2">
+                  Isi Data Layanan
+                </a>
+                , bisa lebih dari satu foto.
+              </p>
 
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
