@@ -1,24 +1,8 @@
-import { Redis } from '@upstash/redis';
+import { redis, redisTerpasang } from './redis';
 import { Kejadian, Ringkasan, kolomHitungan, ringkas, tanggalJakarta, tanggalMundur } from '../statistik/kejadian';
 
-// Integrasi Upstash di Vercel kadang memberi nama KV_REST_API_*, kadang UPSTASH_REDIS_REST_*.
-function alamat(): { url: string; token: string } | null {
-  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  return url && token ? { url, token } : null;
-}
-
-let klien: Redis | null | undefined;
-function redis(): Redis | null {
-  if (klien === undefined) {
-    const a = alamat();
-    klien = a ? new Redis({ url: a.url, token: a.token }) : null;
-  }
-  return klien;
-}
-
 export function statistikTerpasang(): boolean {
-  return alamat() !== null;
+  return redisTerpasang();
 }
 
 // Preview dan Production memakai database yang sama, jadi hitungannya dipisah per lingkungan

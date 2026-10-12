@@ -1,6 +1,7 @@
+import { useSyncExternalStore } from 'react';
 import { defaultLocalCmsRepository, StorageState } from './localCmsRepository';
 
-export type JenisPenyimpanan = 'vercel-blob' | 'lokal' | 'belum-dipasang';
+export type JenisPenyimpanan = 'redis' | 'vercel-blob' | 'lokal' | 'belum-dipasang';
 
 export interface StatusSimpan {
   keadaan: 'memuat' | 'tersimpan' | 'menyimpan' | 'gagal' | 'konflik';
@@ -27,6 +28,10 @@ export function ambilStatusSimpan(): StatusSimpan {
 export function langgananStatusSimpan(fn: () => void): () => void {
   pendengar.add(fn);
   return () => pendengar.delete(fn);
+}
+
+export function useStatusSimpan(): StatusSimpan {
+  return useSyncExternalStore(langgananStatusSimpan, ambilStatusSimpan, ambilStatusSimpan);
 }
 
 async function kirimSatu(): Promise<void> {

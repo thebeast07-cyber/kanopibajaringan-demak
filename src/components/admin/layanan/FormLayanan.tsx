@@ -6,6 +6,7 @@ import { FotoLayananSchema, ServiceSchema } from '../../../types/domain';
 import { KelolaFoto } from './KelolaFoto';
 import { PratinjauKartu } from './PratinjauKartu';
 import { formatRupiah } from '../../../lib/whatsapp';
+import { useStatusSimpan } from '../../../lib/cms/sinkronServer';
 import {
   CaraUkur,
   IsianLayanan,
@@ -108,6 +109,9 @@ export function FormLayanan({ service, baru, namaUsaha, whatsappNumber, onSimpan
   // Versi yang terakhir tersimpan, buat baris status di atas form.
   const [terakhir, setTerakhir] = useState<ServiceSchema | null>(baru ? null : service);
   const formRef = useRef<HTMLFormElement>(null);
+  // Konflik: server sudah punya simpanan lebih baru. Simpan dimatikan sampai halaman dimuat ulang.
+  const statusSimpan = useStatusSimpan();
+  const konflik = statusSimpan.keadaan === 'konflik';
   const tombolLihatRef = useRef<HTMLButtonElement>(null);
 
   const berubah = JSON.stringify(isian) !== JSON.stringify(awal);
@@ -546,7 +550,11 @@ export function FormLayanan({ service, baru, namaUsaha, whatsappNumber, onSimpan
 
       <div className="fixed inset-x-0 bottom-0 z-30 bg-white border-t border-kertas-garis shadow-[0_-6px_16px_rgba(11,45,91,0.08)] pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto px-4 pt-2.5 pb-3 space-y-2">
-          {gagal ? (
+          {konflik ? (
+            <p role="alert" className="text-[13px] font-semibold text-tinta">
+              {statusSimpan.pesan}
+            </p>
+          ) : gagal ? (
             <p role="alert" className="text-[13px] font-semibold text-tinta">
               {gagal}
             </p>
@@ -555,19 +563,25 @@ export function FormLayanan({ service, baru, namaUsaha, whatsappNumber, onSimpan
               {teksBar}
             </p>
           )}
-          <div className="grid grid-cols-2 gap-2.5">
-            <button ref={tombolLihatRef} type="button" onClick={() => setLihatHasil(true)} className={kelasTombolKedua}>
-              Lihat hasil
+          {konflik ? (
+            <button type="button" onClick={() => window.location.reload()} className={`${kelasTombolUtama} w-full`}>
+              Muat ulang halaman
             </button>
-            <button
-              type="submit"
-              form="form-layanan"
-              disabled={menyimpan || (!berubah && !gagal)}
-              className={kelasTombolUtama}
-            >
-              {menyimpan ? 'Menyimpan...' : 'Simpan'}
-            </button>
-          </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2.5">
+              <button ref={tombolLihatRef} type="button" onClick={() => setLihatHasil(true)} className={kelasTombolKedua}>
+                Lihat hasil
+              </button>
+              <button
+                type="submit"
+                form="form-layanan"
+                disabled={menyimpan || (!berubah && !gagal)}
+                className={kelasTombolUtama}
+              >
+                {menyimpan ? 'Menyimpan...' : 'Simpan'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

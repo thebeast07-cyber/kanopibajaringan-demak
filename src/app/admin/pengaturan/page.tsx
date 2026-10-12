@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { defaultCmsRepository } from '../../../lib/cms/repository';
 import { simpanPengaturan } from '../../../lib/cms/simpanAdmin';
+import { useStatusSimpan } from '../../../lib/cms/sinkronServer';
 import {
   IsianPengaturan,
   KesalahanPengaturan,
@@ -35,6 +36,9 @@ export default function HalamanPengaturan() {
   const [menyimpan, setMenyimpan] = useState(false);
   const [tersimpan, setTersimpan] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  // Konflik: server sudah punya simpanan lebih baru. Simpan dimatikan sampai halaman dimuat ulang.
+  const statusSimpan = useStatusSimpan();
+  const konflik = statusSimpan.keadaan === 'konflik';
 
   const berubah = JSON.stringify(isian) !== JSON.stringify(awal);
   const adaSalah = Object.keys(salah).length > 0;
@@ -106,7 +110,7 @@ export default function HalamanPengaturan() {
       </p>
     ) : null;
 
-  const barTampil = berubah || tersimpan || Boolean(gagal) || adaSalah;
+  const barTampil = berubah || tersimpan || Boolean(gagal) || adaSalah || konflik;
   const teksBar = menyimpan
     ? 'Menyimpan...'
     : adaSalah
@@ -299,7 +303,11 @@ export default function HalamanPengaturan() {
           <div aria-hidden="true" className="h-20" />
           <div className="fixed inset-x-0 bottom-[calc(60px+env(safe-area-inset-bottom))] z-30 bg-white border-t border-kertas-garis shadow-[0_-6px_16px_rgba(11,45,91,0.08)]">
             <div className="max-w-xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
-              {gagal ? (
+              {konflik ? (
+                <p role="alert" className="text-[13px] font-semibold text-tinta">
+                  {statusSimpan.pesan}
+                </p>
+              ) : gagal ? (
                 <p role="alert" className="text-[13px] font-semibold text-tinta">
                   {gagal}
                 </p>
@@ -308,14 +316,20 @@ export default function HalamanPengaturan() {
                   {teksBar}
                 </p>
               )}
-              <button
-                type="submit"
-                form="form-pengaturan"
-                disabled={menyimpan || (!berubah && !gagal)}
-                className={`${kelasTombolUtama} shrink-0`}
-              >
-                {menyimpan ? 'Menyimpan...' : 'Simpan'}
-              </button>
+              {konflik ? (
+                <button type="button" onClick={() => window.location.reload()} className={`${kelasTombolUtama} shrink-0`}>
+                  Muat ulang
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  form="form-pengaturan"
+                  disabled={menyimpan || (!berubah && !gagal)}
+                  className={`${kelasTombolUtama} shrink-0`}
+                >
+                  {menyimpan ? 'Menyimpan...' : 'Simpan'}
+                </button>
+              )}
             </div>
           </div>
         </>

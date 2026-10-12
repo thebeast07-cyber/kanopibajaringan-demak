@@ -3,9 +3,10 @@ import { HalamanDepan } from '@/components/landing/HalamanDepan';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 
-// Halaman dibangun ulang tiap admin menyimpan (revalidatePath di /api/admin/state);
-// angka ini cuma jaring pengaman kalau sinyal itu terlewat.
-export const revalidate = 3600;
+// Dirender tiap kunjungan, karena data dibaca dari Redis dengan permintaan tanpa cache yang
+// tidak boleh dipakai di halaman statis. Datanya sendiri tetap di-cache (bacaDatasetTerbit)
+// dan dibuang tiap admin menyimpan, jadi Redis tidak dibaca di setiap kunjungan.
+export const dynamic = 'force-dynamic';
 
 const NAMA_RESMI = '3 Putra Spesialis Kanopi dan Baja Ringan';
 

@@ -6,8 +6,12 @@ import { unstable_cache } from 'next/cache';
 import { LocalCmsRepository, StorageState } from '../cms/localCmsRepository';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import { CompleteDataset } from '../../types/domain';
+import { redis, redisTerpasang } from './redis';
 
+/** Tempat foto. */
 export type JenisPenyimpanan = 'vercel-blob' | 'lokal' | 'belum-dipasang';
+/** Tempat data admin (harga, bahan, pengaturan). */
+export type TempatState = 'redis' | JenisPenyimpanan;
 
 export class KonflikPenyimpanan extends Error {}
 export class PenyimpananBelumDipasang extends Error {}
@@ -21,15 +25,39 @@ export function jenisPenyimpanan(): JenisPenyimpanan {
   return 'lokal';
 }
 
-// Semua berkas disimpan public supaya jalan di jenis store apa pun. Data admin ditaruh
-// di alamat yang diturunkan dari ADMIN_SESSION_SECRET, jadi tidak bisa ditebak.
-function pathState(): string {
-  const kunci = createHash('sha256')
+// Data admin disimpan di Redis kalau ada. Blob public di-cache CDN sampai 60 detik setelah
+// ditimpa, jadi admin bisa membaca versi basi lalu ditolak waktu menyimpan. Redis selalu
+// membaca versi terbaru. Blob tetap dipakai untuk foto, yang namanya selalu baru.
+export function tempatState(): TempatState {
+  return redisTerpasang() ? 'redis' : jenisPenyimpanan();
+}
+
+// Alamat data admin diturunkan dari ADMIN_SESSION_SECRET: tidak bisa ditebak, dan Production
+// dan Preview (rahasianya beda) tidak saling menimpa walau memakai Redis yang sama.
+function kunciAdmin(): string {
+  return createHash('sha256')
     .update(process.env.ADMIN_SESSION_SECRET || 'lokal')
     .digest('hex')
     .slice(0, 24);
-  return `cms/${kunci}/state.json`;
 }
+
+function pathState(): string {
+  return `cms/${kunciAdmin()}/state.json`;
+}
+
+const kunciRedis = () => ({ state: `cms:${kunciAdmin()}:state`, versi: `cms:${kunciAdmin()}:versi` });
+
+// Simpan hanya kalau versi di server masih sama dengan versi yang dipegang perangkat ini.
+// Dijalankan di dalam Redis sekaligus, jadi dua perangkat yang menyimpan bersamaan tidak bisa
+// sama-sama lolos.
+const SKRIP_SIMPAN = `
+local sekarang = redis.call('GET', KEYS[2]) or '0'
+if sekarang ~= ARGV[1] then return {0, sekarang} end
+local baru = tostring(tonumber(sekarang) + 1)
+redis.call('SET', KEYS[1], ARGV[2])
+redis.call('SET', KEYS[2], baru)
+return {1, baru}
+`;
 
 const FOLDER_LOKAL = process.env.CMS_DATA_DIR || path.join(process.cwd(), '.data');
 const FILE_STATE_LOKAL = path.join(FOLDER_LOKAL, 'state.json');
@@ -43,11 +71,29 @@ export function stateAwal(): StorageState {
   return new LocalCmsRepository(COMPREHENSIVE_DATASET).exportState();
 }
 
-export async function bacaState(): Promise<{ state: StorageState | null; etag: string | null }> {
-  const jenis = jenisPenyimpanan();
-  if (jenis === 'belum-dipasang') return { state: null, etag: null };
+async function bacaStateBlob(): Promise<{ state: StorageState | null; etag: string | null }> {
+  // useCache false cuma berpengaruh di store private; di store public ini bisa basi sampai 60 detik.
+  const hasil = await get(pathState(), { access: 'public', useCache: false });
+  if (!hasil || hasil.statusCode !== 200) return { state: null, etag: null };
+  const teks = await new Response(hasil.stream).text();
+  return { state: JSON.parse(teks), etag: hasil.blob.etag };
+}
 
-  if (jenis === 'lokal') {
+export async function bacaState(): Promise<{ state: StorageState | null; etag: string | null }> {
+  const tempat = tempatState();
+  if (tempat === 'belum-dipasang') return { state: null, etag: null };
+
+  if (tempat === 'redis') {
+    const k = kunciRedis();
+    const [teks, versi] = await redis()!.mget<(string | null)[]>(k.state, k.versi);
+    if (teks) return { state: JSON.parse(teks), etag: versi ?? '0' };
+    // Belum pernah disimpan di Redis: pakai data lama dari Blob kalau ada. Simpanan pertama
+    // memindahkannya ke Redis. Kalau Blob gagal dibaca, biarkan galat, jangan mulai dari kosong.
+    const lama = jenisPenyimpanan() === 'vercel-blob' ? (await bacaStateBlob()).state : null;
+    return { state: lama, etag: '0' };
+  }
+
+  if (tempat === 'lokal') {
     try {
       const teks = await fs.readFile(FILE_STATE_LOKAL, 'utf8');
       return { state: JSON.parse(teks), etag: etagDari(teks) };
@@ -56,18 +102,24 @@ export async function bacaState(): Promise<{ state: StorageState | null; etag: s
     }
   }
 
-  // useCache false: baca langsung dari asal, bukan salinan CDN yang bisa telat.
-  const hasil = await get(pathState(), { access: 'public', useCache: false });
-  if (!hasil || hasil.statusCode !== 200) return { state: null, etag: null };
-  const teks = await new Response(hasil.stream).text();
-  return { state: JSON.parse(teks), etag: hasil.blob.etag };
+  return bacaStateBlob();
 }
 
 /** Simpan state admin. `etagLama` dari bacaan terakhir; kalau sudah berubah di perangkat lain, ditolak. */
 export async function simpanState(state: StorageState, etagLama: string | null): Promise<{ etag: string }> {
-  const jenis = jenisPenyimpanan();
+  const jenis = tempatState();
   if (jenis === 'belum-dipasang') throw new PenyimpananBelumDipasang();
   const teks = JSON.stringify(state);
+
+  if (jenis === 'redis') {
+    const k = kunciRedis();
+    const [berhasil, versi] = (await redis()!.eval(SKRIP_SIMPAN, [k.state, k.versi], [etagLama ?? '0', teks])) as [
+      number,
+      string,
+    ];
+    if (Number(berhasil) !== 1) throw new KonflikPenyimpanan();
+    return { etag: String(versi) };
+  }
 
   if (jenis === 'lokal') {
     const sekarang = await bacaState();
@@ -94,21 +146,31 @@ export async function simpanState(state: StorageState, etagLama: string | null):
 }
 
 async function bacaDatasetTerbitTanpaCache(): Promise<CompleteDataset> {
+  const { state } = await bacaState();
+  return (state ?? stateAwal()).publishedDataset;
+}
+
+/** Data yang dilihat pelanggan. Di-cache; dibuang tiap admin menyimpan (revalidateTag). */
+const bacaDatasetTerbitCache = unstable_cache(bacaDatasetTerbitTanpaCache, ['cms-dataset-terbit'], {
+  tags: [TAG_DATA],
+  revalidate: 3600,
+});
+
+/**
+ * Seperti di atas, tapi kalau penyimpanan sedang bermasalah tampilkan data bawaan (tanpa harga)
+ * daripada halaman error. Galat ditangkap di luar cache, jadi data bawaan itu tidak ikut
+ * tersimpan sejam: kunjungan berikutnya langsung mencoba lagi.
+ */
+export async function bacaDatasetTerbit(): Promise<CompleteDataset> {
   try {
-    const { state } = await bacaState();
-    return (state ?? stateAwal()).publishedDataset;
+    return await bacaDatasetTerbitCache();
   } catch (e) {
-    // Penyimpanan sedang bermasalah: tampilkan data bawaan (tanpa harga) daripada halaman error.
+    // Sinyal internal Next.js (mis. halaman harus dirender dinamis) wajib diteruskan.
+    if ((e as { digest?: string })?.digest) throw e;
     console.error('Gagal membaca data terbit', e);
     return stateAwal().publishedDataset;
   }
 }
-
-/** Data yang dilihat pelanggan. Di-cache; dibuang tiap admin menyimpan (revalidateTag). */
-export const bacaDatasetTerbit = unstable_cache(bacaDatasetTerbitTanpaCache, ['cms-dataset-terbit'], {
-  tags: [TAG_DATA],
-  revalidate: 3600,
-});
 
 const TIPE_FOTO: Record<string, string> = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
 

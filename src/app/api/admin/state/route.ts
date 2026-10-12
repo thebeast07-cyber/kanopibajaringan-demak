@@ -5,7 +5,7 @@ import {
   PenyimpananBelumDipasang,
   TAG_DATA,
   bacaState,
-  jenisPenyimpanan,
+  tempatState,
   simpanState,
 } from '../../../../lib/server/penyimpanan';
 import { StorageState } from '../../../../lib/cms/localCmsRepository';
@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const { state, etag } = await bacaState();
-    return NextResponse.json({ state, etag, jenis: jenisPenyimpanan() });
+    return NextResponse.json({ state, etag, jenis: tempatState() });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ pesan: 'Penyimpanan online nggak bisa dibaca. Coba muat ulang sebentar lagi.' }, { status: 502 });
@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest) {
   } catch (e) {
     if (e instanceof KonflikPenyimpanan) {
       return NextResponse.json(
-        { pesan: 'Data sudah diubah dari perangkat lain. Muat ulang halaman supaya nggak saling timpa.' },
+        { pesan: 'Ada simpanan yang lebih baru di server, dari HP atau tab lain. Muat ulang dulu, lalu ulangi perubahan yang belum masuk.' },
         { status: 409 }
       );
     }
