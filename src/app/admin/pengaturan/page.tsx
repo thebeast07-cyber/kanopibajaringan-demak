@@ -27,6 +27,13 @@ import {
   kelasTombolUtama,
 } from '../../../components/admin/gaya';
 
+const TEMPAT: Record<string, string> = {
+  redis: 'Redis',
+  'vercel-blob': 'Vercel Blob',
+  lokal: 'folder lokal',
+  'belum-dipasang': 'belum dipasang',
+};
+
 export default function HalamanPengaturan() {
   const [awal, setAwal] = useState<IsianPengaturan>(() => isianDariConfig(defaultCmsRepository.getBusinessConfig()));
   const [isian, setIsian] = useState<IsianPengaturan>(awal);
@@ -297,6 +304,12 @@ export default function HalamanPengaturan() {
       <button type="button" onClick={keluar} className={kelasTombolTipis}>
         Keluar dari admin
       </button>
+
+      {/* Buat ngecek dari HP: data tersimpan di mana, dan versi kode yang sedang jalan. */}
+      <p className="text-xs text-tinta-samar">
+        Data admin di {TEMPAT[statusSimpan.jenis ?? 'lokal'] ?? statusSimpan.jenis} · versi{' '}
+        {(process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'lokal').slice(0, 7)}
+      </p>
 
       {barTampil && (
         <>
