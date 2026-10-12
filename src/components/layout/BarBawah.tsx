@@ -12,7 +12,8 @@ interface BarBawahProps {
 
 const TINGGI = 'h-[calc(60px+env(safe-area-inset-bottom))]';
 
-// Ikon digambar sendiri, gayanya sama dengan menu admin (garis 2px, ujung bulat).
+// Ikon digambar sendiri dan dipilih pemilik (garis 2px, ujung bulat). Jangan ganti ke set ikon
+// siap pakai seperti lucide, lihat CLAUDE.md.
 function Ikon({ children }: { children: React.ReactNode }) {
   return (
     <svg
@@ -32,34 +33,42 @@ function Ikon({ children }: { children: React.ReactNode }) {
 }
 
 const IKON = {
-  // Kanopi: atap miring di atas dua tiang.
+  // Rangka atap baja ringan.
   layanan: (
     <>
-      <path d="M3 9.5 L12 5 L21 9.5" />
-      <path d="M6 8 V19" />
-      <path d="M18 8 V19" />
-      <path d="M3 19 H21" />
+      <path d="M3 16 L12 6 L21 16 Z" />
+      <path d="M12 6 V16" />
+      <path d="M7.5 11 L10 16" />
+      <path d="M16.5 11 L14 16" />
+      <path d="M3 19.5 H21" />
     </>
   ),
-  // Meteran: kalkulatornya dimulai dari isi ukuran.
+  // Label harga.
   cekHarga: (
     <>
-      <rect x="2.5" y="7" width="19" height="10" rx="1.5" />
-      <path d="M6.5 7 V10.5" />
-      <path d="M10.5 7 V12" />
-      <path d="M14.5 7 V10.5" />
-      <path d="M18 7 V12" />
+      <path d="M3.5 4.5 H11 L20 13.5 L13.5 20 L3.5 10 Z" />
+      <circle cx="7.75" cy="8.75" r="1.25" />
     </>
   ),
-  // Sama dengan ikon Galeri di admin.
+  // Dua foto bertumpuk.
   galeri: (
     <>
-      <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
-      <path d="M3.5 16 L9 11 L13 15 L16 12.5 L20.5 16.5" />
-      <circle cx="15.5" cy="8.5" r="1.5" />
+      <path d="M7.5 7.5 V5.5 A2 2 0 0 1 9.5 3.5 H19 A2 2 0 0 1 21 5.5 V14 A2 2 0 0 1 19 16 H17" />
+      <rect x="3" y="7.5" width="14" height="13" rx="2" />
+      <path d="M3 17.5 L7.5 13.5 L10.5 16.5 L12.5 15 L17 18.5" />
     </>
   ),
-  whatsapp: <path d="M12 4 A8 8 0 1 1 8 18.9 L4 20 L5.1 16.1 A8 8 0 0 1 12 4 Z" />,
+  // Gelembung chat dengan gagang telepon.
+  whatsapp: (
+    <>
+      <path d="M12 4 A8 8 0 1 1 8 18.9 L4 20 L5.1 16.1 A8 8 0 0 1 12 4 Z" />
+      <path
+        d="M9.3 8.6c.4-.5 1.1-.4 1.4.2l.6 1.3c.1.3.1.7-.2.9l-.6.6c.6 1.1 1.4 1.9 2.5 2.5l.6-.6c.2-.3.6-.3.9-.2l1.3.6c.6.3.7 1 .2 1.4l-.7.6c-.6.5-1.5.6-2.2.2-1.9-1-3.4-2.5-4.4-4.4-.4-.7-.3-1.6.2-2.2z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </>
+  ),
 };
 
 // Menu bawah khusus HP, seperti di admin: jempol nyampe, dan WhatsApp selalu kelihatan.
