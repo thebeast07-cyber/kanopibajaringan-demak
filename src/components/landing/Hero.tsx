@@ -3,6 +3,7 @@ import { BusinessConfigSchema, CompleteDataset } from '@/types/domain';
 import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { formatRupiah, sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
+import { angkaId } from '@/lib/estimator/ukuran';
 
 interface HeroProps {
   config: BusinessConfigSchema;
@@ -72,7 +73,7 @@ export function Hero({ config, dataset }: HeroProps) {
 
                 <p className="font-heading text-2xl font-semibold text-navy mt-4">
                   5 m × 4 m
-                  <span className="text-base font-normal text-tinta-lembut"> ({contoh.billableUnits.applied} m²)</span>
+                  <span className="text-base font-normal text-tinta-lembut"> ({angkaId(contoh.billableUnits.applied)} m²)</span>
                 </p>
 
                 <p className="font-heading text-4xl sm:text-5xl font-bold text-oranye-gelap mt-3">

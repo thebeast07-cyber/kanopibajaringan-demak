@@ -169,6 +169,9 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await expect(lebar).toHaveValue('2,5');
     await expect(kalkulator).toContainText('3,5 m × 2,5 m = 8,75 m²');
     await expect(kalkulator).toContainText('7.000.000');
+    // Rincian di bawah harga juga pakai koma, sama dengan baris luas.
+    await expect(kalkulator).toContainText('/ m² × 8,75 m²');
+    await expect(kalkulator).not.toContainText('8.75');
 
     // Pesan WhatsApp ikut nulis ukuran pakai koma.
     await page.evaluate(() => {

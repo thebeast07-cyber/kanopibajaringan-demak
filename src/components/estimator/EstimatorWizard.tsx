@@ -304,7 +304,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 )}
                 {borongan && snapshot && (
                   <p className="text-sm text-navy-kabut mt-3">
-                    {formatRupiah(borongan.rate)} / {unitLabel} × {snapshot.billableUnits.applied}{' '}
+                    {formatRupiah(borongan.rate)} / {unitLabel} × {angkaId(snapshot.billableUnits.applied)}{' '}
                     {unitLabel}
                   </p>
                 )}
@@ -314,7 +314,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                 <p className="text-sm text-navy-kabut leading-relaxed bg-navy-tua rounded-xl p-4">
                   Ukuran kamu {angkaId(snapshot.billableUnits.actual)} {unitLabel}, tapi layanan ini minimum{' '}
                   <strong className="text-white">
-                    {snapshot.billableUnits.applied} {unitLabel}
+                    {angkaId(snapshot.billableUnits.applied)} {unitLabel}
                   </strong>
                   , jadi dihitung segitu.
                 </p>
