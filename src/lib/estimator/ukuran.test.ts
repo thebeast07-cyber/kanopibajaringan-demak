@@ -14,9 +14,11 @@ test('nol di depan dibuang, tapi 0,5 tetap', () => {
   assert.equal(rapikanKetikanUkuran('0'), '0');
 });
 
-test('koma dan titik sama-sama tanda desimal', () => {
+test('koma dan titik sama-sama tanda desimal, titik tampil sebagai koma', () => {
   assert.equal(rapikanKetikanUkuran('3,5'), '3,5');
-  assert.equal(rapikanKetikanUkuran('3.5'), '3.5');
+  assert.equal(rapikanKetikanUkuran('3.5'), '3,5');
+  assert.equal(rapikanKetikanUkuran('3.'), '3,');
+  assert.equal(rapikanKetikanUkuran('.5'), ',5');
   assert.equal(angkaUkuran('3,5'), 3.5);
   assert.equal(angkaUkuran('3.5'), 3.5);
   assert.equal(angkaUkuran(',5'), 0.5);
@@ -30,7 +32,7 @@ test('lagi ngetik: "3," masih boleh, dibaca 3', () => {
 test('cuma satu tanda desimal dan maksimal 2 angka di belakangnya', () => {
   assert.equal(rapikanKetikanUkuran('3,5,2'), '3,52');
   assert.equal(rapikanKetikanUkuran('3,456'), '3,45');
-  assert.equal(rapikanKetikanUkuran('2.5.'), '2.5');
+  assert.equal(rapikanKetikanUkuran('2.5.'), '2,5');
 });
 
 test('huruf, spasi, dan satuan yang ikut ketempel dibuang', () => {

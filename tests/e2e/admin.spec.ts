@@ -165,6 +165,8 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await expect(kalkulator).toContainText('11.200.000');
     await lebar.fill('');
     await lebar.pressSequentially('2.5');
+    // Titik langsung tampil sebagai koma, biar kelihatan kebaca sama.
+    await expect(lebar).toHaveValue('2,5');
     await expect(kalkulator).toContainText('3,5 m × 2,5 m = 8,75 m²');
     await expect(kalkulator).toContainText('7.000.000');
 

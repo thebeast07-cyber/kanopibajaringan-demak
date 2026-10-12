@@ -1,15 +1,16 @@
 // Kolom ukuran di kalkulator menyimpan teks yang diketik, bukan angka. Kalau disimpan sebagai
 // angka, kolom yang dikosongkan jadi 0 dan ketikan berikutnya nempel di belakang nol itu.
-// Orang Indonesia nulis "3,5 meter", jadi koma dan titik sama-sama dianggap tanda desimal.
+// Orang Indonesia nulis "3,5 meter", jadi koma dan titik sama-sama dianggap tanda desimal, dan
+// titik langsung tampil sebagai koma supaya pengetiknya lihat angkanya kebaca sama.
 
-/** Rapikan ketikan: angka saja, satu tanda desimal, maksimal 2 angka di belakangnya. */
+/** Rapikan ketikan: angka saja, satu tanda desimal (selalu koma), maksimal 2 angka di belakangnya. */
 export function rapikanKetikanUkuran(teks: string, desimal = true): string {
   let t = teks.replace(/\s/g, '');
   if (!desimal) return t.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
 
   t = t.replace(/[^\d.,]/g, '');
   const i = t.search(/[.,]/);
-  if (i >= 0) t = t.slice(0, i + 1) + t.slice(i + 1).replace(/[.,]/g, '').slice(0, 2);
+  if (i >= 0) t = `${t.slice(0, i)},${t.slice(i + 1).replace(/[.,]/g, '').slice(0, 2)}`;
   // "05" jadi "5", tapi "0,5" tetap.
   return t.replace(/^0+(?=\d)/, '');
 }
