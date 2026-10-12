@@ -93,8 +93,10 @@ Board logo dari pemilik digambar ulang jadi SVG (bukan tracing otomatis), file-n
 | `ikon-3putra-app.svg` / `-oranye.svg` | Ikon kotak: favicon (`src/app/icon.svg`), foto profil WA dan IG |
 | `og-logo.png` | Gambar preview link selama pemilik belum unggah foto layanan |
 
-Tagline di logo "Konstruksi & Metal Work". Di website, tagline teks tetap "Spesialis kanopi dan
-baja ringan" dari `businessConfig`.
+Tagline di logo "Spesialis Kanopi & Baja Ringan", sama dengan tagline teks di website
+(`businessConfig.tagline`). Board asli pemilik bertuliskan "Konstruksi & Metal Work"; diganti atas
+permintaan pemilik supaya satu suara dengan nama resminya. Huruf tagline Montserrat SemiBold yang
+sudah dijadikan path, jadi file logo nggak butuh font terpasang.
 
 ## Tipografi
 
