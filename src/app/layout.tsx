@@ -18,8 +18,9 @@ export const metadata: Metadata = {
     'survei lokasi gratis kanopi',
   ],
   authors: [{ name: '3 Putra Spesialis Kanopi dan Baja Ringan' }],
-  // Kode verifikasi Google Search Console, diisi lewat Environment Variables di Vercel.
-  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
+  // Kode verifikasi Google Search Console untuk kanopibajaringan-demak.vercel.app. Bukan rahasia:
+  // Google membacanya dari halaman. Env GOOGLE_SITE_VERIFICATION bisa menggantinya tanpa ubah kode.
+  verification: { google: process.env.GOOGLE_SITE_VERIFICATION || '7zpz02BM6OC3PPl4-lqfKcYYsL--z5I3CFOjdEEvJw8' },
 };
 
 export default function RootLayout({

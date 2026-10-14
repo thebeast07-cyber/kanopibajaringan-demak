@@ -112,6 +112,6 @@ sebagai "langsung". Pakai link berlabel di tiap tempat promosi. Link-nya siap sa
   menunjuk ke sitemap dan menutup `/admin` serta `/api`.
 - Canonical selalu ke domain produksi (`VERCEL_PROJECT_PRODUCTION_URL`), jadi alamat Preview tidak
   dianggap halaman terpisah.
-- Verifikasi Google Search Console: isi Environment Variable `GOOGLE_SITE_VERIFICATION` di Vercel
-  dengan kode dari tag `<meta name="google-site-verification" content="KODE">` (cukup KODE-nya),
-  lalu Redeploy.
+- Verifikasi Google Search Console: kode untuk `kanopibajaringan-demak.vercel.app` ditulis di
+  `src/app/layout.tsx`. Kalau nanti pindah domain atau akun, isi Environment Variable
+  `GOOGLE_SITE_VERIFICATION` di Vercel dengan kode baru (bagian `content="..."` saja), lalu Redeploy.
