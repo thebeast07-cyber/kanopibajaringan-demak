@@ -3,19 +3,13 @@ import { HalamanDepan } from '@/components/landing/HalamanDepan';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { proyekTampil } from '@/lib/cms/galeri';
+import { alamatResmi } from '@/lib/server/asal';
+import { dataUsaha, judulDepan, jsonUntukScript } from '@/lib/seo';
 
 // Dirender tiap kunjungan, karena data dibaca dari Redis dengan permintaan tanpa cache yang
 // tidak boleh dipakai di halaman statis. Datanya sendiri tetap di-cache (bacaDatasetTerbit)
 // dan dibuang tiap admin menyimpan, jadi Redis tidak dibaca di setiap kunjungan.
 export const dynamic = 'force-dynamic';
-
-const NAMA_RESMI = '3 Putra Spesialis Kanopi dan Baja Ringan';
-
-// Alamat situs untuk gambar preview yang berupa path relatif (mode uji lokal).
-// Di Vercel, foto dari Blob sudah berupa URL penuh.
-const ALAMAT_SITUS = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : 'http://localhost:3000';
 
 export async function generateMetadata(): Promise<Metadata> {
   const dataset = await bacaDatasetTerbit();
@@ -23,8 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const kota = dataset.businessConfig.serviceAreas.join(' dan ');
   const adaHarga = aktif.some((s) => getTarifBorongan(s) !== null);
 
-  // Kalimat yang menjanjikan "harganya langsung keluar" cuma dipakai kalau memang ada harganya.
-  const title = adaHarga ? `${NAMA_RESMI} | Cek Harga Borongan` : `${NAMA_RESMI} | ${kota}`;
+  // Judul buat Google menyebut jenis jasa dan kota, karena itu yang diketik orang di pencarian.
+  const title = judulDepan(dataset);
   const description = adaHarga
     ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.`
     : `Pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, kirim lewat WhatsApp, kami hitungkan harganya. Survei lokasi gratis.`;
@@ -40,7 +34,8 @@ export async function generateMetadata(): Promise<Metadata> {
     : { url: '/brand/og-logo.png', width: 1200, height: 630, alt: 'Logo 3 Putra' };
 
   return {
-    metadataBase: new URL(ALAMAT_SITUS),
+    metadataBase: new URL(alamatResmi()),
+    alternates: { canonical: '/' },
     title,
     description,
     openGraph: {
@@ -57,5 +52,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const dataset = await bacaDatasetTerbit();
-  return <HalamanDepan dataset={dataset} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonUntukScript(dataUsaha(dataset, alamatResmi())) }} />
+      <HalamanDepan dataset={dataset} />
+    </>
+  );
 }

@@ -69,6 +69,7 @@ export default function HalamanPengaturan() {
       if ('nomorWa' in field) delete sisa.nomorWa;
       if ('kota' in field) delete sisa.kota;
       if ('namaUsaha' in field) delete sisa.namaUsaha;
+      if ('linkMaps' in field) delete sisa.linkMaps;
       return sisa;
     });
   };
@@ -261,6 +262,54 @@ export default function HalamanPengaturan() {
             />
             <p id="atur-tagline-bantuan" className={kelasBantuan}>
               Muncul di bawah logo dan di footer.
+            </p>
+          </div>
+        </section>
+
+        <section className={`${kelasKartu} p-4 space-y-3.5`} aria-labelledby="judul-maps">
+          <div className="space-y-1">
+            <h2 id="judul-maps" className={kelasJudulKartu}>
+              Google Maps
+            </h2>
+            <p className={kelasBantuan}>
+              Supaya Google tahu website ini dan profil Maps kamu itu usaha yang sama. Belum tampil di halaman website.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="atur-maps" className={kelasLabel}>
+              Link profil Maps <span className="font-normal text-tinta-lembut">(boleh kosong)</span>
+            </label>
+            <input
+              id="atur-maps"
+              type="url"
+              inputMode="url"
+              autoComplete="off"
+              value={isian.linkMaps}
+              placeholder="https://maps.app.goo.gl/..."
+              onChange={(e) => ubah({ linkMaps: e.target.value })}
+              aria-invalid={Boolean(salah.linkMaps)}
+              aria-describedby={`atur-maps-bantuan${salah.linkMaps ? ' atur-linkMaps-salah' : ''}`}
+              className={`${kelasKolom(Boolean(salah.linkMaps))} placeholder:text-tinta-samar`}
+            />
+            <p id="atur-maps-bantuan" className={kelasBantuan}>
+              Buka profil usaha di Google Maps, ketuk Bagikan, lalu Salin link dan tempel di sini.
+            </p>
+            {pesanSalah('linkMaps')}
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="atur-alamat" className={kelasLabel}>
+              Alamat workshop <span className="font-normal text-tinta-lembut">(boleh kosong)</span>
+            </label>
+            <textarea
+              id="atur-alamat"
+              rows={3}
+              value={isian.alamat}
+              onChange={(e) => ubah({ alamat: e.target.value })}
+              aria-describedby="atur-alamat-bantuan"
+              className={`${kelasKolom()} py-3 leading-relaxed`}
+            />
+            <p id="atur-alamat-bantuan" className={kelasBantuan}>
+              Salin persis dari profil Maps, termasuk kecamatan dan kode pos kalau ada.
             </p>
           </div>
         </section>

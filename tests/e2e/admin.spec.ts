@@ -434,6 +434,36 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     await pelanggan.close();
   });
 
+  test('SEO: link Maps dan alamat dari Pengaturan masuk ke data usaha, sitemap dan robots siap', async ({ page, browser }) => {
+    await page.goto('/admin/pengaturan');
+    const linkMaps = page.getByLabel(/Link profil Maps/);
+    await linkMaps.fill('https://instagram.com/3putra');
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Ini bukan link Google Maps.', { exact: false })).toBeVisible();
+    await linkMaps.fill('https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9?g_st=ic');
+    await page.getByLabel(/Alamat workshop/).fill('Jl. Contoh No. 1, Sayung, Demak');
+    await page.getByRole('button', { name: 'Simpan' }).click();
+    await expect(page.getByText('Tersimpan', { exact: false }).first()).toBeVisible();
+
+    const tamu = await (await browser.newContext({ storageState: { cookies: [], origins: [] } })).newPage();
+    await tamu.goto('/');
+    await expect(tamu).toHaveTitle(/^Jasa Kanopi & Baja Ringan Demak/);
+    await expect(tamu.locator('link[rel="canonical"]')).toHaveAttribute('href', /^https?:\/\/[^/]+\/?$/);
+    const usaha = JSON.parse((await tamu.locator('script[type="application/ld+json"]').textContent()) || '{}');
+    expect(usaha['@type']).toBe('RoofingContractor');
+    expect(usaha.telephone).toBe('+6282228132455');
+    // Parameter pelacak dari tombol Bagikan dibuang.
+    expect(usaha.hasMap).toBe('https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9');
+    expect(usaha.address.streetAddress).toBe('Jl. Contoh No. 1, Sayung, Demak');
+
+    const robots = await (await tamu.request.get('/robots.txt')).text();
+    expect(robots).toContain('Disallow: /admin');
+    expect(robots).toMatch(/Sitemap: http:\/\/[^\s]+\/sitemap\.xml/);
+    const sitemap = await (await tamu.request.get('/sitemap.xml')).text();
+    expect(sitemap).toMatch(/<loc>http:\/\/[^<]+\/<\/loc>/);
+    expect(sitemap).not.toContain('/admin');
+  });
+
   test('pencatat kunjungan menerima kiriman sah dan menolak sisanya', async ({ request }) => {
     expect((await request.post('/api/jejak', { data: { jenis: 'kunjungan', asal: 'instagram' } })).status()).toBe(204);
     expect((await request.post('/api/jejak', { data: { jenis: 'klik_wa', sumber: 'palsu' } })).status()).toBe(400);

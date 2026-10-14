@@ -58,7 +58,8 @@ Admin dibuat untuk HP. Empat tab di bawah layar:
   proyek, jadi foto yang diklik pelanggan muncul sebagai preview di chat. Selama belum ada proyek
   yang tampil, menu Galeri tidak muncul dan `/galeri` tidak bisa dibuka.
 - **Pengaturan** (`/admin/pengaturan`): nomor WhatsApp, kota yang dilayani, nama usaha, tagline,
-  catatan soal harga, dan link promosi siap salin.
+  catatan soal harga, link profil Google Maps dan alamat workshop (buat Google, belum tampil di
+  halaman), dan link promosi siap salin.
 
 Alamat lama `/admin/isi-data` otomatis pindah ke `/admin/layanan`.
 
@@ -101,3 +102,16 @@ sebagai "langsung". Pakai link berlabel di tiap tempat promosi. Link-nya siap sa
 | Status atau broadcast WhatsApp | `https://<domain>/?utm_source=whatsapp&utm_medium=status` |
 | Halaman Facebook | `https://<domain>/?utm_source=facebook&utm_medium=halaman` |
 | Iklan (kalau ada) | `https://<domain>/?utm_source=<platform>&utm_medium=iklan&utm_campaign=<nama-iklan>` |
+
+## SEO
+
+- Judul halaman menyebut jenis jasa dan kota (`src/lib/seo/index.ts`), diambil dari kota di Pengaturan.
+- Halaman depan membawa data usaha schema.org (`RoofingContractor`): nama, nomor WhatsApp, area
+  layanan, layanan aktif, dan alamat plus link Maps kalau sudah diisi di Pengaturan.
+- `/sitemap.xml` berisi halaman depan, `/galeri`, dan tiap proyek galeri yang tampil. `/robots.txt`
+  menunjuk ke sitemap dan menutup `/admin` serta `/api`.
+- Canonical selalu ke domain produksi (`VERCEL_PROJECT_PRODUCTION_URL`), jadi alamat Preview tidak
+  dianggap halaman terpisah.
+- Verifikasi Google Search Console: isi Environment Variable `GOOGLE_SITE_VERIFICATION` di Vercel
+  dengan kode dari tag `<meta name="google-site-verification" content="KODE">` (cukup KODE-nya),
+  lalu Redeploy.

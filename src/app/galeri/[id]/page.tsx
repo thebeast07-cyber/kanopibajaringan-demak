@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
-import { asalPermintaan } from '@/lib/server/asal';
+import { alamatResmi, asalPermintaan } from '@/lib/server/asal';
 import { judulProyek, pesanWaGaleri, proyekTampil, teksDipasang } from '@/lib/cms/galeri';
 import { CompleteDataset } from '@/types/domain';
 import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
@@ -33,7 +33,8 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   const foto = proyek.fotos[0];
 
   return {
-    metadataBase: new URL(asalPermintaan()),
+    metadataBase: new URL(alamatResmi()),
+    alternates: { canonical: `/galeri/${proyek.id}` },
     title,
     description,
     openGraph: {

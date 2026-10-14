@@ -361,6 +361,10 @@ export interface BusinessConfigSchema {
   serviceAreas: string[];
   surveyDisclaimer: string;
   guaranteeTerms: string;
+  /** Link profil usaha di Google Maps, buat menyambungkan website dengan profil Maps di mata Google. */
+  linkMaps?: string;
+  /** Alamat workshop, disalin persis dari profil Maps. */
+  alamat?: string;
 }
 
 export interface CompleteDataset {

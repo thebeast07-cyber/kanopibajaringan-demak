@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { bacaDatasetTerbit } from '@/lib/server/penyimpanan';
-import { asalPermintaan } from '@/lib/server/asal';
+import { alamatResmi, asalPermintaan } from '@/lib/server/asal';
+import { judulGaleri } from '@/lib/seo';
 import { proyekTampil } from '@/lib/cms/galeri';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -16,11 +17,12 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata(): Promise<Metadata> {
   const dataset = await bacaDatasetTerbit();
   const pertama = proyekTampil(dataset.galeri)[0];
-  const title = `Galeri pemasangan | ${dataset.businessConfig.businessName}`;
+  const title = judulGaleri(dataset);
   const description = `Foto asli pemasangan kanopi, atap baja ringan, pagar, dan railing di ${dataset.businessConfig.serviceAreas.join(', ')}.`;
   const foto = pertama?.fotos[0];
   return {
-    metadataBase: new URL(asalPermintaan()),
+    metadataBase: new URL(alamatResmi()),
+    alternates: { canonical: '/galeri' },
     title,
     description,
     openGraph: {

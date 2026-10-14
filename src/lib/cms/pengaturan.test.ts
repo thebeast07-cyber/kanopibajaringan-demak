@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import {
   isianDariConfig,
+  rapikanLinkMaps,
   nomorWaInternasional,
   nomorWaTampil,
   periksaPengaturan,
@@ -41,10 +42,22 @@ test('pengaturan: isian bolak-balik tanpa mengubah data', () => {
 });
 
 test('pengaturan: isian wajib diperiksa', () => {
-  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '' });
+  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '' });
   assert.ok(salah.nomorWa);
   assert.ok(salah.kota);
   assert.ok(salah.namaUsaha);
+  assert.ok(salah.linkMaps);
+});
+
+test('link Maps dari tombol Bagikan dirapikan, link lain ditolak', () => {
+  assert.equal(rapikanLinkMaps('https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9?g_st=ic'), 'https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9');
+  assert.equal(
+    rapikanLinkMaps('3 Putra Kanopi https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9'),
+    'https://maps.app.goo.gl/4CA7YK4Y7fE8M7UJ9'
+  );
+  assert.ok(rapikanLinkMaps('https://www.google.com/maps/place/3+Putra/@-6.9,110.6,17z'));
+  assert.equal(rapikanLinkMaps('https://instagram.com/3putra'), null);
+  assert.equal(rapikanLinkMaps('maps.app.goo.gl/abc'), null);
 });
 
 test('kota baru dirapikan dan tidak dobel', () => {

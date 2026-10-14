@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     'survei lokasi gratis kanopi',
   ],
   authors: [{ name: '3 Putra Spesialis Kanopi dan Baja Ringan' }],
+  // Kode verifikasi Google Search Console, diisi lewat Environment Variables di Vercel.
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
 };
 
 export default function RootLayout({

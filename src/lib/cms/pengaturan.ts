@@ -24,9 +24,31 @@ export interface IsianPengaturan {
   namaUsaha: string;
   tagline: string;
   catatanHarga: string;
+  linkMaps: string;
+  alamat: string;
 }
 
-export type KesalahanPengaturan = Partial<Record<'nomorWa' | 'kota' | 'namaUsaha', string>>;
+export type KesalahanPengaturan = Partial<Record<'nomorWa' | 'kota' | 'namaUsaha' | 'linkMaps', string>>;
+
+const LINK_MAPS = /^https:\/\/(maps\.app\.goo\.gl\/|goo\.gl\/maps\/|maps\.google\.[a-z.]+\/|(www\.)?google\.[a-z.]+\/maps)/i;
+
+/**
+ * Link dari tombol Bagikan di Maps. Null kalau bukan link Google Maps. Parameter pelacak dari
+ * aplikasi (g_st, utm_*) dibuang supaya yang tersimpan link bersih.
+ */
+export function rapikanLinkMaps(ketikan: string): string | null {
+  const teks = ketikan.trim().match(/https:\/\/\S+/)?.[0] ?? '';
+  if (!LINK_MAPS.test(teks)) return null;
+  try {
+    const url = new URL(teks);
+    for (const k of Array.from(url.searchParams.keys())) {
+      if (k === 'g_st' || k.startsWith('utm_')) url.searchParams.delete(k);
+    }
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
 
 export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
   return {
@@ -35,6 +57,8 @@ export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
     namaUsaha: c.businessName,
     tagline: c.tagline,
     catatanHarga: c.surveyDisclaimer,
+    linkMaps: c.linkMaps ?? '',
+    alamat: c.alamat ?? '',
   };
 }
 
@@ -43,6 +67,9 @@ export function periksaPengaturan(i: IsianPengaturan): KesalahanPengaturan {
   if (!nomorWaInternasional(i.nomorWa)) salah.nomorWa = 'Nomornya kayaknya kurang pas. Tulis nomor HP lengkap, misalnya 0822 1234 5678.';
   if (i.kota.length === 0) salah.kota = 'Isi minimal satu kota.';
   if (!i.namaUsaha.trim()) salah.namaUsaha = 'Nama usaha wajib diisi.';
+  if (i.linkMaps.trim() && !rapikanLinkMaps(i.linkMaps)) {
+    salah.linkMaps = 'Ini bukan link Google Maps. Buka profil usaha di Maps, ketuk Bagikan, lalu Salin link.';
+  }
   return salah;
 }
 
@@ -54,6 +81,8 @@ export function terapkanPengaturan(c: BusinessConfigSchema, i: IsianPengaturan):
     surveyDisclaimer: i.catatanHarga.trim(),
     serviceAreas: i.kota.map((k) => k.trim()).filter(Boolean),
     frontlineContact: { ...c.frontlineContact, whatsappNumber: nomorWaInternasional(i.nomorWa)! },
+    linkMaps: rapikanLinkMaps(i.linkMaps) ?? undefined,
+    alamat: i.alamat.trim().replace(/\s+/g, ' ') || undefined,
   };
 }
 
