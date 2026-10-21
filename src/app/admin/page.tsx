@@ -9,6 +9,7 @@ import { proyekTampil } from '../../lib/cms/galeri';
 import { Asal, LABEL_ASAL, LABEL_SUMBER_WA, Ringkasan, SumberWa } from '../../lib/statistik/kejadian';
 import { LINK_PROMOSI, linkPromosi } from '../../lib/linkPromosi';
 import { TombolSalin } from '../../components/admin/TombolSalin';
+import { LogoLoading } from '../../components/brand/LogoLoading';
 import { kelasJudulHalaman, kelasKartu } from '../../components/admin/gaya';
 
 type DataStatistik =
@@ -275,9 +276,9 @@ export default function BerandaAdmin() {
       </div>
 
       {data.keadaan === 'memuat' && (
-        <p role="status" className="text-sm text-tinta-lembut">
-          Memuat statistik {hari} hari terakhir...
-        </p>
+        <div className="flex justify-center py-10">
+          <LogoLoading teks={`Memuat statistik ${hari} hari terakhir`} />
+        </div>
       )}
 
       {data.keadaan === 'galat' && (

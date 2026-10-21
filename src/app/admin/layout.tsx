@@ -11,6 +11,7 @@ import {
   StatusSimpan,
 } from '../../lib/cms/sinkronServer';
 import { tandaiPerangkatAdmin } from '../../lib/jejak';
+import { LogoLoading } from '../../components/brand/LogoLoading';
 import { LogoMendatar } from '../../components/brand/Logo';
 import { NavAdmin } from '../../components/admin/NavAdmin';
 import { kelasTombolTipis } from '../../components/admin/gaya';
@@ -81,9 +82,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
           </div>
         ) : !dataSiap ? (
-          <p role="status" className="text-sm text-tinta-lembut">
-            Memuat data dari penyimpanan online...
-          </p>
+          <div className="flex justify-center py-16">
+            <LogoLoading teks="Memuat data" />
+          </div>
         ) : (
           <>
             <BannerSimpan status={status} />
