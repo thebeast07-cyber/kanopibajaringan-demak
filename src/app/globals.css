@@ -55,3 +55,37 @@ select:focus-visible,
 .bg-navy-tua button:focus-visible {
   outline-color: #FAF8F5;
 }
+
+/* Layar tunggu (LogoLoading): garis logo tergambar dulu, lalu warnanya diisi. Siklus 3,2 detik. */
+.logo-loading path {
+  stroke-width: 3;
+  stroke-dasharray: 1;
+  stroke-linejoin: round;
+  animation: loading-garis 3.2s ease-in-out infinite, loading-isi 3.2s ease-in-out infinite;
+}
+.logo-loading .tiang { animation-delay: 0.1s; }
+.logo-loading .jendela { animation-delay: 0.3s; }
+
+@keyframes loading-garis {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  40% { stroke-dashoffset: 0; }
+  88% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes loading-isi {
+  0%, 38% { fill-opacity: 0; }
+  55%, 100% { fill-opacity: 1; }
+}
+
+.loading-titik span { animation: loading-titik 1.2s infinite; }
+.loading-titik span:nth-child(2) { animation-delay: 0.2s; }
+.loading-titik span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes loading-titik {
+  0%, 60%, 100% { opacity: 0.2; }
+  30% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-loading path,
+  .loading-titik span { animation: none; }
+}
