@@ -176,7 +176,8 @@ sendiri dari referensi benda aslinya atau dari logo, grid 24×24, garis 2px, uju
 
 ## Sudah dikonfirmasi pemilik
 
-- Survei lokasi gratis.
+- Survei lokasi gratis, cuma di Demak dan Semarang. Kota lain chat dulu. Diatur lewat saklar
+  per kota di `/admin/pengaturan`, jadi teks "gratis" di website jangan ditulis mati.
 - Pelanggan boleh batal tanpa biaya kalau harga final setelah survei nggak cocok.
 - Sebelum setuju harga final, pelanggan belum terikat apa-apa.
 

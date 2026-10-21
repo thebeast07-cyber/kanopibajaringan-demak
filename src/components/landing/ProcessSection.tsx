@@ -1,4 +1,5 @@
 import React from 'react';
+import { gabungKota } from '@/lib/cms/wilayah';
 
 // Empat langkah ini memang alur kerjanya, bukan template "How It Works".
 // Bedanya: langkah pertama terjadi di halaman ini, tiga sisanya di luar halaman.
@@ -16,25 +17,34 @@ const LANGKAH_PERTAMA = {
   },
 };
 
-const LANGKAH_LANJUTAN = [
-  {
-    judul: 'Lanjut chat WhatsApp',
-    desc: 'Tombol di kalkulator langsung bikin pesan berisi ukuran dan hitungannya. Kamu tinggal kirim.',
-  },
-  {
-    judul: 'Kami survei lokasi',
-    desc: 'Kami datang, ukur langsung, cek kondisi tembok dan atapnya. Gratis, dan kamu belum terikat apa-apa.',
-  },
-  {
-    judul: 'Harga pasti, baru dikerjakan',
-    desc: 'Setelah survei kami kasih harga final. Kalau nggak cocok, boleh batal tanpa biaya.',
-  },
-];
+const LANGKAH_CHAT = {
+  judul: 'Lanjut chat WhatsApp',
+  desc: 'Tombol di kalkulator langsung bikin pesan berisi ukuran dan hitungannya. Kamu tinggal kirim.',
+};
 
-export function ProcessSection({ adaHarga }: { adaHarga: boolean }) {
+const LANGKAH_HARGA = {
+  judul: 'Harga pasti, baru dikerjakan',
+  desc: 'Setelah survei kami kasih harga final. Kalau nggak cocok, boleh batal tanpa biaya.',
+};
+
+// Kata "gratis" cuma untuk kota yang dinyalakan pemilik di admin Pengaturan.
+function langkahSurvei(kotaGratis: string[]) {
+  return {
+    judul: 'Kami survei lokasi',
+    desc: `Kami datang, ukur langsung, cek kondisi tembok dan atapnya. ${
+      kotaGratis.length > 0
+        ? `Gratis di ${gabungKota(kotaGratis)}, dan kamu belum terikat apa-apa.`
+        : 'Kamu belum terikat apa-apa.'
+    }`,
+  };
+}
+
+export function ProcessSection({ adaHarga, kotaGratis }: { adaHarga: boolean; kotaGratis: string[] }) {
   const LANGKAH: { judul: string; desc: string; disini?: boolean }[] = [
     { ...LANGKAH_PERTAMA[adaHarga ? 'adaHarga' : 'belumAda'], disini: true },
-    ...LANGKAH_LANJUTAN,
+    LANGKAH_CHAT,
+    langkahSurvei(kotaGratis),
+    LANGKAH_HARGA,
   ];
 
   return (

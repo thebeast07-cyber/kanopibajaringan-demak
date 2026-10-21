@@ -42,7 +42,7 @@ test('pengaturan: isian bolak-balik tanpa mengubah data', () => {
 });
 
 test('pengaturan: isian wajib diperiksa', () => {
-  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '' });
+  const salah = periksaPengaturan({ nomorWa: '123', kota: [], kotaGratis: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '' });
   assert.ok(salah.nomorWa);
   assert.ok(salah.kota);
   assert.ok(salah.namaUsaha);
@@ -65,4 +65,12 @@ test('kota baru dirapikan dan tidak dobel', () => {
   assert.deepEqual(tambahKota(['Demak'], 'demak'), ['Demak']);
   assert.deepEqual(tambahKota(['Demak'], 'kabupaten   semarang'), ['Demak', 'Kabupaten Semarang']);
   assert.deepEqual(tambahKota(['Demak'], '   '), ['Demak']);
+});
+
+test('pengaturan: kota survei gratis ikut tersimpan, kota yang dihapus ikut keluar', () => {
+  const c = { ...COMPREHENSIVE_DATASET.businessConfig, serviceAreas: ['Demak', 'Semarang', 'Kudus'], kotaSurveiGratis: ['Demak', 'Semarang'] };
+  const isian = isianDariConfig(c);
+  assert.deepEqual(isian.kotaGratis, ['Demak', 'Semarang']);
+  const hasil = terapkanPengaturan(c, { ...isian, kota: ['Demak', 'Kudus'] });
+  assert.deepEqual(hasil.kotaSurveiGratis, ['Demak']);
 });

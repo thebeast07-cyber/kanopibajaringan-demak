@@ -15,6 +15,7 @@ import {
 } from '../../../lib/cms/pengaturan';
 import { LINK_PROMOSI, linkPromosi } from '../../../lib/linkPromosi';
 import { TombolSalin } from '../../../components/admin/TombolSalin';
+import { Saklar } from '../../../components/admin/Saklar';
 import {
   kelasBantuan,
   kelasJudulHalaman,
@@ -183,7 +184,9 @@ export default function HalamanPengaturan() {
                   {k}
                   <button
                     type="button"
-                    onClick={() => ubah({ kota: isian.kota.filter((x) => x !== k) })}
+                    onClick={() =>
+                      ubah({ kota: isian.kota.filter((x) => x !== k), kotaGratis: isian.kotaGratis.filter((x) => x !== k) })
+                    }
                     aria-label={`Hapus ${k}`}
                     className="inline-flex items-center justify-center w-11 h-11 text-tinta-lembut hover:text-navy"
                   >
@@ -220,10 +223,42 @@ export default function HalamanPengaturan() {
             </button>
           </div>
           <p id="atur-kota-bantuan" className={kelasBantuan}>
-            Tampil di baris paling atas website, di bagian pembuka, dan di footer.
+            Tampil di footer dan di judul halaman di Google.
           </p>
           {pesanSalah('kota')}
         </section>
+
+        {/* Dipisah dari daftar kota: kota yang dilayani belum tentu dapat survei gratis.
+            Teks "survei gratis" di website cuma menyebut kota yang nyala di sini. */}
+        {isian.kota.length > 0 && (
+          <section className={`${kelasKartu} px-4 py-2`} aria-labelledby="judul-gratis">
+            <div className="pt-2 pb-1 space-y-1">
+              <h2 id="judul-gratis" className={kelasJudulKartu}>
+                Survei gratis
+              </h2>
+              <p className={kelasBantuan}>
+                Kota yang nyala ditulis &ldquo;survei gratis&rdquo; di website. Kota lain diminta chat dulu.
+              </p>
+            </div>
+            <div className="divide-y divide-kertas-garis">
+              {isian.kota.map((k) => {
+                const nyala = isian.kotaGratis.includes(k);
+                return (
+                  <Saklar
+                    key={k}
+                    id={`atur-gratis-${k.toLowerCase().replace(/\s+/g, '-')}`}
+                    nyala={nyala}
+                    onUbah={(n) =>
+                      ubah({ kotaGratis: n ? [...isian.kotaGratis, k] : isian.kotaGratis.filter((x) => x !== k) })
+                    }
+                    judul={k}
+                    bantuan={nyala ? 'Survei gratis' : 'Chat dulu'}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section className={`${kelasKartu} p-4 space-y-3.5`} aria-labelledby="judul-nama">
           <h2 id="judul-nama" className={kelasJudulKartu}>

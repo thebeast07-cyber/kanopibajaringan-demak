@@ -1,4 +1,5 @@
 import { BusinessConfigSchema } from '../../types/domain';
+import { kotaSurveiGratis } from './wilayah';
 
 /**
  * Nomor yang diketik pemilik (0822..., +62 822..., 62822...) jadi format wa.me: 62 tanpa spasi.
@@ -21,6 +22,8 @@ export function nomorWaTampil(internasional: string): string {
 export interface IsianPengaturan {
   nomorWa: string;
   kota: string[];
+  /** Bagian dari `kota` yang dapat survei gratis. */
+  kotaGratis: string[];
   namaUsaha: string;
   tagline: string;
   catatanHarga: string;
@@ -54,6 +57,7 @@ export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
   return {
     nomorWa: nomorWaTampil(c.frontlineContact.whatsappNumber),
     kota: [...c.serviceAreas],
+    kotaGratis: kotaSurveiGratis(c),
     namaUsaha: c.businessName,
     tagline: c.tagline,
     catatanHarga: c.surveyDisclaimer,
@@ -80,6 +84,7 @@ export function terapkanPengaturan(c: BusinessConfigSchema, i: IsianPengaturan):
     tagline: i.tagline.trim(),
     surveyDisclaimer: i.catatanHarga.trim(),
     serviceAreas: i.kota.map((k) => k.trim()).filter(Boolean),
+    kotaSurveiGratis: i.kota.filter((k) => i.kotaGratis.includes(k)),
     frontlineContact: { ...c.frontlineContact, whatsappNumber: nomorWaInternasional(i.nomorWa)! },
     linkMaps: rapikanLinkMaps(i.linkMaps) ?? undefined,
     alamat: i.alamat.trim().replace(/\s+/g, ' ') || undefined,

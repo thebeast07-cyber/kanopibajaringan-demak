@@ -359,6 +359,8 @@ export interface BusinessConfigSchema {
     role: string;
   };
   serviceAreas: string[];
+  /** Bagian dari serviceAreas yang dapat survei gratis. Kota lain diminta chat dulu. */
+  kotaSurveiGratis?: string[];
   surveyDisclaimer: string;
   guaranteeTerms: string;
   /** Link profil usaha di Google Maps, buat menyambungkan website dengan profil Maps di mata Google. */

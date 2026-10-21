@@ -5,6 +5,7 @@ import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { proyekTampil } from '@/lib/cms/galeri';
 import { alamatResmi } from '@/lib/server/asal';
 import { dataUsaha, judulDepan, jsonUntukScript } from '@/lib/seo';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 // Dirender tiap kunjungan, karena data dibaca dari Redis dengan permintaan tanpa cache yang
 // tidak boleh dipakai di halaman statis. Datanya sendiri tetap di-cache (bacaDatasetTerbit)
@@ -14,14 +15,16 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata(): Promise<Metadata> {
   const dataset = await bacaDatasetTerbit();
   const aktif = dataset.services.filter((s) => s.status === 'active');
-  const kota = dataset.businessConfig.serviceAreas.join(' dan ');
+  const kota = gabungKota(dataset.businessConfig.serviceAreas);
+  const gratis = kotaSurveiGratis(dataset.businessConfig);
+  const kalimatGratis = gratis.length > 0 ? ` Survei gratis di ${gabungKota(gratis)}.` : '';
   const adaHarga = aktif.some((s) => getTarifBorongan(s) !== null);
 
   // Judul buat Google menyebut jenis jasa dan kota, karena itu yang diketik orang di pencarian.
   const title = judulDepan(dataset);
   const description = adaHarga
-    ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.`
-    : `Pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, kirim lewat WhatsApp, kami hitungkan harganya. Survei lokasi gratis.`;
+    ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei.${kalimatGratis}`
+    : `Pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, kirim lewat WhatsApp, kami hitungkan harganya.${kalimatGratis}`;
 
   // Gambar preview waktu link dibagikan di WhatsApp: foto asli pertama dari pemilik (kartu
   // layanan dulu, lalu galeri), kalau belum ada pakai logo.

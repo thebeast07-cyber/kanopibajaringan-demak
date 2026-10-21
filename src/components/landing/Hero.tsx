@@ -4,6 +4,7 @@ import { calculateEstimate, getTarifBorongan } from '@/lib/estimator/pricingEngi
 import { formatRupiah, sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
 import { angkaId } from '@/lib/estimator/ukuran';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 interface HeroProps {
   config: BusinessConfigSchema;
@@ -12,6 +13,7 @@ interface HeroProps {
 
 export function Hero({ config, dataset }: HeroProps) {
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
+  const gratis = kotaSurveiGratis(config);
 
   // Contoh dihitung dari data yang sama dengan kalkulator, bukan angka yang diketik
   // tangan. Dulu di sini tertulis Rp 17.400.000 yang sudah basi tiga model harga lalu.
@@ -59,9 +61,11 @@ export function Hero({ config, dataset }: HeroProps) {
               </a>
             </div>
 
-            <p className="text-sm text-tinta-lembut pt-2 border-t border-kertas-garis">
-              Survei lokasi gratis di {config.serviceAreas.slice(0, 3).join(', ')}, dan sekitarnya.
-            </p>
+            {gratis.length > 0 && (
+              <p className="text-sm text-tinta-lembut pt-2 border-t border-kertas-garis">
+                Survei lokasi gratis di {gabungKota(gratis)}. Di luar itu, chat dulu.
+              </p>
+            )}
           </div>
 
           {/* Motif identitas: angkanya yang jadi bintang, bukan foto stok.

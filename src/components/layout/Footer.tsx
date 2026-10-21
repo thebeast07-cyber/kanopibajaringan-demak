@@ -5,6 +5,7 @@ import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
 import { LogoMendatar } from '@/components/brand/Logo';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 interface FooterProps {
   config: BusinessConfigSchema;
@@ -14,6 +15,7 @@ interface FooterProps {
 // karena belum dikonfirmasi pemilik; WhatsApp satu-satunya kontak yang pasti asli.
 export function Footer({ config }: FooterProps) {
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
+  const gratis = kotaSurveiGratis(config);
   const waTampil = config.frontlineContact.whatsappNumber.replace(/^62/, '0');
 
   return (
@@ -35,8 +37,9 @@ export function Footer({ config }: FooterProps) {
           </div>
 
           <div className="space-y-3">
-            <h2 className="font-heading text-base font-bold text-white">Area survei gratis</h2>
+            <h2 className="font-heading text-base font-bold text-white">Area layanan</h2>
             <p className="leading-relaxed">{config.serviceAreas.join(' · ')}</p>
+            {gratis.length > 0 && <p className="leading-relaxed">Survei gratis di {gabungKota(gratis)}.</p>}
           </div>
         </div>
 

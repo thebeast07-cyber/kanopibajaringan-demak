@@ -12,6 +12,7 @@ import { waTanyaUrl } from '@/lib/whatsapp';
 import { GaleriFoto } from '@/components/landing/GaleriFoto';
 import { KartuProyek, TombolWaProyek } from '@/components/landing/KartuProyek';
 import { CatatKunjungan } from '@/components/landing/CatatKunjungan';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 // Halaman satu proyek. Link-nya ikut di pesan WhatsApp dari galeri, jadi foto pertamanya yang
 // muncul sebagai preview di chat (versi JPEG 1200×630 yang dibuat waktu foto diunggah).
@@ -56,6 +57,7 @@ export default async function HalamanProyek({ params }: { params: { id: string }
   if (!proyek) notFound();
 
   const config = dataset.businessConfig;
+  const gratis = kotaSurveiGratis(config);
   const kontak = { namaUsaha: config.businessName, whatsappNumber: config.frontlineContact.whatsappNumber, asal: asalPermintaan() };
   const layanan = proyek.serviceId ? dataset.services.find((s) => s.id === proyek.serviceId && s.status === 'active') : undefined;
   const dipasang = teksDipasang(proyek.dipasang);
@@ -103,7 +105,7 @@ export default async function HalamanProyek({ params }: { params: { id: string }
             <h2 className="font-heading text-xl font-bold text-navy">Mau yang kayak gini?</h2>
             <p className="text-tinta-lembut leading-relaxed">
               Harganya tergantung ukuran dan bahan di tempatmu. Chat kami, link foto ini ikut terkirim biar langsung nyambung.
-              Survei lokasinya gratis.
+              {gratis.length > 0 && ` Survei lokasi gratis di ${gabungKota(gratis)}.`}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <TombolWaProyek proyek={proyek} kontak={kontak} sumber="galeri-detail" className="w-full sm:w-auto">

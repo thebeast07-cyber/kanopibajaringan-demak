@@ -18,6 +18,8 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
     // di Jawa Tengah. Dua kota ini yang disebut pemilik; cakupan sebenarnya masih
     // perlu dipastikan, jadi jangan ditambah sendiri (R-38).
     serviceAreas: ['Demak', 'Semarang'],
+    // Dikonfirmasi pemilik: survei gratis cuma dua kota ini, kota lain chat dulu.
+    kotaSurveiGratis: ['Demak', 'Semarang'],
     surveyDisclaimer:
       'Harga di sini hitungan ancer-ancer dari ukuran yang kamu masukkan. Harga pastinya ditentukan setelah kami survei lokasi.',
     // guaranteeTerms sengaja kosong: pemilik belum mengonfirmasi ada garansi apa.

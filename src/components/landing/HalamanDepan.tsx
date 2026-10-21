@@ -14,6 +14,7 @@ import { getTarifBorongan } from '@/lib/estimator/pricingEngine';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa, catatKunjungan } from '@/lib/jejak';
 import { proyekTampil } from '@/lib/cms/galeri';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 /** Isi halaman depan. Datanya dari server (penyimpanan online), bukan dari browser. */
 export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
@@ -33,6 +34,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
   // Selama pemilik belum mengisi harga satu pun, kalimat yang menjanjikan angka diganti.
   const adaHarga = services.some((s) => getTarifBorongan(s) !== null);
+  const gratis = kotaSurveiGratis(config);
 
   return (
     <div className="min-h-screen flex flex-col bg-kertas text-tinta">
@@ -51,7 +53,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
           whatsappNumber={config.frontlineContact.whatsappNumber}
           onSelectService={handleSelectService}
         />
-        <ProcessSection adaHarga={adaHarga} />
+        <ProcessSection adaHarga={adaHarga} kotaGratis={gratis} />
         <FaqSection faqs={faqs} />
 
         {/* Section portofolio dihapus: isinya 3 proyek karangan dengan foto stok dan
@@ -66,7 +68,9 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
               {adaHarga
                 ? 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti dan atur jadwal survei.'
                 : 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan hitungannya dan atur jadwal survei.'}{' '}
-              Surveinya gratis, dan kalau harga finalnya nggak cocok kamu boleh batal.
+              {gratis.length > 0
+                ? `Survei gratis di ${gabungKota(gratis)}, dan kalau harga finalnya nggak cocok kamu boleh batal.`
+                : 'Kalau harga finalnya nggak cocok, kamu boleh batal.'}
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <a

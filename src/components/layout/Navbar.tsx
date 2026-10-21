@@ -6,6 +6,7 @@ import { BusinessConfigSchema } from '@/types/domain';
 import { sapaanUmum, waTanyaUrl } from '@/lib/whatsapp';
 import { catatKlikWa } from '@/lib/jejak';
 import { LogoMendatar } from '@/components/brand/Logo';
+import { gabungKota, kotaSurveiGratis } from '@/lib/cms/wilayah';
 
 interface NavbarProps {
   config: BusinessConfigSchema;
@@ -34,13 +35,18 @@ export function Navbar({ config, adaGaleri = false }: NavbarProps) {
   const pathname = usePathname();
   const tautan = tautanSitus(pathname, adaGaleri);
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
+  const gratis = kotaSurveiGratis(config);
 
   return (
     <>
       {/* Baris wilayah layanan. Isinya fakta, bukan slogan. */}
       <div className="bg-navy text-navy-kabut text-xs py-2 px-4">
         <div className="max-w-7xl mx-auto">
-          <span>Survei gratis di {config.serviceAreas.slice(0, 4).join(', ')} dan sekitarnya</span>
+          <span>
+            {gratis.length > 0
+              ? `Survei gratis di ${gabungKota(gratis)}. Kota lain chat dulu.`
+              : `Area layanan: ${config.serviceAreas.join(', ')}`}
+          </span>
         </div>
       </div>
 
