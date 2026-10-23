@@ -191,7 +191,7 @@ test.describe('Admin di HP sampai tampil ke pelanggan', () => {
     const footer = page.locator('footer');
     await expect(footer).toContainText('Spesialis kanopi Demak');
     await expect(footer).toContainText('Kudus');
-    await expect(footer.getByRole('link', { name: /WhatsApp 082228132455/ })).toHaveAttribute('href', /wa\.me\/6282228132455/);
+    await expect(footer.getByRole('link', { name: /Langsung hubungi kami di WhatsApp/ })).toHaveAttribute('href', /wa\.me\/6282228132455/);
     await pelanggan.close();
   });
 

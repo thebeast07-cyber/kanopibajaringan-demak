@@ -14,7 +14,6 @@ interface FooterProps {
 // karena belum dikonfirmasi pemilik; WhatsApp satu-satunya kontak yang pasti asli.
 export function Footer({ config }: FooterProps) {
   const waHref = waTanyaUrl(config.frontlineContact.whatsappNumber, sapaanUmum(config.businessName));
-  const waTampil = config.frontlineContact.whatsappNumber.replace(/^62/, '0');
 
   return (
     <footer className="bg-navy text-navy-kabut pt-14 pb-10">
@@ -30,7 +29,7 @@ export function Footer({ config }: FooterProps) {
               onClick={() => catatKlikWa('footer')}
               className="inline-flex items-center min-h-[44px] text-white font-semibold underline underline-offset-4 decoration-navy-kabut hover:decoration-white"
             >
-              WhatsApp {waTampil}
+              Langsung hubungi kami di WhatsApp
             </a>
           </div>
 
