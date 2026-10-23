@@ -107,7 +107,7 @@ export function KartuUtama({ svc, namaUsaha, whatsappNumber, onSelectService, pr
           </p>
         ) : (
           <p className="text-tinta leading-relaxed">
-            Harganya belum dipasang di sini.{' '}
+            Harganya belum ditulis di sini.{' '}
             <LinkWa
               href={waTanyaUrl(whatsappNumber, `Halo ${namaUsaha}, saya mau tanya harga ${svc.title}.`)}
               sumber="kartu-tanya-harga"
@@ -142,7 +142,7 @@ export function KartuUtama({ svc, namaUsaha, whatsappNumber, onSelectService, pr
           pratinjau={pratinjau}
           className="flex items-center justify-center min-h-[48px] mt-5 bg-navy hover:bg-navy-muda text-white font-semibold rounded-xl transition-colors"
         >
-          Hitung ukuran kamu
+          Cek harga
         </LinkHitung>
       </div>
     </div>
@@ -189,7 +189,7 @@ export function BarisLainnya({ svc, namaUsaha, whatsappNumber, onSelectService, 
           pratinjau={pratinjau}
           className="flex items-center justify-center min-h-[44px] px-4 border border-kertas-garis bg-white hover:bg-kertas-dalam text-navy font-semibold text-sm rounded-lg transition-colors"
         >
-          Hitung
+          Cek harga
         </LinkHitung>
       </div>
     </div>

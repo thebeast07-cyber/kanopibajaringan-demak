@@ -95,8 +95,8 @@ export function buildWhatsAppLeadUrl(
     customer.additionalNotes ? `Catatan: ${customer.additionalNotes}` : null,
     ``,
     adaHarga
-      ? `Boleh minta harga pastinya dan dijadwalkan survei?`
-      : `Harganya belum ada di website. Boleh minta dihitungkan dan dijadwalkan survei?`,
+      ? `Boleh minta harga pastinya sekalian jadwal survei?`
+      : `Harganya belum ada di website. Boleh minta dihitungkan sekalian jadwal survei?`,
     ``,
     `(kode ${snapshot.estimateId}, dihitung ${new Date(snapshot.calculatedAt).toLocaleDateString('id-ID')})`,
   ]

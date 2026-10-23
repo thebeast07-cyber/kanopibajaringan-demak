@@ -656,34 +656,34 @@ export const COMPREHENSIVE_DATASET: CompleteDataset = {
     {
       id: 'faq-1',
       category: 'estimator',
-      question: 'Harga di kalkulator ini udah pasti?',
+      question: 'Harga di kalkulator ini sudah pasti?',
       answer:
-        'Belum. Itu hitungan kasar dari ukuran yang kamu masukkan, buat ancer-ancer aja. Harga pastinya kami tentukan setelah lihat lokasinya langsung, karena kondisi tiap rumah beda.',
+        'Belum. Itu hitungan kasar dari ukuran yang dimasukkan, buat perkiraan saja. Harga pastinya kami tentukan setelah lihat lokasinya langsung, karena kondisi tiap rumah berbeda.',
       order: 1,
     },
     {
       id: 'faq-2',
       category: 'survey',
-      question: 'Survei lokasinya bayar nggak?',
+      question: 'Survei lokasinya bayar atau gratis?',
       answer:
-        'Nggak, gratis. Demak dan Semarang kami datang sendiri. Di luar dua kota itu chat dulu, nanti kami bilang sanggup atau nggak, biar kamu nggak nunggu sia-sia.',
+        'Gratis untuk Demak dan Semarang. Di luar dua kota itu, chat dulu ya, nanti kami kabari sanggup atau tidak, biar tidak menunggu sia-sia.',
       order: 2,
     },
     {
       id: 'faq-3',
       category: 'estimator',
-      question: 'Kok harganya cuma satu angka? Pilihan bahan dan warnanya mana?',
+      question: 'Kok harganya cuma satu angka? Pilihan bahan dan warnanya di mana?',
       answer:
-        'Harga yang muncul itu borongan pakai bahan standar, udah termasuk rangka, upah pasang, dan finishing. Bahan standarnya kami tulis di kartu layanan begitu sudah pasti. Mau bahan atau warna lain, atau ada tambahan kayak talang dan bongkar atap lama, tanya lewat WhatsApp, nanti kami hitungkan.',
+        'Harga yang tampil itu borongan pakai bahan standar yang tertulis di kartu layanan, sudah termasuk pasang. Mau bahan atau warna lain? Tanya lewat WhatsApp, nanti kami hitungkan.',
       order: 3,
     },
     {
       id: 'faq-4',
       category: 'estimator',
-      question: 'Kenapa ukuran saya kecil tapi dihitungnya lebih besar?',
+      question: 'Ukurannya kecil, kok dihitung lebih besar?',
       answer:
         // Contoh angka minimum dihapus: angkanya ikut direset dan diisi pemilik (R-17).
-        'Beberapa layanan punya minimum pengerjaan, angkanya tertulis di kartu layanan. Kalau ukuranmu di bawah itu, yang dihitung angka minimumnya, karena ongkos tukang ke lokasi dan potongan bahan tetap jalan walaupun ukurannya kecil. Kalkulator selalu nunjukin kalau minimumnya kepakai.',
+        'Beberapa layanan punya minimum pengerjaan, angkanya tertulis di kartu layanan. Kalau ukurannya di bawah itu, yang dihitung angka minimumnya, karena ongkos tukang ke lokasi dan potongan bahan tetap jalan walaupun ukurannya kecil. Kalkulator selalu menunjukkan kalau minimumnya terpakai.',
       order: 4,
     },
   ],

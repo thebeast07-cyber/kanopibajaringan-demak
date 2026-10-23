@@ -37,8 +37,8 @@ export function Hero({ config, dataset }: HeroProps) {
 
             <p className="text-lg text-tinta-lembut leading-relaxed max-w-xl">
               {adaHarga
-                ? 'Masukin ukurannya, harganya langsung keluar. Nggak perlu isi form panjang, nggak perlu nunggu dibalas besok. Kalau cocok, lanjut chat buat nego dan atur survei.'
-                : 'Masukin ukurannya, terus kirim lewat WhatsApp. Kami hitungkan harganya dan atur jadwal survei.'}
+                ? 'Masukkan ukurannya, harganya akan tampil langsung di sini. Kalau cocok, lanjut chat WhatsApp buat nego dan atur jadwal survei.'
+                : 'Masukkan ukurannya, lalu kirim lewat WhatsApp. Kami hitungkan harganya dan atur jadwal survei.'}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
@@ -46,7 +46,7 @@ export function Hero({ config, dataset }: HeroProps) {
                 href="#kalkulator"
                 className="flex items-center justify-center min-h-[52px] px-7 bg-navy hover:bg-navy-muda text-white font-semibold rounded-xl transition-colors"
               >
-                {adaHarga ? 'Hitung harga sekarang' : 'Masukkan ukuran'}
+                {adaHarga ? 'Cek harga' : 'Masukkan ukuran'}
               </a>
               <a
                 href={waHref}
@@ -81,7 +81,7 @@ export function Hero({ config, dataset }: HeroProps) {
                 </p>
 
                 <p className="text-sm text-tinta-lembut mt-3 leading-relaxed">
-                  Sudah termasuk bahan, rangka, upah pasang, dan finishing.
+                  Sudah termasuk bahan dan pasang.
                   {contoh.duration.text && ` Perkiraan pengerjaan ${contoh.duration.text}, dipastikan setelah survei.`}
                 </p>
 
@@ -89,7 +89,7 @@ export function Hero({ config, dataset }: HeroProps) {
                   href="#kalkulator"
                   className="flex items-center justify-center min-h-[48px] mt-6 bg-kertas-dalam hover:bg-kertas-garis text-navy font-semibold rounded-xl transition-colors"
                 >
-                  Hitung ukuran punya kamu
+                  Cek harga ukuran lain
                 </a>
               </div>
             </div>

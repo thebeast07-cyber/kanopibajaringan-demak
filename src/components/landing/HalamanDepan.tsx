@@ -60,13 +60,13 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
         <section className="bg-navy text-white py-16 sm:py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold leading-tight">
-              {adaHarga ? 'Udah dapat angkanya? Lanjut ngobrol.' : 'Mau tahu harganya? Lanjut ngobrol.'}
+              {adaHarga ? 'Sudah dapat angkanya? Lanjut ngobrol.' : 'Mau tahu harganya? Lanjut ngobrol.'}
             </h2>
             <p className="text-navy-kabut leading-relaxed">
               {adaHarga
-                ? 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan harga yang lebih pasti dan atur jadwal survei.'
-                : 'Kirim ukuran dan lokasi kamu lewat WhatsApp. Kami balas dengan hitungannya dan atur jadwal survei.'}{' '}
-              Surveinya gratis, dan kalau harga finalnya nggak cocok kamu boleh batal.
+                ? 'Kirim ukuran dan lokasinya lewat WhatsApp. Kami balas dengan harga yang lebih pasti dan atur jadwal survei.'
+                : 'Kirim ukuran dan lokasinya lewat WhatsApp. Kami balas dengan hitungannya dan atur jadwal survei.'}{' '}
+              Surveinya gratis, dan kalau harga finalnya tidak cocok, boleh batal.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
@@ -82,7 +82,7 @@ export function HalamanDepan({ dataset }: { dataset: CompleteDataset }) {
                 href="#kalkulator"
                 className="w-full sm:w-auto flex items-center justify-center min-h-[52px] px-7 bg-navy-tua hover:bg-navy-muda text-white font-semibold rounded-xl border border-navy-muda transition-colors"
               >
-                {adaHarga ? 'Hitung ulang' : 'Isi ukuran'}
+                {adaHarga ? 'Cek harga' : 'Isi ukuran'}
               </a>
             </div>
           </div>

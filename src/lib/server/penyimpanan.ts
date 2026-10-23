@@ -147,7 +147,10 @@ export async function simpanState(state: StorageState, etagLama: string | null):
 
 async function bacaDatasetTerbitTanpaCache(): Promise<CompleteDataset> {
   const { state } = await bacaState();
-  return (state ?? stateAwal()).publishedDataset;
+  const terbit = (state ?? stateAwal()).publishedDataset;
+  // FAQ tidak bisa diubah di admin, jadi teksnya selalu dari kode. Salinan di data tersimpan
+  // cuma sisa simpanan pertama dan tidak ikut berubah kalau kalimatnya diperbaiki di kode.
+  return { ...terbit, faqs: COMPREHENSIVE_DATASET.faqs };
 }
 
 /** Data yang dilihat pelanggan. Di-cache; dibuang tiap admin menyimpan (revalidateTag). */

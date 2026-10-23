@@ -33,7 +33,7 @@ export function proyekTampil(galeri: ProyekGaleriSchema[] | undefined): ProyekGa
 
 /** Pesan WhatsApp dari galeri. Link halaman proyek ikut, supaya fotonya muncul sebagai preview. */
 export function pesanWaGaleri(namaUsaha: string, p: Pick<ProyekGaleriSchema, 'judul' | 'lokasi'>, url: string): string {
-  return `Halo ${namaUsaha}, saya lihat foto ${judulProyek(p)} dari galeri website. Saya mau yang kayak gini, bisa dibantu?\n\n${url}`;
+  return `Halo ${namaUsaha}, saya lihat foto ${judulProyek(p)} dari galeri website. Saya mau yang seperti ini, bisa dibantu?\n\n${url}`;
 }
 
 export interface IsianProyek {

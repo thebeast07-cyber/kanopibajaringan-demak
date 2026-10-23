@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // Judul buat Google menyebut jenis jasa dan kota, karena itu yang diketik orang di pencarian.
   const title = judulDepan(dataset);
   const description = adaHarga
-    ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung keluar, lanjut chat WhatsApp buat nego dan jadwal survei gratis.`
+    ? `Cek harga pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, harganya langsung tampil, lanjut chat WhatsApp buat nego dan jadwal survei gratis.`
     : `Pasang kanopi, atap baja ringan, pagar, dan railing di ${kota}. Masukkan ukuran, kirim lewat WhatsApp, kami hitungkan harganya. Survei lokasi gratis.`;
 
   // Gambar preview waktu link dibagikan di WhatsApp: foto asli pertama dari pemilik (kartu

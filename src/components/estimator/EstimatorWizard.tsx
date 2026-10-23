@@ -138,7 +138,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
             {adaHargaSama
-              ? 'Pilih layanan, masukkan ukuran, harganya langsung muncul di sebelah.'
+              ? 'Pilih layanan, masukkan ukurannya, harganya akan tampil langsung di sini.'
               : 'Pilih layanan dan masukkan ukurannya, lalu kirim lewat WhatsApp. Kami hitungkan harganya.'}
           </p>
         </div>
@@ -271,8 +271,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
             </div>
 
             <p className="text-sm text-tinta-lembut leading-relaxed bg-kertas-dalam rounded-xl p-4">
-              Mau bahan atau warna lain, atau ada pekerjaan tambahan kayak talang dan bongkar atap
-              lama? Tulis di catatan, nanti dibahas di WhatsApp.
+              Mau bahan lain atau ada pekerjaan tambahan? Tulis di catatan.
             </p>
           </div>
 
@@ -294,12 +293,12 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                   </p>
                 ) : !borongan ? (
                   <p className="font-heading text-xl font-semibold text-white leading-snug">
-                    Harga {activeService.title} belum dipasang di sini. Kirim ukurannya lewat
+                    Harga {activeService.title} belum ditulis di sini. Kirim ukurannya lewat
                     WhatsApp, nanti kami hitungkan.
                   </p>
                 ) : (
                   <p className="font-heading text-xl font-semibold text-navy-kabut leading-snug">
-                    Isi ukurannya dulu, harganya nanti muncul di sini.
+                    Isi ukurannya dulu, harganya nanti tampil di sini.
                   </p>
                 )}
                 {borongan && snapshot && (
@@ -312,7 +311,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
 
               {minimumApplied && snapshot && borongan && (
                 <p className="text-sm text-navy-kabut leading-relaxed bg-navy-tua rounded-xl p-4">
-                  Ukuran kamu {angkaId(snapshot.billableUnits.actual)} {unitLabel}, tapi layanan ini minimum{' '}
+                  Ukurannya {angkaId(snapshot.billableUnits.actual)} {unitLabel}, tapi layanan ini minimum{' '}
                   <strong className="text-white">
                     {angkaId(snapshot.billableUnits.applied)} {unitLabel}
                   </strong>
@@ -329,14 +328,13 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
               {bahanStandar && (
                 <p className="text-sm text-navy-kabut leading-relaxed">
                   <span className="text-white font-semibold">Bahan standar:</span> {bahanStandar}.
-                  Mau bahan lain? Tulis di catatan.
                 </p>
               )}
 
               {borongan && (
                 <p className="text-sm text-navy-kabut leading-relaxed">
-                  Harga borongan, sudah termasuk bahan, rangka, upah pasang, dan finishing. Masih
-                  ancer-ancer; harga pastinya setelah survei lokasi.
+                  Harga borongan, sudah termasuk bahan dan pasang. Ini masih perkiraan, harga pastinya
+                  kami kasih setelah survei.
                 </p>
               )}
             </div>
@@ -355,7 +353,7 @@ export function EstimatorWizard({ dataset, initialServiceId }: EstimatorWizardPr
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Nama kamu"
+                  placeholder="Nama atau panggilan"
                   aria-invalid={Boolean(formError) && !customerName.trim()}
                   className={textField}
                 />

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   const dipasang = teksDipasang(proyek.dipasang);
   const description =
     proyek.keterangan?.trim() ||
-    `Foto asli pemasangan ${proyek.judul} di ${proyek.lokasi}${dipasang ? `, ${dipasang}` : ''}. Tanya harga untuk ukuranmu lewat WhatsApp.`;
+    `Foto asli pemasangan ${proyek.judul} di ${proyek.lokasi}${dipasang ? `, ${dipasang}` : ''}. Tanya harganya lewat WhatsApp.`;
   const foto = proyek.fotos[0];
 
   return {
@@ -100,9 +100,9 @@ export default async function HalamanProyek({ params }: { params: { id: string }
           </div>
 
           <div className="bg-white border border-kertas-garis rounded-2xl p-5 sm:p-6 space-y-3">
-            <h2 className="font-heading text-xl font-bold text-navy">Mau yang kayak gini?</h2>
+            <h2 className="font-heading text-xl font-bold text-navy">Mau yang seperti ini?</h2>
             <p className="text-tinta-lembut leading-relaxed">
-              Harganya tergantung ukuran dan bahan di tempatmu. Chat kami, link foto ini ikut terkirim biar langsung nyambung.
+              Harganya tergantung ukuran dan bahan di lokasi. Chat kami, link foto ini ikut terkirim biar langsung nyambung.
               Survei lokasinya gratis.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
@@ -113,7 +113,7 @@ export default async function HalamanProyek({ params }: { params: { id: string }
                 href="/#kalkulator"
                 className="flex items-center justify-center min-h-[48px] px-5 rounded-xl border border-navy bg-white hover:bg-kertas-dalam text-navy font-semibold transition-colors"
               >
-                {adaHarga ? 'Hitung perkiraan harga' : 'Isi ukuran'}
+                {adaHarga ? 'Cek harga' : 'Isi ukuran'}
               </a>
             </div>
           </div>

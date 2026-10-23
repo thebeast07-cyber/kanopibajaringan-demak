@@ -7,27 +7,27 @@ import React from 'react';
 // mengeluarkan angka, jadi kalimatnya tidak boleh menjanjikan itu.
 const LANGKAH_PERTAMA = {
   adaHarga: {
-    judul: 'Kamu cek harga di sini',
-    desc: 'Pilih layanan, masukkan ukuran. Harganya langsung keluar, nggak perlu daftar atau isi form panjang.',
+    judul: 'Cek harga dulu',
+    desc: 'Pilih layanan, masukkan ukurannya. Harganya akan tampil langsung di sini.',
   },
   belumAda: {
-    judul: 'Kamu isi ukuran di sini',
-    desc: 'Pilih layanan, masukkan ukuran, terus kirim lewat WhatsApp. Nggak perlu daftar atau isi form panjang.',
+    judul: 'Isi ukuran dulu',
+    desc: 'Pilih layanan, masukkan ukurannya, lalu kirim lewat WhatsApp.',
   },
 };
 
 const LANGKAH_LANJUTAN = [
   {
     judul: 'Lanjut chat WhatsApp',
-    desc: 'Tombol di kalkulator langsung bikin pesan berisi ukuran dan hitungannya. Kamu tinggal kirim.',
+    desc: 'Tombol di kalkulator langsung bikin pesan berisi ukuran dan hitungannya. Tinggal kirim.',
   },
   {
     judul: 'Kami survei lokasi',
-    desc: 'Kami datang, ukur langsung, cek kondisi tembok dan atapnya. Gratis, dan kamu belum terikat apa-apa.',
+    desc: 'Kami datang, ukur langsung, dan cek kondisi lokasinya. Gratis, dan belum ada ikatan apa-apa.',
   },
   {
     judul: 'Harga pasti, baru dikerjakan',
-    desc: 'Setelah survei kami kasih harga final. Kalau nggak cocok, boleh batal tanpa biaya.',
+    desc: 'Setelah survei kami kasih harga final. Kalau tidak cocok, boleh batal tanpa biaya.',
   },
 ];
 
@@ -45,7 +45,7 @@ export function ProcessSection({ adaHarga }: { adaHarga: boolean }) {
             Habis ini ngapain?
           </h2>
           <p className="text-tinta-lembut leading-relaxed">
-            Dari isi ukuran sampai dikerjakan, nggak ada biaya sampai kamu setuju harga finalnya.
+            Belum ada biaya apa pun sampai harga finalnya cocok.
           </p>
         </div>
 

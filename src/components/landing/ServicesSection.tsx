@@ -25,8 +25,7 @@ export function ServicesSection({ services, namaUsaha, whatsappNumber, onSelectS
           {/* Klaim "bahan standar SNI" dihapus dari kalimat di bawah: pemilik belum punya
               bukti sertifikasinya, dan klaim standar tanpa bukti itu karangan (R-36). */}
           <p className="text-tinta-lembut leading-relaxed">
-            Harganya borongan: sudah termasuk bahan standar, rangka, upah pasang, dan finishing. Mau
-            bahan atau warna lain? Tanya aja lewat WhatsApp.
+            Semua harga borongan, sudah termasuk bahan standar dan pasang.
           </p>
         </div>
 

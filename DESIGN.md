@@ -34,14 +34,25 @@ dipakai di `<title>` halaman dan di `authors`, karena di situ yang kebaca mesin 
 
 ## Kepribadian
 
-> **Slengekan santai.**
+> **Santai-sopan.**
 
-Kalau usaha ini orang: ngobrolnya cair, nggak kaku, nggak sok korporat. Bukan sales yang ngejar, bukan
-perusahaan yang nulis "Kami berkomitmen memberikan solusi terbaik". Ngomong apa adanya, to the point,
-tapi nggak asal-asalan.
+Kalau usaha ini orang: tukang yang ramah ngobrol sama pemilik rumah. Cair, nggak kaku, nggak sok
+korporat, tapi tetap sopan ke bapak-bapak dan ibu-ibu. Bukan sales yang ngejar, bukan perusahaan yang
+nulis "Kami berkomitmen memberikan solusi terbaik", dan bukan anak gaul yang sok akrab.
 
-Konsekuensi buat copy: pakai "kamu", bukan "Anda". Kalimat pendek. Nggak ada kata yang nggak dipakai
-orang pas ngobrol.
+Diganti dari "slengekan santai, pakai kamu" (2026-10-23) atas pilihan pemilik. Alasannya: pembeli di
+Demak dan Semarang banyak yang lebih tua, dan "kamu" plus kata gaul Jakarta bisa kedengeran kurang sopan.
+
+Aturan buat copy:
+
+- **Tanpa "kamu" dan tanpa "Anda".** Kalimat tanpa subjek, seperti tukang yang nanya "Ukurannya berapa,
+  Pak?": "ukurannya", "lokasinya", "tinggal kirim". "Kami" untuk usahanya.
+- **Kata kerja dan keterangan baku:** masukkan, sudah, tidak, menunjukkan, seperti. Bukan masukin,
+  udah, nggak, nunjukin, kayak.
+- **Susunan kalimat tetap kayak orang ngomong:** kalimat pendek, "Kalau cocok, lanjut chat", "kok",
+  "biar", "ya", "chat". Bukan "silakan", "dipungut biaya", "penjadwalan".
+- **"Tampil di sini", bukan "keluar"**, untuk harga yang muncul di kalkulator (pilihan pemilik).
+- Pesan WA otomatis ditulis sebagai pelanggan, jadi tetap pakai "saya".
 
 ---
 
@@ -117,7 +128,7 @@ Pemilik ngurus admin dari HP, tanpa laptop. Jadi admin dirancang buat layar 390 
 | Badan & antarmuka | **Figtree** | 400 / 600 |
 
 Alasan: Fraunces punya lengkungan yang hangat, jadi judulnya nggak kerasa kayak situs korporat,
-cocok sama kepribadian slengekan santai. Figtree dipertahankan buat badan teks karena netral dan
+cocok sama kepribadian santai-sopan. Figtree dipertahankan buat badan teks karena netral dan
 enak dibaca di HP, dan sudah ada di proyek.
 
 **Yang dibuang:** Work Sans. Dipilih tanpa alasan oleh generator sebelumnya.
@@ -134,7 +145,7 @@ antar huruf yang lebar (R-06).
 
 | Dial | Nilai | Alasan |
 |---|---|---|
-| **ENERGY** | 2 (Balanced) | "Slengekan santai" bukan halaman yang teriak, tapi "estetik" juga bukan halaman birokrasi yang datar. Di tengah. |
+| **ENERGY** | 2 (Balanced) | "Santai-sopan" bukan halaman yang teriak, tapi "estetik" juga bukan halaman birokrasi yang datar. Di tengah. |
 | **RHYTHM** | 2 (Konsisten dengan beberapa variasi) | Section kalkulator harus beda jelas dari section lain karena di situ tujuan halamannya. Sisanya boleh seragam. |
 | **MOTION** | 1 (Hover saja) | Orang datang buat cek harga lalu ke WA. Animasi scroll cuma nambah waktu tunggu. Nggak ada alasan UX buat gerak. |
 

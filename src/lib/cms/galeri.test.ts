@@ -59,7 +59,7 @@ test('pesan WhatsApp tanpa harga, membawa link halaman proyek', () => {
   const pesan = pesanWaGaleri('3 Putra', { judul: 'Kanopi Alderon', lokasi: 'Sayung, Demak' }, 'https://3putra.id/galeri/gal-1');
   assert.equal(
     pesan,
-    'Halo 3 Putra, saya lihat foto Kanopi Alderon di Sayung, Demak dari galeri website. Saya mau yang kayak gini, bisa dibantu?\n\nhttps://3putra.id/galeri/gal-1'
+    'Halo 3 Putra, saya lihat foto Kanopi Alderon di Sayung, Demak dari galeri website. Saya mau yang seperti ini, bisa dibantu?\n\nhttps://3putra.id/galeri/gal-1'
   );
   assert.doesNotMatch(pesan, /Rp/);
 });
