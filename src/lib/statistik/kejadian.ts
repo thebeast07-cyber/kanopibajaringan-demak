@@ -16,18 +16,25 @@ export const SUMBER_WA = [
   'galeri',
   'galeri-detail',
   'bar-bawah',
+  'halaman-link',
 ] as const;
 export type SumberWa = (typeof SUMBER_WA)[number];
 
-export const ASAL = ['instagram', 'google-maps', 'google', 'facebook', 'whatsapp', 'tiktok', 'langsung', 'lainnya'] as const;
+export const ASAL = ['brosur', 'instagram', 'google-maps', 'google', 'facebook', 'whatsapp', 'tiktok', 'langsung', 'lainnya'] as const;
 export type Asal = (typeof ASAL)[number];
+
+/** Tombol selain WhatsApp di halaman /link. Klik WhatsApp-nya dihitung sebagai klik_wa biasa. */
+export const TUJUAN_LINK = ['website', 'instagram', 'tiktok'] as const;
+export type TujuanLink = (typeof TUJUAN_LINK)[number];
 
 export type Kejadian =
   | { jenis: 'kunjungan'; asal: Asal }
   | { jenis: 'isi_ukuran'; layanan: string; aksiPertama: boolean }
-  | { jenis: 'klik_wa'; sumber: SumberWa; layanan?: string; pertama: boolean; aksiPertama: boolean };
+  | { jenis: 'klik_wa'; sumber: SumberWa; layanan?: string; pertama: boolean; aksiPertama: boolean }
+  | { jenis: 'klik_link'; tujuan: TujuanLink };
 
 const ASAL_UTM: Record<string, Asal> = {
+  brosur: 'brosur',
   instagram: 'instagram',
   ig: 'instagram',
   'google-maps': 'google-maps',
@@ -92,6 +99,9 @@ export function periksaKejadian(isi: unknown): Kejadian | null {
       aksiPertama: k.aksiPertama === true,
     };
   }
+  if (k.jenis === 'klik_link') {
+    return TUJUAN_LINK.includes(k.tujuan as TujuanLink) ? { jenis: 'klik_link', tujuan: k.tujuan as TujuanLink } : null;
+  }
   return null;
 }
 
@@ -110,6 +120,8 @@ export function kolomHitungan(k: Kejadian): string[] {
         ...(k.pertama ? ['sesi_klik_wa'] : []),
         ...(k.aksiPertama ? ['sesi_aksi'] : []),
       ];
+    case 'klik_link':
+      return [`link:${k.tujuan}`];
   }
 }
 
@@ -131,6 +143,8 @@ export interface Ringkasan {
   asal: Peringkat[];
   sumberWa: Peringkat[];
   layananWa: Peringkat[];
+  /** Klik tombol Website, Instagram, dan TikTok di halaman /link. */
+  klikLink: Peringkat[];
 }
 
 // Klien Redis dipasang tanpa ubah JSON otomatis, dan pada setelan itu HGETALL mengembalikan
@@ -178,6 +192,7 @@ export function ringkas(hari: HashHari[]): Ringkasan {
     asal: awalan('asal:'),
     sumberWa: awalan('wa_sumber:'),
     layananWa: awalan('wa_layanan:'),
+    klikLink: awalan('link:'),
   };
 }
 
@@ -196,6 +211,7 @@ export function tanggalMundur(sekarang: Date, jumlah: number): string[] {
 }
 
 export const LABEL_ASAL: Record<Asal, string> = {
+  brosur: 'Brosur (scan QR)',
   instagram: 'Instagram',
   'google-maps': 'Google Maps',
   google: 'Google (pencarian atau Maps)',
@@ -219,4 +235,11 @@ export const LABEL_SUMBER_WA: Record<SumberWa, string> = {
   galeri: 'Galeri proyek',
   'galeri-detail': 'Halaman foto proyek',
   'bar-bawah': 'Menu bawah di HP',
+  'halaman-link': 'Halaman link (brosur & bio)',
+};
+
+export const LABEL_TUJUAN_LINK: Record<TujuanLink, string> = {
+  website: 'Buka website',
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
 };

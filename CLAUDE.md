@@ -31,6 +31,8 @@ To update antislop later: `claude plugin update antislop@anti-slop`.
   bentuk gambar. Pasang setelah pemilik memilih.
 - Gaya ikon yang sudah dipakai: grid 24×24, garis 2px, ujung dan sudut bulat, `currentColor`,
   ditulis langsung sebagai `<svg>` di komponen (lihat `NavAdmin.tsx` dan `BarBawah.tsx`).
+- Pengecualian: halaman `/link` (QR brosur) pakai ikon isi penuh (gaya B) pilihan pemilik, lihat
+  `src/components/link/HalamanLink.tsx`.
 - Sisa lucide yang masih ada: panah buka-tutup di `FaqSection.tsx`. Ganti juga kalau pemilik
   sudah memilih penggantinya.
 

@@ -1,7 +1,7 @@
 import { track } from '@vercel/analytics';
-import { Kejadian, SumberWa, tentukanAsal } from './statistik/kejadian';
+import { Kejadian, SumberWa, TujuanLink, tentukanAsal } from './statistik/kejadian';
 
-export type { SumberWa };
+export type { SumberWa, TujuanLink };
 
 // Funnel yang bisa diukur website: datang → isi ukuran → klik WhatsApp.
 // Deal atau tidak terjadi di WhatsApp, di luar jangkauan website.
@@ -69,4 +69,9 @@ export function catatKlikWa(sumber: SumberWa, layanan?: string) {
     pertama: pertamaDiSesi('jejak-klik-wa'),
     aksiPertama: pertamaDiSesi('jejak-aksi'),
   });
+}
+
+export function catatKlikLink(tujuan: TujuanLink) {
+  track('klik_link', { tujuan });
+  kirim({ jenis: 'klik_link', tujuan });
 }

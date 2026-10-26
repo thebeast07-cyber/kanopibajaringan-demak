@@ -365,6 +365,9 @@ export interface BusinessConfigSchema {
   linkMaps?: string;
   /** Alamat workshop, disalin persis dari profil Maps. */
   alamat?: string;
+  /** Profil Instagram dan TikTok, buat tombol di halaman /link. Kosong = tombolnya tidak tampil. */
+  linkInstagram?: string;
+  linkTiktok?: string;
 }
 
 export interface CompleteDataset {

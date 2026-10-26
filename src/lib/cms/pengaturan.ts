@@ -26,9 +26,13 @@ export interface IsianPengaturan {
   catatanHarga: string;
   linkMaps: string;
   alamat: string;
+  linkInstagram: string;
+  linkTiktok: string;
 }
 
-export type KesalahanPengaturan = Partial<Record<'nomorWa' | 'kota' | 'namaUsaha' | 'linkMaps', string>>;
+export type KesalahanPengaturan = Partial<
+  Record<'nomorWa' | 'kota' | 'namaUsaha' | 'linkMaps' | 'linkInstagram' | 'linkTiktok', string>
+>;
 
 const LINK_MAPS = /^https:\/\/(maps\.app\.goo\.gl\/|goo\.gl\/maps\/|maps\.google\.[a-z.]+\/|(www\.)?google\.[a-z.]+\/maps)/i;
 
@@ -50,6 +54,32 @@ export function rapikanLinkMaps(ketikan: string): string | null {
   }
 }
 
+const HOST_SOSMED = { instagram: 'instagram.com', tiktok: 'tiktok.com' } as const;
+const NAMA_AKUN = /^[a-z0-9._]{1,30}$/i;
+
+/**
+ * Link profil Instagram atau TikTok. Pemilik boleh menempel link dari tombol Bagikan, atau cukup
+ * mengetik nama akunnya (@3putra). Hasilnya link profil bersih tanpa parameter pelacak aplikasi.
+ * Null kalau bukan akun di platform itu.
+ */
+export function rapikanLinkSosmed(platform: keyof typeof HOST_SOSMED, ketikan: string): string | null {
+  const teks = ketikan.trim();
+  const host = HOST_SOSMED[platform];
+  const akun = teks.replace(/^@/, '');
+  if (NAMA_AKUN.test(akun) && !akun.includes('.com')) {
+    return platform === 'instagram' ? `https://www.instagram.com/${akun}/` : `https://www.tiktok.com/@${akun}`;
+  }
+  try {
+    const url = new URL(teks.match(/https?:\/\/\S+/)?.[0] ?? (teks.includes(host) ? `https://${teks}` : ''));
+    const h = url.hostname.toLowerCase();
+    // Link bagikan TikTok dari aplikasi bentuknya vt.tiktok.com/xxxx, tetap diterima apa adanya.
+    if (h !== host && !h.endsWith(`.${host}`)) return null;
+    return `https://${h}${url.pathname}`;
+  } catch {
+    return null;
+  }
+}
+
 export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
   return {
     nomorWa: nomorWaTampil(c.frontlineContact.whatsappNumber),
@@ -59,6 +89,8 @@ export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
     catatanHarga: c.surveyDisclaimer,
     linkMaps: c.linkMaps ?? '',
     alamat: c.alamat ?? '',
+    linkInstagram: c.linkInstagram ?? '',
+    linkTiktok: c.linkTiktok ?? '',
   };
 }
 
@@ -69,6 +101,12 @@ export function periksaPengaturan(i: IsianPengaturan): KesalahanPengaturan {
   if (!i.namaUsaha.trim()) salah.namaUsaha = 'Nama usaha wajib diisi.';
   if (i.linkMaps.trim() && !rapikanLinkMaps(i.linkMaps)) {
     salah.linkMaps = 'Ini bukan link Google Maps. Buka profil usaha di Maps, ketuk Bagikan, lalu Salin link.';
+  }
+  if (i.linkInstagram.trim() && !rapikanLinkSosmed('instagram', i.linkInstagram)) {
+    salah.linkInstagram = 'Ini bukan link Instagram. Tulis nama akunnya (misalnya @3putra) atau tempel link profilnya.';
+  }
+  if (i.linkTiktok.trim() && !rapikanLinkSosmed('tiktok', i.linkTiktok)) {
+    salah.linkTiktok = 'Ini bukan link TikTok. Tulis nama akunnya (misalnya @3putra) atau tempel link profilnya.';
   }
   return salah;
 }
@@ -83,6 +121,8 @@ export function terapkanPengaturan(c: BusinessConfigSchema, i: IsianPengaturan):
     frontlineContact: { ...c.frontlineContact, whatsappNumber: nomorWaInternasional(i.nomorWa)! },
     linkMaps: rapikanLinkMaps(i.linkMaps) ?? undefined,
     alamat: i.alamat.trim().replace(/\s+/g, ' ') || undefined,
+    linkInstagram: rapikanLinkSosmed('instagram', i.linkInstagram) ?? undefined,
+    linkTiktok: rapikanLinkSosmed('tiktok', i.linkTiktok) ?? undefined,
   };
 }
 

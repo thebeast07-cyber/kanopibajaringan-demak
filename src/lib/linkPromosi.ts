@@ -8,6 +8,9 @@ export const LINK_PROMOSI = [
   { id: 'facebook', label: 'Halaman Facebook', query: 'utm_source=facebook&utm_medium=halaman' },
 ] as const;
 
+/** Isi QR di brosur. Kalau diganti, QR yang sudah dicetak tetap ke alamat lama, jadi jangan diganti. */
+export const LINK_BROSUR = '/link?utm_source=brosur';
+
 /** Alamat website asli. Di Preview tetap mengarah ke domain produksi kalau Vercel menyediakannya. */
 export function alamatWebsite(): string {
   const produksi = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;

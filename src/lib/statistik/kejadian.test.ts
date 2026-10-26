@@ -8,7 +8,8 @@ test('asal: link berlabel didahulukan dari referrer', () => {
   assert.equal(tentukanAsal('?utm_source=instagram&utm_medium=bio', 'https://www.google.com/', HOST), 'instagram');
   assert.equal(tentukanAsal('?utm_source=google-maps', '', HOST), 'google-maps');
   assert.equal(tentukanAsal('?utm_source=WhatsApp', '', HOST), 'whatsapp');
-  assert.equal(tentukanAsal('?utm_source=brosur', '', HOST), 'lainnya');
+  assert.equal(tentukanAsal('?utm_source=brosur', '', HOST), 'brosur');
+  assert.equal(tentukanAsal('?utm_source=spanduk', '', HOST), 'lainnya');
 });
 
 test('asal: dibaca dari referrer kalau tanpa label', () => {
@@ -90,6 +91,17 @@ test('ringkas: bentuk HGETALL mentah dari Redis (daftar datar) ikut terbaca', ()
   assert.equal(hasil.klikWa, 1);
   assert.deepEqual(hasil.asal, [{ kunci: 'instagram', jumlah: 2 }]);
   assert.deepEqual(hasil.sumberWa, [{ kunci: 'hero', jumlah: 1 }]);
+});
+
+test('klik_link: tujuan dicek dan dihitung per tombol', () => {
+  assert.deepEqual(periksaKejadian({ jenis: 'klik_link', tujuan: 'tiktok' }), { jenis: 'klik_link', tujuan: 'tiktok' });
+  assert.equal(periksaKejadian({ jenis: 'klik_link', tujuan: 'youtube' }), null);
+  assert.deepEqual(kolomHitungan({ jenis: 'klik_link', tujuan: 'instagram' }), ['link:instagram']);
+  const hasil = ringkas([{ kunjungan: '3', 'link:instagram': '2', 'link:website': '1' }]);
+  assert.deepEqual(hasil.klikLink, [
+    { kunci: 'instagram', jumlah: 2 },
+    { kunci: 'website', jumlah: 1 },
+  ]);
 });
 
 test('ringkas: tanpa data semuanya nol', () => {

@@ -6,7 +6,7 @@ import { defaultCmsRepository } from '../../lib/cms/repository';
 import { kolomKosong } from '../../lib/cms/isiDataLayanan';
 import { ProyekGaleriSchema, ServiceSchema } from '../../types/domain';
 import { proyekTampil } from '../../lib/cms/galeri';
-import { Asal, LABEL_ASAL, LABEL_SUMBER_WA, Ringkasan, SumberWa } from '../../lib/statistik/kejadian';
+import { Asal, LABEL_ASAL, LABEL_SUMBER_WA, LABEL_TUJUAN_LINK, Ringkasan, SumberWa, TujuanLink } from '../../lib/statistik/kejadian';
 import { LINK_PROMOSI, linkPromosi } from '../../lib/linkPromosi';
 import { TombolSalin } from '../../components/admin/TombolSalin';
 import { LogoLoading } from '../../components/brand/LogoLoading';
@@ -191,6 +191,28 @@ function Statistik({
                 label={LABEL_SUMBER_WA[p.kunci as SumberWa] ?? p.kunci}
                 jumlah={p.jumlah}
                 maks={s.sumberWa[0].jumlah}
+                satuan="klik"
+              />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {s.klikLink.length > 0 && (
+        <section className={`${kelasKartu} p-4 space-y-3`} aria-labelledby="judul-link">
+          <div className="space-y-1">
+            <h2 id="judul-link" className="text-base font-bold">
+              Tombol lain di halaman link
+            </h2>
+            <p className="text-sm text-tinta-lembut">Klik WhatsApp dari halaman link sudah masuk hitungan di atas.</p>
+          </div>
+          <ul className="space-y-3">
+            {s.klikLink.map((p) => (
+              <BarisPeringkat
+                key={p.kunci}
+                label={LABEL_TUJUAN_LINK[p.kunci as TujuanLink] ?? p.kunci}
+                jumlah={p.jumlah}
+                maks={s.klikLink[0].jumlah}
                 satuan="klik"
               />
             ))}

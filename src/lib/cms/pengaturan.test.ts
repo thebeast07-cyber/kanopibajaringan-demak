@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { COMPREHENSIVE_DATASET } from '../../data/comprehensiveDataset';
 import {
   isianDariConfig,
+  rapikanLinkSosmed,
   rapikanLinkMaps,
   nomorWaInternasional,
   nomorWaTampil,
@@ -42,11 +43,13 @@ test('pengaturan: isian bolak-balik tanpa mengubah data', () => {
 });
 
 test('pengaturan: isian wajib diperiksa', () => {
-  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '' });
+  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '', linkInstagram: 'https://facebook.com/3putra', linkTiktok: '' });
   assert.ok(salah.nomorWa);
   assert.ok(salah.kota);
   assert.ok(salah.namaUsaha);
   assert.ok(salah.linkMaps);
+  assert.ok(salah.linkInstagram);
+  assert.equal(salah.linkTiktok, undefined);
 });
 
 test('link Maps dari tombol Bagikan dirapikan, link lain ditolak', () => {
@@ -65,4 +68,14 @@ test('kota baru dirapikan dan tidak dobel', () => {
   assert.deepEqual(tambahKota(['Demak'], 'demak'), ['Demak']);
   assert.deepEqual(tambahKota(['Demak'], 'kabupaten   semarang'), ['Demak', 'Kabupaten Semarang']);
   assert.deepEqual(tambahKota(['Demak'], '   '), ['Demak']);
+});
+
+test('link sosmed: nama akun atau link bagikan jadi link profil bersih', () => {
+  assert.equal(rapikanLinkSosmed('instagram', '@3putra.demak'), 'https://www.instagram.com/3putra.demak/');
+  assert.equal(rapikanLinkSosmed('instagram', 'https://www.instagram.com/3putra?igsh=abc123'), 'https://www.instagram.com/3putra');
+  assert.equal(rapikanLinkSosmed('instagram', 'instagram.com/3putra'), 'https://instagram.com/3putra');
+  assert.equal(rapikanLinkSosmed('tiktok', '3putra'), 'https://www.tiktok.com/@3putra');
+  assert.equal(rapikanLinkSosmed('tiktok', 'https://vt.tiktok.com/ZSabc12/'), 'https://vt.tiktok.com/ZSabc12/');
+  assert.equal(rapikanLinkSosmed('tiktok', 'https://www.instagram.com/3putra'), null);
+  assert.equal(rapikanLinkSosmed('instagram', 'https://instagram.com.palsu.id/3putra'), null);
 });

@@ -103,6 +103,7 @@ Board logo dari pemilik digambar ulang jadi SVG (bukan tracing otomatis), file-n
 | `ikon-3putra.svg` | Tanda saja, tanpa tulisan |
 | `ikon-3putra-app.svg` / `-oranye.svg` | Ikon kotak: favicon (`src/app/icon.svg`), foto profil WA dan IG |
 | `og-logo.png` | Gambar preview link selama pemilik belum unggah foto layanan |
+| `qr-brosur.png` / `.svg` | QR di brosur, isinya `/link?utm_source=brosur`. Alamatnya jangan diganti: QR yang sudah dicetak tetap ke alamat itu |
 
 Tagline di logo "Spesialis Kanopi & Baja Ringan", sama dengan tagline teks di website
 (`businessConfig.tagline`). Board asli pemilik bertuliskan "Konstruksi & Metal Work"; diganti atas

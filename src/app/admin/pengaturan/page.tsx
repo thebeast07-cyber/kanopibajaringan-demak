@@ -13,7 +13,7 @@ import {
   tambahKota,
   terapkanPengaturan,
 } from '../../../lib/cms/pengaturan';
-import { LINK_PROMOSI, linkPromosi } from '../../../lib/linkPromosi';
+import { LINK_BROSUR, LINK_PROMOSI, alamatWebsite, linkPromosi } from '../../../lib/linkPromosi';
 import { TombolSalin } from '../../../components/admin/TombolSalin';
 import {
   kelasBantuan,
@@ -70,6 +70,8 @@ export default function HalamanPengaturan() {
       if ('kota' in field) delete sisa.kota;
       if ('namaUsaha' in field) delete sisa.namaUsaha;
       if ('linkMaps' in field) delete sisa.linkMaps;
+      if ('linkInstagram' in field) delete sisa.linkInstagram;
+      if ('linkTiktok' in field) delete sisa.linkTiktok;
       return sisa;
     });
   };
@@ -314,6 +316,43 @@ export default function HalamanPengaturan() {
           </div>
         </section>
 
+        <section className={`${kelasKartu} p-4 space-y-3.5`} aria-labelledby="judul-sosmed">
+          <div className="space-y-1">
+            <h2 id="judul-sosmed" className={kelasJudulKartu}>
+              Instagram dan TikTok
+            </h2>
+            <p className={kelasBantuan}>
+              Jadi tombol di halaman link (yang dibuka dari QR brosur). Yang kosong, tombolnya nggak tampil.
+            </p>
+          </div>
+          {(
+            [
+              { field: 'linkInstagram', id: 'atur-instagram', label: 'Instagram' },
+              { field: 'linkTiktok', id: 'atur-tiktok', label: 'TikTok' },
+            ] as const
+          ).map((k) => (
+            <div key={k.field} className="space-y-1.5">
+              <label htmlFor={k.id} className={kelasLabel}>
+                {k.label} <span className="font-normal text-tinta-lembut">(boleh kosong)</span>
+              </label>
+              <input
+                id={k.id}
+                type="text"
+                inputMode="url"
+                autoComplete="off"
+                autoCapitalize="none"
+                value={isian[k.field]}
+                placeholder="@namaakun atau link profil"
+                onChange={(e) => ubah({ [k.field]: e.target.value })}
+                aria-invalid={Boolean(salah[k.field])}
+                aria-describedby={salah[k.field] ? `atur-${k.field}-salah` : undefined}
+                className={`${kelasKolom(Boolean(salah[k.field]))} placeholder:text-tinta-samar`}
+              />
+              {pesanSalah(k.field)}
+            </div>
+          ))}
+        </section>
+
         <section className={`${kelasKartu} p-4 space-y-2`} aria-labelledby="judul-catatan">
           <h2 id="judul-catatan" className={kelasJudulKartu}>
             Catatan soal harga
@@ -341,6 +380,19 @@ export default function HalamanPengaturan() {
           </p>
         </div>
         <ul className="divide-y divide-kertas-garis">
+          <li className="py-2.5 space-y-2">
+            <div className="flex items-start justify-between gap-3">
+              <span className="pt-2.5 text-[15px]">Brosur (QR)</span>
+              <TombolSalin teks={`${alamatWebsite()}${LINK_BROSUR}`} label="Salin link" className={kelasTombolTipis} />
+            </div>
+            <p className={kelasBantuan}>
+              QR ini membuka halaman link: tombol WhatsApp, website, Instagram, TikTok. Pesan WA dari situ otomatis
+              menyebut brosur, jadi chatnya kelihatan.
+            </p>
+            <a href="/brand/qr-brosur.png" download="qr-brosur-3putra.png" className={kelasTombolKedua}>
+              Unduh QR buat dicetak
+            </a>
+          </li>
           {LINK_PROMOSI.map((l) => (
             <li key={l.id} className="flex items-start justify-between gap-3 py-2.5">
               <span className="pt-2.5 text-[15px]">{l.label}</span>
