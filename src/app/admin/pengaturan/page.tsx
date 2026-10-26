@@ -67,6 +67,7 @@ export default function HalamanPengaturan() {
     setSalah((prev) => {
       const sisa = { ...prev };
       if ('nomorWa' in field) delete sisa.nomorWa;
+      if ('nomorWaBrosur' in field) delete sisa.nomorWaBrosur;
       if ('kota' in field) delete sisa.kota;
       if ('namaUsaha' in field) delete sisa.namaUsaha;
       if ('linkMaps' in field) delete sisa.linkMaps;
@@ -156,7 +157,8 @@ export default function HalamanPengaturan() {
             className={`${kelasKolom(Boolean(salah.nomorWa))} text-lg font-semibold`}
           />
           <p id="atur-wa-bantuan" className={kelasBantuan}>
-            Semua tombol WhatsApp di website mengarah ke nomor ini.
+            Semua tombol WhatsApp di website mengarah ke nomor ini, kecuali dari QR brosur kalau nomor brosur di bawah
+            diisi.
           </p>
           {pesanSalah('nomorWa')}
           {nomorSah && (
@@ -169,6 +171,26 @@ export default function HalamanPengaturan() {
               Coba buka chat ke nomor ini
             </a>
           )}
+          <div className="pt-2 space-y-1.5">
+            <label htmlFor="atur-wa-brosur" className={kelasLabel}>
+              Nomor khusus brosur <span className="font-normal text-tinta-lembut">(boleh kosong)</span>
+            </label>
+            <input
+              id="atur-wa-brosur"
+              type="tel"
+              inputMode="tel"
+              autoComplete="off"
+              value={isian.nomorWaBrosur}
+              onChange={(e) => ubah({ nomorWaBrosur: e.target.value })}
+              aria-invalid={Boolean(salah.nomorWaBrosur)}
+              aria-describedby={`atur-wa-brosur-bantuan${salah.nomorWaBrosur ? ' atur-nomorWaBrosur-salah' : ''}`}
+              className={kelasKolom(Boolean(salah.nomorWaBrosur))}
+            />
+            <p id="atur-wa-brosur-bantuan" className={kelasBantuan}>
+              Tombol WhatsApp di halaman yang dibuka dari QR brosur mengarah ke sini. Kosong = ikut nomor di atas.
+            </p>
+            {pesanSalah('nomorWaBrosur')}
+          </div>
         </section>
 
         <section className={`${kelasKartu} p-4 space-y-2.5`} aria-labelledby="judul-kota">

@@ -20,6 +20,7 @@ export function nomorWaTampil(internasional: string): string {
 
 export interface IsianPengaturan {
   nomorWa: string;
+  nomorWaBrosur: string;
   kota: string[];
   namaUsaha: string;
   tagline: string;
@@ -31,7 +32,7 @@ export interface IsianPengaturan {
 }
 
 export type KesalahanPengaturan = Partial<
-  Record<'nomorWa' | 'kota' | 'namaUsaha' | 'linkMaps' | 'linkInstagram' | 'linkTiktok', string>
+  Record<'nomorWa' | 'nomorWaBrosur' | 'kota' | 'namaUsaha' | 'linkMaps' | 'linkInstagram' | 'linkTiktok', string>
 >;
 
 const LINK_MAPS = /^https:\/\/(maps\.app\.goo\.gl\/|goo\.gl\/maps\/|maps\.google\.[a-z.]+\/|(www\.)?google\.[a-z.]+\/maps)/i;
@@ -83,6 +84,7 @@ export function rapikanLinkSosmed(platform: keyof typeof HOST_SOSMED, ketikan: s
 export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
   return {
     nomorWa: nomorWaTampil(c.frontlineContact.whatsappNumber),
+    nomorWaBrosur: c.nomorWaBrosur ? nomorWaTampil(c.nomorWaBrosur) : '',
     kota: [...c.serviceAreas],
     namaUsaha: c.businessName,
     tagline: c.tagline,
@@ -97,6 +99,9 @@ export function isianDariConfig(c: BusinessConfigSchema): IsianPengaturan {
 export function periksaPengaturan(i: IsianPengaturan): KesalahanPengaturan {
   const salah: KesalahanPengaturan = {};
   if (!nomorWaInternasional(i.nomorWa)) salah.nomorWa = 'Nomornya kayaknya kurang pas. Tulis nomor HP lengkap, misalnya 0822 1234 5678.';
+  if (i.nomorWaBrosur.trim() && !nomorWaInternasional(i.nomorWaBrosur)) {
+    salah.nomorWaBrosur = 'Nomornya kayaknya kurang pas. Tulis nomor HP lengkap, atau kosongkan biar ikut nomor utama.';
+  }
   if (i.kota.length === 0) salah.kota = 'Isi minimal satu kota.';
   if (!i.namaUsaha.trim()) salah.namaUsaha = 'Nama usaha wajib diisi.';
   if (i.linkMaps.trim() && !rapikanLinkMaps(i.linkMaps)) {
@@ -119,6 +124,7 @@ export function terapkanPengaturan(c: BusinessConfigSchema, i: IsianPengaturan):
     surveyDisclaimer: i.catatanHarga.trim(),
     serviceAreas: i.kota.map((k) => k.trim()).filter(Boolean),
     frontlineContact: { ...c.frontlineContact, whatsappNumber: nomorWaInternasional(i.nomorWa)! },
+    nomorWaBrosur: nomorWaInternasional(i.nomorWaBrosur) ?? undefined,
     linkMaps: rapikanLinkMaps(i.linkMaps) ?? undefined,
     alamat: i.alamat.trim().replace(/\s+/g, ' ') || undefined,
     linkInstagram: rapikanLinkSosmed('instagram', i.linkInstagram) ?? undefined,

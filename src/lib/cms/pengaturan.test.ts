@@ -43,12 +43,13 @@ test('pengaturan: isian bolak-balik tanpa mengubah data', () => {
 });
 
 test('pengaturan: isian wajib diperiksa', () => {
-  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '', linkInstagram: 'https://facebook.com/3putra', linkTiktok: '' });
+  const salah = periksaPengaturan({ nomorWa: '123', kota: [], namaUsaha: ' ', tagline: '', catatanHarga: '', linkMaps: 'https://contoh.com', alamat: '', linkInstagram: 'https://facebook.com/3putra', linkTiktok: '', nomorWaBrosur: '0812' });
   assert.ok(salah.nomorWa);
   assert.ok(salah.kota);
   assert.ok(salah.namaUsaha);
   assert.ok(salah.linkMaps);
   assert.ok(salah.linkInstagram);
+  assert.ok(salah.nomorWaBrosur);
   assert.equal(salah.linkTiktok, undefined);
 });
 
@@ -78,4 +79,13 @@ test('link sosmed: nama akun atau link bagikan jadi link profil bersih', () => {
   assert.equal(rapikanLinkSosmed('tiktok', 'https://vt.tiktok.com/ZSabc12/'), 'https://vt.tiktok.com/ZSabc12/');
   assert.equal(rapikanLinkSosmed('tiktok', 'https://www.instagram.com/3putra'), null);
   assert.equal(rapikanLinkSosmed('instagram', 'https://instagram.com.palsu.id/3putra'), null);
+});
+
+test('nomor brosur: kosong ikut nomor utama, diisi disimpan format wa.me', () => {
+  const c = COMPREHENSIVE_DATASET.businessConfig;
+  const isian = isianDariConfig(c);
+  assert.equal(terapkanPengaturan(c, isian).nomorWaBrosur, undefined);
+  const hasil = terapkanPengaturan(c, { ...isian, nomorWaBrosur: '0812 3456 7890' });
+  assert.equal(hasil.nomorWaBrosur, '6281234567890');
+  assert.equal(isianDariConfig({ ...c, nomorWaBrosur: '6281234567890' }).nomorWaBrosur, '0812 3456 7890');
 });

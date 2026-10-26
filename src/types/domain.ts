@@ -368,6 +368,8 @@ export interface BusinessConfigSchema {
   /** Profil Instagram dan TikTok, buat tombol di halaman /link. Kosong = tombolnya tidak tampil. */
   linkInstagram?: string;
   linkTiktok?: string;
+  /** Nomor WA buat tombol di halaman /link yang dibuka dari QR brosur. Kosong = pakai nomor utama. */
+  nomorWaBrosur?: string;
 }
 
 export interface CompleteDataset {

@@ -20,14 +20,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Link({ searchParams }: { searchParams: { utm_source?: string } }) {
   const { businessConfig: c } = await bacaDatasetTerbit();
+  const dariBrosur = searchParams.utm_source?.toLowerCase() === 'brosur';
   return (
     <HalamanLink
       namaUsaha={c.businessName}
       tagline={c.tagline}
-      whatsappNumber={c.frontlineContact.whatsappNumber}
+      whatsappNumber={dariBrosur && c.nomorWaBrosur ? c.nomorWaBrosur : c.frontlineContact.whatsappNumber}
       linkInstagram={c.linkInstagram}
       linkTiktok={c.linkTiktok}
-      dariBrosur={searchParams.utm_source?.toLowerCase() === 'brosur'}
+      dariBrosur={dariBrosur}
     />
   );
 }
