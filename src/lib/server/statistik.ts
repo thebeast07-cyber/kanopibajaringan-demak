@@ -36,7 +36,7 @@ export async function bacaStatistik(hari: number, sekarang = new Date()): Promis
   const tanggal = tanggalMundur(sekarang, hari * 2);
   const p = r.pipeline();
   for (const t of tanggal) p.hgetall(kunciHari(t));
-  const isi = (await p.exec()) as (Record<string, number | string> | null)[];
+  const isi = (await p.exec()) as Parameters<typeof ringkas>[0];
   return {
     hari,
     dari: tanggal[hari - 1],

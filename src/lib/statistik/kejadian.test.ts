@@ -84,6 +84,14 @@ test('ringkas: menjumlah beberapa hari dan mengurutkan peringkat', () => {
   assert.deepEqual(hasil.layananWa, [{ kunci: 'svc-a', jumlah: 1 }]);
 });
 
+test('ringkas: bentuk HGETALL mentah dari Redis (daftar datar) ikut terbaca', () => {
+  const hasil = ringkas([['kunjungan', '2', 'asal:instagram', '2', 'klik_wa', '1', 'wa_sumber:hero', '1'], []]);
+  assert.equal(hasil.kunjungan, 2);
+  assert.equal(hasil.klikWa, 1);
+  assert.deepEqual(hasil.asal, [{ kunci: 'instagram', jumlah: 2 }]);
+  assert.deepEqual(hasil.sumberWa, [{ kunci: 'hero', jumlah: 1 }]);
+});
+
 test('ringkas: tanpa data semuanya nol', () => {
   const hasil = ringkas([]);
   assert.equal(hasil.kunjungan, 0);

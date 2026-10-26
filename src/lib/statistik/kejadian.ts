@@ -133,7 +133,16 @@ export interface Ringkasan {
   layananWa: Peringkat[];
 }
 
-type HashHari = Record<string, number | string> | null | undefined;
+// Klien Redis dipasang tanpa ubah JSON otomatis, dan pada setelan itu HGETALL mengembalikan
+// daftar datar [kolom, nilai, kolom, nilai, ...], bukan objek. Dua bentuk diterima.
+type HashHari = Record<string, number | string> | (number | string)[] | null | undefined;
+
+function pasanganKolom(h: NonNullable<HashHari>): [string, number | string][] {
+  if (!Array.isArray(h)) return Object.entries(h);
+  const hasil: [string, number | string][] = [];
+  for (let i = 0; i + 1 < h.length; i += 2) hasil.push([String(h[i]), h[i + 1]]);
+  return hasil;
+}
 
 function urut(peta: Map<string, number>): Peringkat[] {
   return Array.from(peta, ([kunci, jumlah]) => ({ kunci, jumlah }))
@@ -146,7 +155,7 @@ export function ringkas(hari: HashHari[]): Ringkasan {
   const total = new Map<string, number>();
   for (const h of hari) {
     if (!h) continue;
-    for (const [kolom, nilai] of Object.entries(h)) {
+    for (const [kolom, nilai] of pasanganKolom(h)) {
       const n = Number(nilai);
       if (Number.isFinite(n)) total.set(kolom, (total.get(kolom) ?? 0) + n);
     }
