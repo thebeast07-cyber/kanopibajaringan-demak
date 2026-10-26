@@ -82,7 +82,7 @@ function BarisPeringkat({ label, jumlah, maks, satuan }: { label: string; jumlah
         </span>
       </div>
       <div className="h-2 rounded bg-kertas-dalam" aria-hidden="true">
-        <div className="h-2 rounded bg-navy-muda" style={{ width: `${Math.max(4, persen(jumlah, maks))}%` }} />
+        <div className="h-2 rounded bg-navy-muda" style={{ width: `${Math.min(100, Math.max(4, persen(jumlah, maks)))}%` }} />
       </div>
     </li>
   );
@@ -104,7 +104,7 @@ function Statistik({
   const layananWa = [
     ...s.layananWa.map((p) => ({ label: namaLayanan(p.kunci), jumlah: p.jumlah })),
     ...(s.klikWa > klikBerlayanan ? [{ label: 'Tanpa pilih layanan', jumlah: s.klikWa - klikBerlayanan }] : []),
-  ];
+  ].sort((a, b) => b.jumlah - a.jumlah);
 
   return (
     <>
