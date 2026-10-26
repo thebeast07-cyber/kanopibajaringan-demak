@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;600;800&display=swap">
+<style>
+  html, body { margin: 0; background: #000; }
+  #layar { width: 1080px; height: 1920px; display: block; }
+  svg text { font-family: Figtree, sans-serif; }
+</style>
+</head>
+<body>
+<svg id="layar" width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+const W = 1080, H = 1920;
+const LOGO = [{"fill": "#FFFFFF", "d": "M631 123 L856 275 V323 L631 169 L505 237.5 H610 V268 L560 304 C590 304 606 320 606 342 V364 C606 386 589 402 567 402 H402 L440 367 H552 C562 367 568 360 568 351 C568 341 562 334 553 334 H483 V328 L544 272 H454 L422 240 Z", "rule": "nonzero"}, {"fill": "#FF8A3D", "d": "M634 196 L757 279.1 V402 H715 V289.7 L634 235 Z M774 290.6 L811 315.6 V402 H774 Z M825 325 L856 346 V402 H825 Z", "rule": "nonzero"}, {"fill": "#FF8A3D", "d": "M644 291.5 H657.5 A2 2 0 0 1 659.5 293.5 V307 A2 2 0 0 1 657.5 309 H644 A2 2 0 0 1 642 307 V293.5 A2 2 0 0 1 644 291.5 Z M668 291.5 H681.5 A2 2 0 0 1 683.5 293.5 V307 A2 2 0 0 1 681.5 309 H668 A2 2 0 0 1 666 307 V293.5 A2 2 0 0 1 668 291.5 Z M644 316 H657.5 A2 2 0 0 1 659.5 318 V331.5 A2 2 0 0 1 657.5 333.5 H644 A2 2 0 0 1 642 331.5 V318 A2 2 0 0 1 644 316 Z M668 316 H681.5 A2 2 0 0 1 683.5 318 V331.5 A2 2 0 0 1 681.5 333.5 H668 A2 2 0 0 1 666 331.5 V318 A2 2 0 0 1 668 316 Z", "rule": "nonzero"}, {"fill": "#FFFFFF", "d": "M271 450 H346 A20 20 0 0 1 366 470 V478 A16 16 0 0 1 356 494 A16 16 0 0 1 366 510 V521 A20 20 0 0 1 346 541 H271 V520 H336 A6 6 0 0 0 342 514 V508 A6 6 0 0 0 336 502 H293 V486 H335 A6 6 0 0 0 341 480 V475 A6 6 0 0 0 335 469 H271 Z M425 541 V449 H506 A22 22 0 0 1 528 471 V490 A22 22 0 0 1 506 512 H448 V541 Z M448 469 V492 H499 A6 6 0 0 0 505 486 V475 A6 6 0 0 0 499 469 Z M541 449 H564 V514 A6 6 0 0 0 570 520 H612 A6 6 0 0 0 618 514 V449 H641 V519 A22 22 0 0 1 619 541 H563 A22 22 0 0 1 541 519 Z M653 449 H741 V469 H709 V541 H685 V469 H653 Z M752 541 V449 H832 A22 22 0 0 1 854 471 V489 A20 20 0 0 1 834 509 H827 L855 541 H825 L788 500 V491 H825 A6 6 0 0 0 831 485 V475 A6 6 0 0 0 825 469 H775 V541 Z M861 541 L907 456 A12 12 0 0 1 917.5 449 H925 A12 12 0 0 1 935.5 456 L983 541 H955 L922 477 L889 541 Z", "rule": "evenodd"}, {"fill": "#FFFFFF", "d": "M327.1 589.3L327.1 589.3Q325.0 589.3 323.1 588.7Q321.1 588.0 320.0 587.1L320.0 587.1L321.2 584.5Q322.2 585.3 323.8 585.9Q325.4 586.5 327.1 586.5L327.1 586.5Q328.5 586.5 329.4 586.2Q330.3 585.9 330.7 585.3Q331.1 584.8 331.1 584.1L331.1 584.1Q331.1 583.3 330.5 582.8Q329.9 582.3 329.0 582.0Q328.0 581.7 326.9 581.5Q325.7 581.2 324.6 580.9Q323.4 580.5 322.5 580.0Q321.6 579.4 321.0 578.5Q320.4 577.6 320.4 576.1L320.4 576.1Q320.4 574.7 321.2 573.4Q322.0 572.2 323.6 571.5Q325.2 570.7 327.6 570.7L327.6 570.7Q329.3 570.7 330.9 571.2Q332.4 571.6 333.6 572.3L333.6 572.3L332.6 574.9Q331.4 574.2 330.1 573.9Q328.8 573.5 327.6 573.5L327.6 573.5Q326.2 573.5 325.4 573.9Q324.5 574.2 324.1 574.7Q323.7 575.3 323.7 576.0L323.7 576.0Q323.7 576.8 324.3 577.3Q324.9 577.8 325.8 578.1Q326.7 578.4 327.9 578.6Q329.1 578.9 330.2 579.2Q331.3 579.6 332.3 580.1Q333.2 580.6 333.8 581.6Q334.4 582.5 334.4 583.9L334.4 583.9Q334.4 585.3 333.6 586.6Q332.8 587.8 331.2 588.5Q329.6 589.3 327.1 589.3Z M346.0 589L342.7 589L342.7 571L350.1 571Q352.5 571 354.2 571.8Q355.9 572.5 356.8 574.0Q357.8 575.4 357.8 577.4L357.8 577.4Q357.8 579.4 356.8 580.8Q355.9 582.3 354.2 583.0Q352.5 583.8 350.1 583.8L350.1 583.8L344.5 583.8L346.0 582.2L346.0 589ZM346.0 572.2L346.0 582.6L344.5 581.0L349.9 581.0Q352.2 581.0 353.3 580.0Q354.4 579.1 354.4 577.4L354.4 577.4Q354.4 575.7 353.3 574.8Q352.2 573.8 349.9 573.8L349.9 573.8L344.5 573.8L346.0 572.2Z M379.9 589L366.4 589L366.4 571L379.5 571L379.5 573.8L369.7 573.8L369.7 586.2L379.9 586.2L379.9 589ZM378.4 581.2L369.4 581.2L369.4 578.5L378.4 578.5L378.4 581.2Z M394.2 589.3L394.2 589.3Q392.1 589.3 390.1 588.7Q388.2 588.0 387.1 587.1L387.1 587.1L388.2 584.5Q389.3 585.3 390.9 585.9Q392.5 586.5 394.2 586.5L394.2 586.5Q395.6 586.5 396.5 586.2Q397.3 585.9 397.7 585.3Q398.2 584.8 398.2 584.1L398.2 584.1Q398.2 583.3 397.6 582.8Q397.0 582.3 396.0 582.0Q395.1 581.7 394.0 581.5Q392.8 581.2 391.7 580.9Q390.5 580.5 389.6 580.0Q388.6 579.4 388.1 578.5Q387.5 577.6 387.5 576.1L387.5 576.1Q387.5 574.7 388.2 573.4Q389.0 572.2 390.6 571.5Q392.2 570.7 394.7 570.7L394.7 570.7Q396.3 570.7 397.9 571.2Q399.5 571.6 400.7 572.3L400.7 572.3L399.6 574.9Q398.4 574.2 397.2 573.9Q395.9 573.5 394.7 573.5L394.7 573.5Q393.3 573.5 392.4 573.9Q391.6 574.2 391.2 574.7Q390.8 575.3 390.8 576.0L390.8 576.0Q390.8 576.8 391.4 577.3Q391.9 577.8 392.9 578.1Q393.8 578.4 395.0 578.6Q396.1 578.9 397.3 579.2Q398.4 579.6 399.4 580.1Q400.3 580.6 400.9 581.6Q401.4 582.5 401.4 583.9L401.4 583.9Q401.4 585.3 400.7 586.6Q399.9 587.8 398.3 588.5Q396.6 589.3 394.2 589.3Z M413.1 589L409.8 589L409.8 571L413.1 571L413.1 589Z M423.9 589L420.4 589L428.5 571L431.8 571L439.9 589L436.4 589L429.5 572.8L430.8 572.8L423.9 589ZM435.7 584.8L424.2 584.8L425.1 582.2L434.8 582.2L435.7 584.8Z M460.0 589L447.2 589L447.2 571L450.6 571L450.6 586.2L460.0 586.2L460.0 589Z M471.0 589L467.6 589L467.6 571L471.0 571L471.0 589Z M486.4 589.3L486.4 589.3Q484.3 589.3 482.4 588.7Q480.4 588.0 479.3 587.1L479.3 587.1L480.5 584.5Q481.6 585.3 483.1 585.9Q484.7 586.5 486.4 586.5L486.4 586.5Q487.8 586.5 488.7 586.2Q489.6 585.9 490.0 585.3Q490.4 584.8 490.4 584.1L490.4 584.1Q490.4 583.3 489.8 582.8Q489.2 582.3 488.3 582.0Q487.3 581.7 486.2 581.5Q485.1 581.2 483.9 580.9Q482.8 580.5 481.8 580.0Q480.9 579.4 480.3 578.5Q479.7 577.6 479.7 576.1L479.7 576.1Q479.7 574.7 480.5 573.4Q481.3 572.2 482.9 571.5Q484.5 570.7 487.0 570.7L487.0 570.7Q488.6 570.7 490.2 571.2Q491.8 571.6 492.9 572.3L492.9 572.3L491.9 574.9Q490.7 574.2 489.4 573.9Q488.1 573.5 486.9 573.5L486.9 573.5Q485.5 573.5 484.7 573.9Q483.8 574.2 483.4 574.7Q483.0 575.3 483.0 576.0L483.0 576.0Q483.0 576.8 483.6 577.3Q484.2 577.8 485.1 578.1Q486.1 578.4 487.2 578.6Q488.4 578.9 489.5 579.2Q490.7 579.6 491.6 580.1Q492.5 580.6 493.1 581.6Q493.7 582.5 493.7 583.9L493.7 583.9Q493.7 585.3 492.9 586.6Q492.1 587.8 490.5 588.5Q488.9 589.3 486.4 589.3Z M520.4 581.4L517.1 584.8L516.9 580.8L526.3 571L530.1 571L522.3 579.3L520.4 581.4ZM517.4 589L514.1 589L514.1 571L517.4 571L517.4 589ZM530.6 589L526.7 589L519.8 580.8L522.0 578.4L530.6 589Z M538.8 589L535.3 589L543.4 571L546.7 571L554.8 589L551.3 589L544.4 572.8L545.7 572.8L538.8 589ZM550.6 584.8L539.0 584.8L539.9 582.2L549.7 582.2L550.6 584.8Z M565.4 589L562.1 589L562.1 571L564.9 571L576.2 584.9L574.8 584.9L574.8 571L578.1 571L578.1 589L575.4 589L564.1 575.1L565.4 575.1L565.4 589Z M596.4 589.3L596.4 589.3Q594.3 589.3 592.5 588.6Q590.7 587.9 589.4 586.6Q588.1 585.4 587.4 583.7Q586.7 582.0 586.7 580L586.7 580Q586.7 578.0 587.4 576.3Q588.1 574.6 589.4 573.4Q590.7 572.1 592.5 571.4Q594.3 570.7 596.3 570.7L596.3 570.7Q598.5 570.7 600.2 571.4Q602.0 572.1 603.3 573.4Q604.6 574.6 605.3 576.3Q606.0 578.0 606.0 580L606.0 580Q606.0 582.0 605.3 583.7Q604.6 585.4 603.3 586.6Q602.0 587.9 600.2 588.6Q598.5 589.3 596.4 589.3ZM596.3 586.3L596.3 586.3Q597.7 586.3 598.9 585.9Q600.0 585.4 600.9 584.5Q601.7 583.7 602.2 582.5Q602.7 581.4 602.7 580L602.7 580Q602.7 578.6 602.2 577.5Q601.7 576.3 600.9 575.5Q600.0 574.6 598.9 574.1Q597.7 573.7 596.3 573.7L596.3 573.7Q595.0 573.7 593.8 574.1Q592.7 574.6 591.8 575.5Q591.0 576.3 590.5 577.5Q590.0 578.6 590.0 580L590.0 580Q590.0 581.4 590.5 582.5Q591.0 583.7 591.8 584.5Q592.7 585.4 593.8 585.9Q595.0 586.3 596.3 586.3Z M617.9 589L614.6 589L614.6 571L622.0 571Q624.4 571 626.1 571.8Q627.8 572.5 628.7 574.0Q629.7 575.4 629.7 577.4L629.7 577.4Q629.7 579.4 628.7 580.8Q627.8 582.3 626.1 583.0Q624.4 583.8 622.0 583.8L622.0 583.8L616.4 583.8L617.9 582.2L617.9 589ZM617.9 572.2L617.9 582.6L616.4 581.0L621.8 581.0Q624.1 581.0 625.2 580.0Q626.3 579.1 626.3 577.4L626.3 577.4Q626.3 575.7 625.2 574.8Q624.1 573.8 621.8 573.8L621.8 573.8L616.4 573.8L617.9 572.2Z M641.6 589L638.3 589L638.3 571L641.6 571L641.6 589Z M678.8 587.2L677.1 589.3L666.8 579.4Q665.9 578.6 665.4 577.8Q664.8 577.1 664.6 576.4Q664.4 575.8 664.4 575.0L664.4 575.0Q664.4 573.8 665.0 572.8Q665.6 571.8 666.8 571.3Q668.0 570.8 669.6 570.8L669.6 570.8Q671.0 570.8 672.1 571.3Q673.2 571.7 673.8 572.6Q674.4 573.5 674.4 574.8L674.4 574.8Q674.4 575.8 673.8 576.7Q673.3 577.7 672.2 578.5Q671.0 579.3 669.1 580.2L669.1 580.2Q667.7 580.9 666.9 581.5Q666.1 582.1 665.7 582.8Q665.3 583.4 665.3 584.1L665.3 584.1Q665.3 584.9 665.8 585.4Q666.2 586.0 667.1 586.3Q667.9 586.6 669.0 586.6L669.0 586.6Q670.6 586.6 672.0 585.9Q673.3 585.2 674.3 583.7Q675.2 582.2 675.6 580.1L675.6 580.1L678.2 580.9Q677.7 583.5 676.3 585.4Q675.0 587.3 673.1 588.3Q671.1 589.3 668.8 589.3L668.8 589.3Q666.9 589.3 665.4 588.6Q663.9 588.0 663.0 586.9Q662.2 585.9 662.2 584.4L662.2 584.4Q662.2 583.2 662.8 582.1Q663.3 581.1 664.6 580.2Q665.8 579.2 667.7 578.3L667.7 578.3Q669.2 577.5 670.1 577.0Q671.0 576.4 671.3 575.9Q671.7 575.4 671.7 574.8L671.7 574.8Q671.7 574.0 671.1 573.6Q670.6 573.1 669.6 573.1L669.6 573.1Q668.5 573.1 667.9 573.6Q667.3 574.1 667.3 575.0L667.3 575.0Q667.3 575.4 667.5 575.8Q667.6 576.2 668.1 576.8Q668.5 577.3 669.3 578.1L669.3 578.1L678.8 587.2Z M707.8 589L698.8 589L698.8 571L707.2 571Q710.5 571 712.2 572.3Q713.9 573.5 713.9 575.7L713.9 575.7Q713.9 577.1 713.2 578.1Q712.5 579.2 711.4 579.7Q710.3 580.3 709.0 580.3L709.0 580.3L709.5 579.3Q711.0 579.3 712.2 579.9Q713.4 580.4 714.1 581.5Q714.8 582.5 714.8 584.1L714.8 584.1Q714.8 586.4 713.0 587.7Q711.3 589 707.8 589L707.8 589ZM702.2 573.6L702.2 586.4L707.6 586.4Q709.4 586.4 710.4 585.8Q711.4 585.1 711.4 583.8L711.4 583.8Q711.4 582.4 710.4 581.8Q709.4 581.2 707.6 581.2L707.6 581.2L701.9 581.2L701.9 578.6L706.9 578.6Q708.6 578.6 709.6 578.0Q710.5 577.4 710.5 576.1L710.5 576.1Q710.5 574.9 709.6 574.2Q708.6 573.6 706.9 573.6L706.9 573.6L702.2 573.6Z M724.3 589L720.8 589L728.9 571L732.2 571L740.4 589L736.9 589L729.9 572.8L731.2 572.8L724.3 589ZM736.1 584.8L724.6 584.8L725.5 582.2L735.2 582.2L736.1 584.8Z M750.4 589.3L750.4 589.3Q748.7 589.3 747.3 588.6Q745.8 587.9 744.9 586.7L744.9 586.7L746.8 584.4Q747.5 585.4 748.4 585.9Q749.3 586.4 750.4 586.4L750.4 586.4Q753.2 586.4 753.2 583.1L753.2 583.1L753.2 573.8L746.8 573.8L746.8 571L756.5 571L756.5 582.9Q756.5 586.1 755.0 587.7Q753.4 589.3 750.4 589.3Z M767.1 589L763.6 589L771.7 571L775.0 571L783.2 589L779.7 589L772.7 572.8L774.0 572.8L767.1 589ZM778.9 584.8L767.4 584.8L768.3 582.2L778.0 582.2L778.9 584.8Z M805.9 589L802.5 589L802.5 571L809.9 571Q813.5 571 815.6 572.7Q817.6 574.4 817.6 577.4L817.6 577.4Q817.6 579.4 816.7 580.8Q815.8 582.2 814.1 583.0Q812.3 583.8 810.0 583.8L810.0 583.8L804.4 583.8L805.9 582.2L805.9 589ZM817.9 589L814.3 589L809.8 582.5L813.3 582.5L817.9 589ZM805.9 572.2L805.9 582.6L804.4 581.0L809.8 581.0Q812.0 581.0 813.1 580.1Q814.2 579.1 814.2 577.4L814.2 577.4Q814.2 575.7 813.1 574.8Q812.0 573.8 809.8 573.8L809.8 573.8L804.4 573.8L805.9 572.2Z M829.7 589L826.3 589L826.3 571L829.7 571L829.7 589Z M842.9 589L839.5 589L839.5 571L842.3 571L853.6 584.9L852.2 584.9L852.2 571L855.5 571L855.5 589L852.8 589L841.5 575.1L842.9 575.1L842.9 589Z M873.8 589.3L873.8 589.3Q871.7 589.3 869.9 588.6Q868.2 587.9 866.8 586.6Q865.5 585.4 864.8 583.7Q864.1 582.0 864.1 580L864.1 580Q864.1 578.0 864.8 576.3Q865.5 574.6 866.9 573.4Q868.2 572.1 870.0 571.4Q871.7 570.7 873.8 570.7L873.8 570.7Q876.1 570.7 878.0 571.5Q879.8 572.2 881.1 573.7L881.1 573.7L879.0 575.7Q877.9 574.7 876.7 574.2Q875.5 573.7 874.0 573.7L874.0 573.7Q872.6 573.7 871.4 574.1Q870.2 574.6 869.3 575.4Q868.4 576.3 867.9 577.5Q867.5 578.6 867.5 580L867.5 580Q867.5 581.4 867.9 582.5Q868.4 583.7 869.3 584.5Q870.2 585.4 871.3 585.9Q872.5 586.3 874.0 586.3L874.0 586.3Q875.3 586.3 876.5 585.9Q877.8 585.5 878.9 584.5L878.9 584.5L880.8 587.0Q879.4 588.1 877.6 588.7Q875.7 589.3 873.8 589.3ZM880.8 579.8L880.8 587.0L877.7 586.5L877.7 579.8L880.8 579.8Z M891.1 589L887.7 589L895.8 571L899.1 571L907.2 589L903.7 589L896.7 572.8L898.1 572.8L891.1 589ZM902.9 584.8L891.4 584.8L892.3 582.2L902.0 582.2L902.9 584.8Z M917.8 589L914.5 589L914.5 571L917.2 571L928.5 584.9L927.2 584.9L927.2 571L930.5 571L930.5 589L927.7 589L916.4 575.1L917.8 575.1L917.8 589Z", "rule": "nonzero"}, {"fill": "#FF8A3D", "d": "M257.1 577 H297.1 A2.5 2.5 0 0 1 297.1 582 H257.1 A2.5 2.5 0 0 1 257.1 577 Z M954.9 577 H994.9 A2.5 2.5 0 0 1 994.9 582 H954.9 A2.5 2.5 0 0 1 954.9 577 Z", "rule": "nonzero"}];
+const NAVY = '#0B2D5B', KREM = '#FAF8F5', ORANYE = '#FF8A3D', ORANYE_GELAP = '#B54A0B', GELAP = '#231F1C';
+let TL = null; // diisi dari luar: timeline.json
+
+// ---------- utilitas ----------
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, x) => a + (b - a) * x;
+const ease = (x) => { x = clamp(x); return x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
+const keluar = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function acak(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+// gerak mulut dari amplop suara klip
+function mulut(no, t) {
+  const a = TL.adegan.find((s) => s.klip === no);
+  if (!a) return 0;
+  const lt = t - a.klipMulai;
+  if (lt < 0 || lt > a.klipDurasi) return 0;
+  const env = TL.env[no];
+  const v = env[Math.min(env.length - 1, Math.floor(lt * TL.fps))] || 0;
+  return clamp((v - 0.12) / 0.6);
+}
+const tanganBicara = (m, lt) => [226 + Math.sin(lt * 3.5) * 10, 332 - 75 * m];
+const kedip = (t, seed) => ((t + seed * 1.7) % 3.4) < 0.12;
+
+// ---------- karakter (gaya A) ----------
+const G = { garis: GELAP, sw: 7, headR: 62, headCy: 96, sy: 178, hy: 345, gy: 500, bw: 118, armW: 30, legW: 34, kulit: '#E7C9A9' };
+const WARNA = {
+  pak: ['#66775A', '#4A3B30'], bu: ['#B9806F', '#7C6152'], anak: ['#A9573F', '#3B4A63'],
+  tukang: [NAVY, '#4B4F55'], tetangga: ['#8C7B52', '#3E3A36'],
+};
+const gs = (w) => `stroke="${G.garis}" stroke-width="${w ?? G.sw}" stroke-linejoin="round" stroke-linecap="round"`;
+const gm = () => `stroke="${GELAP}" stroke-width="5" stroke-linecap="round" fill="none"`;
+
+// lengan dua ruas (lengan atas + lengan bawah) dengan siku; posisi siku dihitung dari jarak bahu ke tangan
+const RUAS = 75;
+function siku(x1, y1, x2, y2, sisi) {
+  const dx = x2 - x1, dy = y2 - y1, d = Math.min(Math.hypot(dx, dy), RUAS * 2 - .01);
+  const h = Math.sqrt(Math.max(0, RUAS * RUAS - (d / 2) ** 2));
+  const ux = dx / (Math.hypot(dx, dy) || 1), uy = dy / (Math.hypot(dx, dy) || 1);
+  const mx = x1 + ux * d / 2, my = y1 + uy * d / 2;
+  const a = [mx - uy * h, my + ux * h], b = [mx + uy * h, my - ux * h];
+  // pilih siku yang mengarah ke luar badan
+  return (sisi < 0 ? a[0] < b[0] : a[0] > b[0]) ? a : b;
+}
+function lengan(x1, y1, x2, y2, baju, sisi) {
+  const [ex, ey] = siku(x1, y1, x2, y2, sisi);
+  const lx = x1 + (ex - x1) * .62, ly = y1 + (ey - y1) * .62;
+  const tebal = G.armW, garis = G.armW + G.sw * 2;
+  const ruas = (ax, ay, bx, by, w, c) => `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  return ruas(x1, y1, ex, ey, garis, G.garis) + ruas(ex, ey, x2, y2, garis, G.garis)
+    + ruas(ex, ey, x2, y2, tebal, G.kulit) + ruas(x1, y1, ex, ey, tebal, G.kulit)
+    + ruas(x1, y1, lx, ly, tebal + 2, baju);
+}
+
+function badan(baju) {
+  const { bw, sy, hy } = G, x0 = 130 - bw / 2, x1 = 130 + bw / 2, r = 28;
+  return `<path d="M${x0},${sy + r} Q${x0},${sy} ${x0 + r},${sy} L${x1 - r},${sy} Q${x1},${sy} ${x1},${sy + r} L${130 + bw * .45},${hy} L${130 - bw * .45},${hy} Z" fill="${baju}" ${gs()}/>`;
+}
+
+function kaki(celana, langkah = 0) {
+  const { bw, hy, gy, legW } = G;
+  let s = '';
+  [-1, 1].forEach((k, i) => {
+    const dx = k * bw * .2, ang = (i ? -1 : 1) * langkah * 14;
+    s += `<g transform="rotate(${ang} ${130 + dx} ${hy})">
+      <rect x="${130 + dx - legW / 2}" y="${hy - 8}" width="${legW}" height="${gy - hy - 4}" rx="${legW / 2.6}" fill="${celana}" ${gs()}/>
+      <rect x="${130 + dx - legW / 2 - 6 + k * 6}" y="${gy - 18}" width="${legW + 12}" height="18" rx="9" fill="#3A302A" ${gs()}/></g>`;
+  });
+  return s;
+}
+
+function rok(warna) {
+  const { bw, hy, gy } = G;
+  let s = '';
+  [-1, 1].forEach((k) => { s += `<rect x="${130 + k * bw * .17 - 20}" y="${gy - 18}" width="40" height="18" rx="9" fill="#3A302A" ${gs()}/>`; });
+  return s + `<path d="M${130 - bw * .45},${hy - 20} L${130 + bw * .45},${hy - 20} L${130 + bw * .62},${gy - 12} Q130,${gy - 4} ${130 - bw * .62},${gy - 12} Z" fill="${warna}" ${gs()}/>`;
+}
+
+function muka(o) {
+  const r = G.headR, cy = G.headCy + (o.turun || 0), ey = cy + r * .05;
+  const lx = (o.lirik || 0) * r * .08, ly = (o.lirikY || 0) * r * .06;
+  let s = '';
+  [-1, 1].forEach((sx) => {
+    const ex = 130 + sx * r * .32;
+    if (o.kedip) s += `<path d="M${ex - r * .1},${ey} L${ex + r * .1},${ey}" ${gm()}/>`;
+    else s += `<ellipse cx="${ex + lx}" cy="${ey + ly}" rx="${r * .09}" ry="${r * .13}" fill="${GELAP}"/>`;
+    const by = ey - r * .3, dX = 130 + sx * r * .18, lX = 130 + sx * r * .46;
+    const alis = o.alis || 'datar';
+    if (alis === 'cemas') s += `<path d="M${dX},${by - r * .08} L${lX},${by + r * .02}" ${gm()}/>`;
+    if (alis === 'datar') s += `<path d="M${dX},${by} L${lX},${by}" ${gm()}/>`;
+    if (alis === 'senang') s += `<path d="M${dX},${by} Q${(dX + lX) / 2},${by - r * .1} ${lX},${by}" ${gm()}/>`;
+    if (alis === 'kesal') s += `<path d="M${dX},${by + r * .05} L${lX},${by - r * .04}" ${gm()}/>`;
+    if (alis === 'curiga') s += sx < 0 ? `<path d="M${dX},${by + r * .02} L${lX},${by + r * .02}" ${gm()}/>` : `<path d="M${dX},${by - r * .02} Q${(dX + lX) / 2},${by - r * .16} ${lX},${by - r * .06}" ${gm()}/>`;
+  });
+  s += `<path d="M${130 + r * .02},${cy + r * .1} Q${130 + r * .13},${cy + r * .17} ${130 + r * .02},${cy + r * .22}" ${gm()}/>`;
+  const my = cy + r * (o.kumis ? .5 : .44);
+  const buka = o.mulut || 0;
+  if (buka > .05) {
+    s += `<ellipse cx="130" cy="${my + r * .04}" rx="${r * (.13 + .05 * buka)}" ry="${r * (.03 + .13 * buka)}" fill="#5A231C" ${gs(4)}/>`;
+  } else {
+    const e = o.ekspresi || 'datar';
+    if (e === 'senyum') s += `<path d="M${130 - r * .18},${my - r * .04} Q130,${my + r * .12} ${130 + r * .18},${my - r * .04}" ${gm()}/>`;
+    if (e === 'lebar') s += `<path d="M${130 - r * .22},${my - r * .05} Q130,${my + r * .2} ${130 + r * .22},${my - r * .05} Z" fill="#5A231C" ${gs(4)}/>`;
+    if (e === 'cemas') s += `<path d="M${130 - r * .15},${my + r * .04} Q130,${my - r * .06} ${130 + r * .15},${my + r * .04}" ${gm()}/>`;
+    if (e === 'datar') s += `<path d="M${130 - r * .12},${my} L${130 + r * .12},${my}" ${gm()}/>`;
+    if (e === 'miring') s += `<path d="M${130 - r * .12},${my + r * .02} L${130 + r * .14},${my - r * .04}" ${gm()}/>`;
+  }
+  if (o.kumis) s += `<path d="M${130 - r * .24},${my - r * .1} Q130,${my - r * .24} ${130 + r * .24},${my - r * .1} Q130,${my - r * .04} ${130 - r * .24},${my - r * .1} Z" fill="${GELAP}"/>`;
+  return s;
+}
+
+function kepalaPolos() { return `<circle cx="130" cy="${G.headCy}" r="${G.headR}" fill="${G.kulit}" ${gs()}/>`; }
+function peci(warna = '#24211F') {
+  const r = G.headR, cy = G.headCy, b = cy - r * .5, a = cy - r - 16;
+  return `<path d="M${130 - r * .84},${b} L${130 - r * .74},${a} Q130,${a - 6} ${130 + r * .74},${a} L${130 + r * .84},${b} Z" fill="${warna}" ${gs()}/>`;
+}
+function rambut() {
+  const r = G.headR, cy = G.headCy, R = r + 3, y0 = cy - r * .08;
+  return `<path d="M${130 - R},${y0} A${R},${R} 0 0 1 ${130 + R},${y0} L${130 + r * .9},${cy - r * .28} L${130 + r * .35},${cy - r * .46} L${130 - r * .05},${cy - r * .32} L${130 - r * .45},${cy - r * .48} L${130 - r * .95},${cy - r * .22} Z" fill="#2A2420" ${gs()}/>`;
+}
+function topi() {
+  const r = G.headR, cy = G.headCy, R = r + 4, y0 = cy - r * .32, dx = Math.sqrt(R * R - (cy - y0) ** 2);
+  return `<path d="M${130 - dx},${y0} A${R},${R} 0 0 1 ${130 + dx},${y0} Z" fill="${NAVY}" ${gs()}/><ellipse cx="130" cy="${y0 + 2}" rx="${r * .9}" ry="${r * .17}" fill="#082142" ${gs()}/>`;
+}
+function hijab(warna) {
+  const r = G.headR, cy = G.headCy, R = r + 12, bw = G.bw, sy = G.sy;
+  return `<path d="M${130 - R},${cy} A${R},${R} 0 0 1 ${130 + R},${cy} C${130 + R},${cy + r * .9} ${130 + bw * .66},${sy + 20} ${130 + bw * .6},${sy + 78} Q130,${sy + 96} ${130 - bw * .6},${sy + 78} C${130 - bw * .66},${sy + 20} ${130 - R},${cy + r * .9} ${130 - R},${cy} Z" fill="${warna}" ${gs()}/>
+    <ellipse cx="130" cy="${cy + r * .08}" rx="${r * .76}" ry="${r * .84}" fill="${G.kulit}" ${gs(5)}/>`;
+}
+function logoKaos() {
+  const lebar = G.bw * .34, sk = lebar / 474, x = 130 + G.bw * .1, y = G.sy + 34;
+  return `<g transform="translate(${x},${y}) scale(${sk}) translate(-392,-113)"><path fill="${KREM}" d="M631 123 L856 275 V323 L631 169 L505 237.5 H610 V268 L560 304 C590 304 606 320 606 342 V364 C606 386 589 402 567 402 H402 L440 367 H552 C562 367 568 360 568 351 C568 341 562 334 553 334 H483 V328 L544 272 H454 L422 240 Z"/><path fill="${ORANYE}" d="M634 196 L757 279.1 V402 H715 V289.7 L634 235 Z M774 290.6 L811 315.6 V402 H774 Z M825 325 L856 346 V402 H825 Z"/></g>`;
+}
+
+function prop(jenis, x, y) {
+  if (jenis === 'pel') return `<line x1="${x - 4}" y1="${y - 150}" x2="${x + 18}" y2="${G.gy - 10}" stroke="${GELAP}" stroke-width="16" stroke-linecap="round"/><line x1="${x - 4}" y1="${y - 150}" x2="${x + 18}" y2="${G.gy - 10}" stroke="#A8794A" stroke-width="8" stroke-linecap="round"/><rect x="${x - 30}" y="${G.gy - 26}" width="96" height="22" rx="8" fill="#C9CDD2" ${gs(5)}/>`;
+  if (jenis === 'hp') return `<rect x="${x - 20}" y="${y - 34}" width="40" height="66" rx="8" fill="#20252C" ${gs(5)}/><rect x="${x - 14}" y="${y - 26}" width="28" height="48" rx="3" fill="#BFD3EA"/>`;
+  if (jenis === 'meteran') return `<rect x="${x - 17}" y="${y - 15}" width="34" height="30" rx="8" fill="#E2B33C" ${gs(5)}/><circle cx="${x}" cy="${y}" r="6" fill="#6B5A2A"/>`;
+  if (jenis === 'kertas') return `<g transform="rotate(-8 ${x} ${y})"><rect x="${x - 30}" y="${y - 44}" width="60" height="78" rx="4" fill="#FFFFFF" ${gs(5)}/><path d="M${x - 18},${y - 26} h36 M${x - 18},${y - 12} h36 M${x - 18},${y + 2} h24 M${x - 18},${y + 16} h30" stroke="#9AA3AE" stroke-width="4" stroke-linecap="round"/></g>`;
+  if (jenis === 'teh') return `<path d="M${x - 22},${y - 20} h44 l-5,40 q-17,8 -34,0 Z" fill="#FFFFFF" ${gs(5)}/><path d="M${x + 20},${y - 10} q16,0 14,14 q-2,10 -16,8" fill="none" ${gs(5)}/><path d="M${x - 8},${y - 34} q6,-8 0,-16 M${x + 6},${y - 36} q6,-8 0,-16" stroke="#D8D8D8" stroke-width="4" fill="none" stroke-linecap="round" opacity=".8"/>`;
+  return '';
+}
+
+// o: mulut, kedip, alis, ekspresi, lirik, tL/tR [x,y] posisi tangan, pL/pR prop, angguk, miring, langkah
+function tokoh(id, o = {}) {
+  const [baju, bawah] = WARNA[id];
+  const { bw, sy, hy } = G, xL = 130 - bw / 2 + 12, xR = 130 + bw / 2 - 12;
+  const tL = o.tL || [xL - 16, hy - 6], tR = o.tR || [xR + 16, hy - 6];
+  let s = '';
+  s += id === 'bu' ? rok(bawah) : kaki(bawah, o.langkah || 0);
+  s += lengan(xL, sy + 18, tL[0], tL[1], baju, -1);
+  s += `<rect x="117" y="${G.headCy + G.headR - 14}" width="26" height="${sy - G.headCy - G.headR + 24}" fill="${G.kulit}" ${gs()}/>`;
+  s += badan(baju);
+  if (id === 'tukang') s += logoKaos();
+  // kepala
+  let k = '';
+  if (id === 'bu') k += hijab(baju) + muka({ ...o, turun: 4 });
+  else {
+    k += kepalaPolos() + muka({ ...o, kumis: id === 'pak' || id === 'tetangga' });
+    if (id === 'pak') k += peci();
+    if (id === 'tetangga') k += peci('#5A4632');
+    if (id === 'anak') k += rambut();
+    if (id === 'tukang') k += topi();
+  }
+  s += `<g transform="translate(0 ${o.angguk || 0}) rotate(${o.miring || 0} 130 ${G.headCy + G.headR})">${k}</g>`;
+  s += lengan(xR, sy + 18, tR[0], tR[1], baju, 1);
+  if (o.pL) s += prop(o.pL, tL[0], tL[1]);
+  if (o.pR) s += prop(o.pR, tR[0], tR[1]);
+  s += `<circle cx="${tL[0]}" cy="${tL[1]}" r="${G.armW * .58}" fill="${G.kulit}" ${gs()}/>`;
+  s += `<circle cx="${tR[0]}" cy="${tR[1]}" r="${G.armW * .58}" fill="${G.kulit}" ${gs()}/>`;
+  return s;
+}
+// taruh karakter: x,y = titik tengah bawah (kaki), sk = skala, balik = cermin
+const taruh = (isi, x, y, sk, balik) => `<g transform="translate(${x} ${y}) scale(${balik ? -sk : sk} ${sk}) translate(-130 -${G.gy})">${isi}</g>`;
+
+// ---------- benda & latar ----------
+function motor(x, y, sk = 1) {
+  return `<g transform="translate(${x} ${y}) scale(${sk})">
+    <circle cx="-120" cy="-48" r="48" fill="#2A2A2A" ${gs()}/><circle cx="-120" cy="-48" r="18" fill="#9AA0A6"/>
+    <circle cx="125" cy="-48" r="48" fill="#2A2A2A" ${gs()}/><circle cx="125" cy="-48" r="18" fill="#9AA0A6"/>
+    <path d="M-175,-70 Q-180,-150 -90,-160 L20,-160 Q60,-160 70,-120 L90,-80 L150,-80 Q190,-80 185,-50 L60,-50 Q40,-95 -10,-95 L-60,-95 Q-100,-95 -110,-60 Z" fill="#4F7A7A" ${gs()}/>
+    <rect x="-95" y="-190" width="120" height="34" rx="16" fill="#2E2E2E" ${gs()}/>
+    <path d="M70,-120 L105,-230" stroke="${GELAP}" stroke-width="16" stroke-linecap="round"/><path d="M70,-120 L105,-230" stroke="#6E7378" stroke-width="7" stroke-linecap="round"/>
+    <path d="M80,-238 L135,-232" stroke="${GELAP}" stroke-width="14" stroke-linecap="round"/>
+    <ellipse cx="150" cy="-205" rx="16" ry="12" fill="#F2E3A0" ${gs(5)}/></g>`;
+}
+
+function hujan(x0, y0, w, h, t, n, seed = 1, warna = '#C9D6E6', alpha = .45) {
+  let s = `<g opacity="${alpha}">`;
+  for (let i = 0; i < n; i++) {
+    const rx = acak(i + seed * 100), ry = acak(i * 3.1 + seed);
+    const sp = 1300 + acak(i * 7.3) * 600;
+    const x = x0 + rx * w, y = y0 + ((ry * h + t * sp) % (h + 60)) - 60;
+    s += `<line x1="${x}" y1="${y}" x2="${x - 9}" y2="${y + 42}" stroke="${warna}" stroke-width="3" stroke-linecap="round"/>`;
+  }
+  return s + '</g>';
+}
+
+function latarDalamMalam(t) {
+  return `<rect width="${W}" height="${H}" fill="#2F3846"/>
+    <rect y="1380" width="${W}" height="${H - 1380}" fill="#262C35"/>
+    <path d="M0,1380 H${W}" stroke="#1C2128" stroke-width="10"/>
+    <rect x="60" y="700" width="360" height="680" fill="#141A22"/>
+    ${hujan(60, 700, 360, 680, t, 40, 3, '#8FA6C4', .55)}
+    <rect x="60" y="700" width="360" height="680" fill="none" stroke="#1C2128" stroke-width="22"/>
+    <rect x="640" y="760" width="300" height="230" rx="6" fill="#3D4757" stroke="#1C2128" stroke-width="12"/>
+    <path d="M790,760 V990 M640,875 H940" stroke="#1C2128" stroke-width="8"/>
+    <ellipse cx="540" cy="520" rx="70" ry="22" fill="#F4E7B8" opacity=".85"/><path d="M540,420 V498" stroke="#1C2128" stroke-width="6"/>`;
+}
+
+function rumah(siang) {
+  const dinding = siang ? '#E9DCC6' : '#3A4452', gelap = siang ? '#B9A88E' : '#262D38';
+  return `<rect x="0" y="560" width="${W}" height="820" fill="${dinding}"/>
+    <path d="M-40,600 L540,250 L1120,600 Z" fill="${siang ? '#9B5A43' : '#3B2E2E'}" stroke="${GELAP}" stroke-width="10" stroke-linejoin="round"/>
+    <rect x="150" y="820" width="230" height="560" rx="6" fill="${siang ? '#8C6A4A' : '#2A2320'}" stroke="${GELAP}" stroke-width="10"/>
+    <circle cx="350" cy="1110" r="10" fill="${siang ? '#E2C26A' : '#7A6A40'}"/>
+    <rect x="620" y="840" width="320" height="250" rx="6" fill="${siang ? '#BFD6E6' : '#F1DFA0'}" stroke="${GELAP}" stroke-width="10"/>
+    <path d="M780,840 V1090 M620,965 H940" stroke="${GELAP}" stroke-width="8"/>
+    <rect x="0" y="1380" width="${W}" height="${H - 1380}" fill="${gelap}"/>
+    <path d="M0,1380 H${W}" stroke="${GELAP}" stroke-width="10"/>
+    ${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M${i * 216},1380 L${i * 216 - 120},${H}" stroke="${siang ? '#A8977C' : '#1F252E'}" stroke-width="5"/>`).join('')}`;
+}
+
+function latarLuarSiang(t) {
+  return `<rect width="${W}" height="${H}" fill="#CFE3EE"/>
+    <circle cx="900" cy="230" r="80" fill="#F6D776"/>
+    <ellipse cx="260" cy="300" rx="120" ry="40" fill="#FFFFFF" opacity=".9"/><ellipse cx="330" cy="280" rx="80" ry="40" fill="#FFFFFF" opacity=".9"/>
+    ${rumah(true)}`;
+}
+
+// kanopi: p 0..1 progres pasang (tiang, rangka, atap)
+function kanopi(p, malam) {
+  const tiang = ease(p / .4), rangka = ease((p - .4) / .2), atap = ease((p - .6) / .4);
+  const xs = [90, 990], atas = 640, bawah = 1380;
+  let s = '';
+  xs.forEach((x) => { const y = lerp(bawah, atas, tiang); s += `<rect x="${x - 16}" y="${y}" width="32" height="${bawah - y}" fill="#8E969E" stroke="${GELAP}" stroke-width="8"/>`; });
+  if (rangka > 0) s += `<rect x="60" y="${atas - 22}" width="${lerp(0, 960, rangka)}" height="30" fill="#8E969E" stroke="${GELAP}" stroke-width="8"/>`;
+  if (atap > 0) {
+    const kanan = lerp(40, 1040, atap);
+    s += `<path d="M40,${atas - 20} L${kanan},${atas - 20} L${kanan},${atas - 90} L40,${atas - 170} Z" fill="${malam ? '#566170' : '#7D8A99'}" stroke="${GELAP}" stroke-width="10" stroke-linejoin="round"/>`;
+    for (let i = 1; i < 12; i++) { const x = 40 + i * 85; if (x < kanan) s += `<path d="M${x},${atas - 20} L${x},${atas - 170 + (x - 40) * 80 / 1000}" stroke="${malam ? '#46505E' : '#6A7685'}" stroke-width="6"/>`; }
+  }
+  return s;
+}
+
+function latarLuarMalamKanopi(t) {
+  let s = `<rect width="${W}" height="${H}" fill="#1B2330"/>${rumah(false)}`;
+  s += hujan(0, 0, W, 470, t, 60, 7, '#9FB4CF', .5);
+  s += kanopi(1, true);
+  s += `<rect x="60" y="1380" width="960" height="${H - 1380}" fill="#2B323D"/>`;
+  // percikan di atap
+  for (let i = 0; i < 10; i++) {
+    const f = (t * 2.2 + acak(i)) % 1, x = 80 + acak(i * 5.7) * 920, y = 640 - 170 + (x - 40) * 80 / 1000 - 6;
+    s += `<path d="M${x - 12 * f},${y - 10 * f} q${12 * f},${-14 * f} ${24 * f},0" stroke="#C9D6E6" stroke-width="3" fill="none" opacity="${1 - f}"/>`;
+  }
+  // air jatuh dari tepi atap di kiri-kanan, di luar tiang
+  s += hujan(0, 470, 70, 1450, t, 14, 9, '#9FB4CF', .45) + hujan(1012, 470, 68, 1450, t, 14, 11, '#9FB4CF', .45);
+  return s;
+}
+
+// ---------- layar HP (tampilan kalkulator website) ----------
+function hp(x, y, sk, o) {
+  // o: isiP (0..1 panjang terketik), isiL, harga (0..1 muncul), sorot (0..1 sorot teks bawah)
+  const harga = o.harga || 0;
+  const angka = 'Rp 9.000.000';
+  return `<g transform="translate(${x} ${y}) scale(${sk})">
+    <rect x="-230" y="-430" width="460" height="860" rx="56" fill="#1C2026" ${gs(10)}/>
+    <rect x="-200" y="-390" width="400" height="780" rx="26" fill="${KREM}"/>
+    <rect x="-40" y="-412" width="80" height="12" rx="6" fill="#3A3F46"/>
+    <text x="-170" y="-330" font-size="34" fill="${NAVY}" style="font-family:Fraunces,serif;font-weight:600">Berapa biayanya?</text>
+    <text x="-170" y="-282" font-size="20" font-weight="600" fill="#5E6470">Mau pasang apa?</text>
+    <rect x="-170" y="-264" width="200" height="44" rx="22" fill="${NAVY}"/><text x="-70" y="-235" font-size="20" font-weight="600" fill="${KREM}" text-anchor="middle">Kanopi Cordoba</text>
+    <rect x="40" y="-264" width="130" height="44" rx="22" fill="#EEF1F6"/><text x="105" y="-235" font-size="20" font-weight="600" fill="#5E6470" text-anchor="middle">Mezanin</text>
+    <text x="-170" y="-176" font-size="20" font-weight="600" fill="#5E6470">Panjang (meter)</text>
+    <rect x="-170" y="-160" width="160" height="56" rx="12" fill="#FFFFFF" stroke="#D8D2C8" stroke-width="2"/>
+    <text x="-150" y="-121" font-size="28" font-weight="600" fill="#1E2430">${o.isiP > .5 ? '5' : ''}</text>
+    <text x="10" y="-176" font-size="20" font-weight="600" fill="#5E6470">Lebar (meter)</text>
+    <rect x="10" y="-160" width="160" height="56" rx="12" fill="#FFFFFF" stroke="#D8D2C8" stroke-width="2"/>
+    <text x="30" y="-121" font-size="28" font-weight="600" fill="#1E2430">${o.isiL > .5 ? '4' : ''}</text>
+    <text x="-170" y="-50" font-size="24" fill="#1E2430" style="font-family:Fraunces,serif;font-weight:600" opacity="${o.isiL > .5 ? 1 : 0}">5 m × 4 m = 20 m²</text>
+    <rect x="-180" y="-10" width="360" height="330" rx="18" fill="#FFFFFF" stroke="#E6E0D6" stroke-width="2"/>
+    <text x="-155" y="30" font-size="20" font-weight="600" fill="#5E6470">Perkiraan biaya</text>
+    <text x="-155" y="100" font-size="${lerp(36, 44, keluar(harga))}" fill="${ORANYE_GELAP}" opacity="${harga}" style="font-family:Fraunces,serif;font-weight:600">${angka}</text>
+    <text x="-155" y="140" font-size="19" fill="#5E6470" opacity="${harga}">Rp 450.000 / m² × 20 m²</text>
+    <g opacity="${o.sorot ? 1 : harga}">
+      ${o.sorot ? `<rect x="-162" y="${168}" width="${lerp(0, 330, o.sorot)}" height="120" rx="8" fill="#DCE6F3"/>` : ''}
+      <text font-size="18" fill="#3E4450"><tspan x="-155" y="190">Harga borongan, sudah termasuk bahan</tspan><tspan x="-155" y="214">dan pasang. Ini masih perkiraan,</tspan><tspan x="-155" y="246" font-weight="${o.sorot ? 800 : 400}" fill="${o.sorot ? NAVY : '#3E4450'}">harga pastinya kami kasih</tspan><tspan x="-155" y="272" font-weight="${o.sorot ? 800 : 400}" fill="${o.sorot ? NAVY : '#3E4450'}">setelah survei.</tspan></text>
+    </g>
+    <rect x="-170" y="340" width="340" height="56" rx="14" fill="${ORANYE}"/><text x="0" y="376" font-size="22" font-weight="800" fill="${NAVY}" text-anchor="middle">Lanjut chat WhatsApp</text>
+  </g>`;
+}
+
+function kartuInfo(masuk) {
+  const x = lerp(-420, 48, keluar(masuk));
+  return `<g transform="translate(${x} 210)">
+    <rect width="380" height="176" rx="18" fill="${NAVY}"/>
+    <text x="28" y="46" font-size="24" font-weight="600" fill="${KREM}" opacity=".8">Teras ${esc(TL.tokoh.pak)}</text>
+    <text x="28" y="100" font-size="46" fill="${KREM}" style="font-family:Fraunces,serif;font-weight:600">5 m × 4 m</text>
+    <text x="28" y="152" font-size="42" fill="${ORANYE}" style="font-family:Fraunces,serif;font-weight:600">Rp9.000.000</text></g>`;
+}
+
+function gelembungPikir(x, y, sk, t, isi) {
+  return `<g transform="translate(${x} ${y}) scale(${sk})">
+    <circle cx="-210" cy="250" r="14" fill="${KREM}" ${gs(5)}/><circle cx="-170" cy="200" r="22" fill="${KREM}" ${gs(5)}/>
+    <ellipse cx="0" cy="0" rx="230" ry="190" fill="${KREM}" ${gs(7)}/>${isi}</g>`;
+}
+
+// ---------- teks per kata ----------
+const ukur = document.createElement('canvas').getContext('2d');
+function lebarTeks(s, px) { ukur.font = `800 ${px}px Figtree`; return ukur.measureText(s).width; }
+function potongKata(no) {
+  const kata = TL.kata[no], hasil = [];
+  let skr = [];
+  kata.forEach((k) => {
+    const calon = [...skr, k];
+    const teks = calon.map((x) => x.w).join(' ');
+    if (skr.length && (calon.length > 3 || teks.length > 20)) { hasil.push(skr); skr = [k]; }
+    else skr = calon;
+    if (/[.,!?]$/.test(k.w) && skr.length) { hasil.push(skr); skr = []; }
+  });
+  if (skr.length) hasil.push(skr);
+  return hasil;
+}
+const POTONGAN = {};
+function teksBicara(t) {
+  const a = TL.adegan.find((s) => s.klip && t >= s.klipMulai - .05 && t <= s.klipMulai + s.klipDurasi + .25);
+  if (!a) return '';
+  const lt = t - a.klipMulai;
+  POTONGAN[a.klip] = POTONGAN[a.klip] || potongKata(a.klip);
+  const grup = POTONGAN[a.klip];
+  let g = grup[0];
+  for (const x of grup) if (lt >= x[0].s - .05) g = x;
+  const px = 66, spasi = 18, y = 1440;
+  const lebar = g.map((k) => lebarTeks(k.w, px));
+  const total = lebar.reduce((p, c) => p + c, 0) + spasi * (g.length - 1);
+  let x = (W - total) / 2, s = '';
+  const aktif = g.reduce((idx, k, i) => (lt >= k.s - .03 ? i : idx), 0);
+  g.forEach((k, i) => {
+    if (i === aktif) {
+      s += `<rect x="${x - 12}" y="${y - 62}" width="${lebar[i] + 24}" height="84" rx="16" fill="${KREM}"/>`;
+      s += `<text x="${x}" y="${y}" font-size="${px}" font-weight="800" fill="${NAVY}">${esc(k.w)}</text>`;
+    } else {
+      s += `<text x="${x}" y="${y}" font-size="${px}" font-weight="800" fill="#FFFFFF" stroke="${GELAP}" stroke-width="12" stroke-linejoin="round" paint-order="stroke">${esc(k.w)}</text>`;
+    }
+    x += lebar[i] + spasi;
+  });
+  return s;
+}
+
+// ---------- adegan ----------
+const posisiKata = (no, kata) => { const k = TL.kata[no].find((x) => x.w.toLowerCase().startsWith(kata)); const a = TL.adegan.find((s) => s.klip === no); return a.klipMulai + (k ? k.s : 0); };
+
+const ADEGAN = {
+  s1(lt, t, a) {
+    // Pak dorong motor masuk, Bu pegang pel dan ngomel
+    const maju = ease(lt / .9);
+    const mx = lerp(150, 470, maju);
+    let s = latarDalamMalam(t);
+    // genangan & tetesan
+    const gen = clamp((lt - 1) / 4);
+    s += `<ellipse cx="${mx + 20}" cy="1395" rx="${60 + 120 * gen}" ry="${10 + 12 * gen}" fill="#5D7290" opacity=".55"/>`;
+    for (let i = 0; i < 4; i++) { const f = (t * 1.6 + i / 4) % 1; s += `<ellipse cx="${mx - 60 + i * 40}" cy="${1250 + f * 140}" rx="6" ry="10" fill="#8FB0D8" opacity="${1 - f}"/>`; }
+    s += motor(mx, 1400, 1.25);
+    const lang = maju < 1 ? Math.sin(lt * 12) : 0;
+    let tanganPak = { tL: [60, 250], tR: [200, 250] }, miringPak = 0, lirikPak = .6;
+    if (lt > 1.0 && lt < 2.6) { const g = Math.sin((lt - 1) * 9); tanganPak = { tL: [70, 330], tR: [170 + g * 22, 70 + Math.abs(g) * 10] }; lirikPak = -.3; }
+    if (lt >= 2.6) { tanganPak = { tL: [52, 300], tR: [208, 300] }; miringPak = Math.sin(lt * 3) * 4; lirikPak = .9; }
+    const pakX = maju < 1 ? mx - 300 : lerp(mx - 300, mx - 150, ease((lt - 1) / .5));
+    s += taruh(tokoh('pak', { ...tanganPak, alis: 'cemas', ekspresi: 'cemas', langkah: lang || (lt > 1 && lt < 1.5 ? Math.sin(lt * 12) : 0), kedip: kedip(t, 1), lirik: lirikPak, miring: miringPak }), pakX, 1400, 1.45);
+    if (lt > 1.0 && lt < 2.6) for (let i = 0; i < 3; i++) { const f = ((lt - 1) * 2 + i / 3) % 1; s += `<ellipse cx="${pakX + 60 + i * 26}" cy="${1400 - 1.45 * 470 + f * 90}" rx="5" ry="8" fill="#8FB0D8" opacity="${1 - f}"/>`; }
+    const m = mulut('01', t);
+    s += taruh(tokoh('bu', { mulut: m, alis: 'kesal', ekspresi: 'datar', tL: [52, 300], tR: [208, 300], kedip: kedip(t, 2), lirik: -1, miring: m > .1 ? Math.sin(t * 6) * 2 : 0 }), 850, 1400, 1.5);
+    return s;
+  },
+  s2(lt, t) {
+    let s = latarDalamMalam(t);
+    const m = mulut('02', t);
+    const garuk = Math.sin(lt * 10) * 12;
+    s += taruh(tokoh('pak', { mulut: m, alis: 'cemas', ekspresi: 'cemas', tR: [205 + garuk * .3, 40 + garuk], tL: [100, 330], kedip: kedip(t, 1), lirik: -.4, lirikY: -.5, miring: -4 }), 380, 1720, 2.3);
+    const muncul = keluar((lt - .8) / .5);
+    if (muncul > 0) {
+      const geleng = Math.sin(lt * 7) * 6;
+      const isi = `<g transform="translate(-70 150) scale(.62)">${taruh(tokoh('tetangga', { alis: 'cemas', ekspresi: 'cemas', miring: geleng, lirik: .8, lirikY: .6 }), 0, 0, 1)}</g>
+        <g transform="translate(90 -40)"><rect x="-70" y="-90" width="140" height="180" rx="8" fill="#FFFFFF" ${gs(5)}/>
+        <text x="0" y="-48" font-size="26" font-weight="800" fill="${GELAP}" text-anchor="middle">NOTA</text>
+        ${[0, 1, 2, 3].map((i) => `<path d="M-48,${-20 + i * 26} h${50 + i * 10}" stroke="#9AA3AE" stroke-width="6" stroke-linecap="round"/><text x="${42}" y="${-12 + i * 26}" font-size="${22 + i * 4}" font-weight="800" fill="#A3322A" opacity="${clamp((lt - 1.5 - i * .9) / .3)}">+</text>`).join('')}</g>`;
+      s += `<g opacity="${muncul}">${gelembungPikir(760, 520, .95 * muncul + .05, t, isi)}</g>`;
+    }
+    return s;
+  },
+  s3(lt, t) {
+    let s = latarDalamMalam(t);
+    const masuk = ease(lt / .9);
+    const ax = lerp(1250, 790, masuk);
+    s += taruh(tokoh('pak', { alis: 'datar', ekspresi: 'datar', kedip: kedip(t, 1), lirik: .8 }), 250, 1720, 1.9);
+    const m = mulut('03', t);
+    s += taruh(tokoh('anak', { mulut: m, alis: 'senang', ekspresi: 'senyum', tR: tanganBicara(m, lt), kedip: kedip(t, 3), lirik: -.8, langkah: masuk < 1 ? Math.sin(lt * 10) : 0 }), ax, 1720, 1.9);
+    const tP = posisiKata('03', 'lima'), tL_ = posisiKata('03', 'empat'), tH = posisiKata('03', 'sembilan');
+    const hpMuncul = keluar((lt - 1.2) / .45);
+    if (hpMuncul > 0) s += `<rect width="${W}" height="${H}" fill="#0E131A" opacity="${.45 * hpMuncul}"/>` + hp(540, 830, 1.38 * hpMuncul, { isiP: t > tP ? 1 : 0, isiL: t > tL_ ? 1 : 0, harga: clamp((t - tH) / .35) });
+    return s;
+  },
+  s4(lt, t) {
+    let s = latarDalamMalam(t);
+    const m = mulut('04', t);
+    s += taruh(tokoh('pak', { mulut: m, alis: 'curiga', ekspresi: 'miring', lirik: 1, kedip: false, miring: 6, tL: [70, 330], tR: [190, 330] }), 470, 2050, 3.0);
+    s += kartuInfo(clamp(lt / .5));
+    return s;
+  },
+  s5(lt, t) {
+    let s = latarDalamMalam(t);
+    s += taruh(tokoh('anak', { mulut: mulut('05', t), alis: 'senang', ekspresi: 'senyum', tR: tanganBicara(mulut('05', t), lt), kedip: kedip(t, 3), lirik: -.5 }), 880, 1850, 1.7);
+    const tS = posisiKata('05', 'harga');
+    const zoom = lerp(1.0, 1.55, ease(lt / .8));
+    s += hp(480, lerp(900, 640, ease(lt / .8)), zoom, { isiP: 1, isiL: 1, harga: 1, sorot: clamp((t - tS) / .9) });
+    return s;
+  },
+  s6(lt, t, a) {
+    let s = latarDalamMalam(t);
+    const m = mulut('06', t);
+    const akhir = a.durasi - .7;
+    const angguk = lt > akhir ? Math.sin((lt - akhir) * 14) * 10 * (1 - (lt - akhir) / .7) : 0;
+    const mikir = lt < 1.0;
+    s += taruh(tokoh('pak', { mulut: m, alis: mikir ? 'cemas' : 'datar', ekspresi: lt > akhir ? 'senyum' : 'datar', tR: [175, 220], tL: [100, 330], lirikY: mikir ? -.8 : 0, lirik: mikir ? .5 : 0, kedip: kedip(t, 1), angguk }), 540, 1760, 2.4);
+    s += kartuInfo(1);
+    return s;
+  },
+  t1(lt) {
+    const tutup = lt < .5 ? ease(lt / .3) : 1;
+    return `<rect width="${W}" height="${H}" fill="${NAVY}" opacity="${tutup}"/>
+      <text x="${W / 2}" y="${H / 2}" font-size="96" fill="${KREM}" text-anchor="middle" opacity="${clamp((lt - .15) / .25) * (1 - clamp((lt - .8) / .2))}" style="font-family:Fraunces,serif;font-weight:600">Hari survei</text>`;
+  },
+  s7(lt, t, a) {
+    let s = latarLuarSiang(t);
+    const m = mulut('07', t);
+    s += taruh(tokoh('tukang', { mulut: m, alis: 'senang', ekspresi: 'senyum', tR: tanganBicara(m, lt), kedip: kedip(t, 4), lirik: .8 }), 330, 1760, 1.8);
+    const simak = lt > 1.8 && lt < 2.6 ? Math.sin((lt - 1.8) * 12) * 5 : 0;
+    s += taruh(tokoh('pak', { alis: 'datar', ekspresi: 'datar', kedip: kedip(t, 1), lirik: -.8, angguk: simak }), 760, 1760, 1.8);
+    return s;
+  },
+  s8(lt, t, a) {
+    let s = latarLuarSiang(t);
+    const m = mulut('08', t);
+    const akhirnya = lt > a.durasi - .8;
+    const angguk = (x) => Math.sin(x * 12) * 6;
+    s += taruh(tokoh('tukang', { alis: 'senang', ekspresi: akhirnya ? 'lebar' : 'senyum', kedip: kedip(t, 4), lirik: .8, angguk: akhirnya ? angguk(lt) : 0 }), 330, 1760, 1.8);
+    s += taruh(tokoh('pak', { mulut: m, alis: 'senang', ekspresi: 'lebar', kedip: kedip(t, 1), lirik: -.8, angguk: m > .15 ? angguk(lt) : 0 }), 760, 1760, 1.8);
+    return s;
+  },
+  t2(lt, t, a) {
+    let s = latarLuarSiang(t);
+    s += kanopi(clamp(lt / (a.durasi - .3)), false);
+    s += taruh(tokoh('tukang', { alis: 'senang', ekspresi: 'senyum', tR: [230, 200], kedip: kedip(t, 4) }), 540, 1760, 1.5);
+    return s;
+  },
+  s9(lt, t) {
+    let s = latarLuarMalamKanopi(t);
+    s += motor(330, 1430, 1.15);
+    const m = mulut('09', t);
+    const lihatAtas = lt < 1.3;
+    s += taruh(tokoh('pak', { alis: 'senang', ekspresi: 'senyum', kedip: kedip(t, 1), lirik: lihatAtas ? 0 : .8, lirikY: lihatAtas ? -1 : 0, miring: lihatAtas ? -3 : 0 }), 620, 1780, 1.55);
+    s += taruh(tokoh('bu', { mulut: m, alis: 'senang', ekspresi: 'senyum', kedip: kedip(t, 2), lirik: lihatAtas ? 0 : -.8, lirikY: lihatAtas ? -1 : 0, miring: m > .1 ? Math.sin(t * 5) * 2 : 0 }), 880, 1780, 1.55);
+    return s;
+  },
+  akhir(lt) {
+    const baris = TL.penutup.split('\n').filter(Boolean);
+    const muncul = (i) => clamp((lt - 2.2 - i * .3) / .4);
+    let s = `<rect width="${W}" height="${H}" fill="${NAVY}"/>`;
+    // tanda logo: garis tergambar seperti sketsa rangka lalu warnanya diisi (sama dengan .logo-loading di globals.css)
+    const tunda = [0, .1, .3];
+    const sk = 880 / 778, ox = (W - 778 * sk) / 2;
+    s += `<g transform="translate(${ox} 330) scale(${sk}) translate(-237 -113)">`;
+    LOGO.forEach((p, i) => {
+      if (i < 3) {
+        const x = clamp((lt - tunda[i]) / 1.28);          // 0..40% dari 3,2 dtk
+        const isi = clamp((lt - tunda[i] - 1.22) / .54);  // 38%..55%
+        s += `<path d="${p.d}" fill="${p.fill}" fill-rule="${p.rule}" fill-opacity="${isi}" stroke="${p.fill}" stroke-width="${i === 2 ? 0 : 3}" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - ease(x)}"/>`;
+      } else {
+        const muncul = clamp((lt - 1.6 - (i - 3) * .15) / .45);
+        s += `<path d="${p.d}" fill="${p.fill}" fill-rule="${p.rule}" opacity="${muncul}" transform="translate(0 ${(1 - keluar(muncul)) * 14})"/>`;
+      }
+    });
+    s += `</g>`;
+    // baris penutup, dibungkus manual
+    let y = 1060;
+    baris.forEach((b, i) => {
+      const kata = b.split(' '), lines = []; let skr = '';
+      kata.forEach((k) => { const c = (skr + ' ' + k).trim(); if (lebarTeks(c, 44) > 900 && skr) { lines.push(skr); skr = k; } else skr = c; });
+      lines.push(skr);
+      lines.forEach((l) => { s += `<text x="${W / 2}" y="${y}" font-size="44" font-weight="600" fill="${KREM}" text-anchor="middle" opacity="${muncul(i)}">${esc(l)}</text>`; y += 60; });
+      y += 30;
+    });
+    return s;
+  },
+};
+
+function kamera(a, lt, isi) {
+  if (a.id[0] !== 's') return isi;
+  const z = 1 + .045 * ease(lt / a.durasi);
+  return `<g transform="translate(540 1150) scale(${z}) translate(-540 -1150)">${isi}</g>`;
+}
+function gambar(t) {
+  const idx = TL.adegan.findIndex((s) => t >= s.mulai && t < s.mulai + s.durasi);
+  const i = idx < 0 ? TL.adegan.length - 1 : idx;
+  const a = TL.adegan[i], lt = t - a.mulai;
+  let s = kamera(a, lt, ADEGAN[a.id](lt, t, a));
+  const SILANG = .4;
+  if (i > 0 && lt < SILANG) {
+    const b = TL.adegan[i - 1], tb = b.mulai + b.durasi - .001;
+    s += `<g opacity="${1 - ease(lt / SILANG)}">${kamera(b, b.durasi - .001, ADEGAN[b.id](b.durasi - .001, tb, b))}</g>`;
+  }
+  s += teksBicara(t);
+  document.getElementById('layar').innerHTML = s;
+}
+window.siapkan = (tl) => { TL = tl; return document.fonts.ready.then(() => document.fonts.load('800 66px Figtree')).then(() => document.fonts.load('600 40px Fraunces')).then(() => true); };
+window.gambar = gambar;
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;600;800&display=swap">
+<style>
+  html, body { margin: 0; background: #FAF8F5; }
+  #lembar { width: 1080px; height: 1620px; }
+  svg text { font-family: Figtree, sans-serif; }
+</style>
+</head>
+<body>
+<div id="lembar"></div>
+<script>
+const NAVY = '#0B2D5B', KREM = '#FAF8F5', ORANYE = '#FF8A3D';
+const GELAP = '#231F1C';
+
+const GAYA = {
+  A: {
+    judul: 'Garis tebal', garis: GELAP, sw: 7, headR: 62, headCy: 96, sy: 178, hy: 345, gy: 500,
+    bw: 118, armW: 30, legW: 34, mata: 'oval', pipi: false, bayang: false, hidung: true, panel: '#E9E2D6',
+    kulit: '#E7C9A9', warna: { pak: '#66775A', celana: '#4A3B30', bu: '#B9806F', rok: '#7C6152', anak: '#A9573F', jins: '#3B4A63' },
+    kesan: [
+      'Paling mirip sama contoh yang lu kirim.',
+      'Garis gelapnya tebal, jadi tetap jelas di layar HP.',
+      'Warnanya kalem dan agak redup, cocok buat suasana hujan.',
+    ],
+  },
+  B: {
+    judul: 'Tanpa garis', garis: null, sw: 0, headR: 54, headCy: 92, sy: 170, hy: 340, gy: 500,
+    bw: 104, armW: 26, legW: 30, mata: 'titik', pipi: false, bayang: true, hidung: false, panel: '#E4E8EE',
+    kulit: '#E9C4A0', warna: { pak: '#5F7F63', celana: '#3E3631', bu: '#C98C7A', rok: '#8A6A5A', anak: '#C0613F', jins: '#34507A' },
+    kesan: [
+      'Bentuknya datar dan rapi, tanpa garis tepi.',
+      'Paling nyambung sama tampilan website lu.',
+      'Kesannya bersih, tapi ekspresi mukanya lebih sedikit.',
+    ],
+  },
+  C: {
+    judul: 'Kepala besar', garis: '#1B2433', sw: 5, headR: 80, headCy: 112, sy: 214, hy: 352, gy: 472,
+    bw: 126, armW: 30, legW: 36, mata: 'besar', pipi: true, bayang: false, hidung: false, panel: '#F1E3D3',
+    kulit: '#F0CDAA', warna: { pak: '#6F8A5E', celana: '#54443A', bu: '#D29484', rok: '#8E6F5E', anak: '#C25B3E', jins: '#3E5A86' },
+    kesan: [
+      'Kepala besar, badan pendek, mirip stiker.',
+      'Paling lucu dan paling ekspresif.',
+      'Cocok buat cerita ringan, kurang pas kalau mau kesan serius.',
+    ],
+  },
+};
+
+const kode = new URLSearchParams(location.search).get('s') || 'A';
+const g = GAYA[kode];
+let uid = 0;
+
+function garis(tebal) {
+  if (!g.garis) return '';
+  return `stroke="${g.garis}" stroke-width="${tebal ?? g.sw}" stroke-linejoin="round" stroke-linecap="round"`;
+}
+const garisMuka = () => `stroke="${g.garis || GELAP}" stroke-width="${Math.max(4, g.sw * 0.75)}" stroke-linecap="round" fill="none"`;
+
+function lengan(x1, y1, x2, y2, baju) {
+  const t = 0.42;
+  const mx = x1 + (x2 - x1) * t, my = y1 + (y2 - y1) * t;
+  let s = '';
+  if (g.garis) s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${g.garis}" stroke-width="${g.armW + g.sw * 2}" stroke-linecap="round"/>`;
+  s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${g.kulit}" stroke-width="${g.armW}" stroke-linecap="round"/>`;
+  s += `<line x1="${x1}" y1="${y1}" x2="${mx}" y2="${my}" stroke="${baju}" stroke-width="${g.armW + 2}" stroke-linecap="round"/>`;
+  return s;
+}
+
+function badan(baju) {
+  const { bw, sy, hy } = g;
+  const x0 = 130 - bw / 2, x1 = 130 + bw / 2, hx0 = 130 - bw * 0.45, hx1 = 130 + bw * 0.45, r = 28;
+  const d = `M${x0},${sy + r} Q${x0},${sy} ${x0 + r},${sy} L${x1 - r},${sy} Q${x1},${sy} ${x1},${sy + r} L${hx1},${hy} L${hx0},${hy} Z`;
+  let s = `<path d="${d}" fill="${baju}" ${garis()}/>`;
+  if (g.bayang) {
+    const id = 'kl' + (uid++);
+    s += `<clipPath id="${id}"><path d="${d}"/></clipPath><rect x="130" y="${sy}" width="${bw}" height="${hy - sy}" fill="#000" opacity=".12" clip-path="url(#${id})"/>`;
+  }
+  return s;
+}
+
+function kaki(celana, sandal) {
+  const { bw, hy, gy, legW } = g;
+  let s = '';
+  for (const dx of [-bw * 0.2, bw * 0.2]) {
+    s += `<rect x="${130 + dx - legW / 2}" y="${hy - 8}" width="${legW}" height="${gy - hy - 4}" rx="${legW / 2.6}" fill="${celana}" ${garis()}/>`;
+    s += `<rect x="${130 + dx - legW / 2 - 6 + (dx > 0 ? 6 : -6)}" y="${gy - 18}" width="${legW + 12}" height="18" rx="9" fill="${sandal}" ${garis()}/>`;
+  }
+  return s;
+}
+
+function rok(warna) {
+  const { bw, hy, gy } = g;
+  let s = '';
+  for (const dx of [-bw * 0.17, bw * 0.17]) {
+    s += `<rect x="${130 + dx - 20}" y="${gy - 18}" width="40" height="18" rx="9" fill="#3A302A" ${garis()}/>`;
+  }
+  s += `<path d="M${130 - bw * 0.45},${hy - 20} L${130 + bw * 0.45},${hy - 20} L${130 + bw * 0.62},${gy - 12} Q130,${gy - 4} ${130 - bw * 0.62},${gy - 12} Z" fill="${warna}" ${garis()}/>`;
+  return s;
+}
+
+function leher() {
+  const { headCy, headR, sy } = g;
+  return `<rect x="117" y="${headCy + headR - 14}" width="26" height="${sy - headCy - headR + 24}" fill="${g.kulit}" ${garis()}/>`;
+}
+
+function kepala() {
+  return `<circle cx="130" cy="${g.headCy}" r="${g.headR}" fill="${g.kulit}" ${garis()}/>`;
+}
+
+function muka(alis, mulut, opsi = {}) {
+  const r = g.headR, cy = g.headCy + (opsi.turun || 0);
+  const ey = cy + r * 0.05;
+  let s = '';
+  for (const sx of [-1, 1]) {
+    const ex = 130 + sx * r * 0.32;
+    if (g.mata === 'oval') s += `<ellipse cx="${ex}" cy="${ey}" rx="${r * 0.09}" ry="${r * 0.13}" fill="${GELAP}"/>`;
+    if (g.mata === 'titik') s += `<circle cx="${ex}" cy="${ey}" r="${r * 0.075}" fill="${GELAP}"/>`;
+    if (g.mata === 'besar') s += `<ellipse cx="${ex}" cy="${ey}" rx="${r * 0.12}" ry="${r * 0.16}" fill="${GELAP}"/><circle cx="${ex + r * 0.04}" cy="${ey - r * 0.06}" r="${r * 0.045}" fill="#fff"/>`;
+    const by = ey - r * 0.3;
+    // alis: titik dalam (dekat hidung) dan titik luar
+    const dalamX = 130 + sx * r * 0.18, luarX = 130 + sx * r * 0.46;
+    if (alis === 'cemas') s += `<path d="M${dalamX},${by - r * 0.08} L${luarX},${by + r * 0.02}" ${garisMuka()}/>`;
+    if (alis === 'datar') s += `<path d="M${dalamX},${by} L${luarX},${by}" ${garisMuka()}/>`;
+    if (alis === 'senang') s += `<path d="M${dalamX},${by} Q${(dalamX + luarX) / 2},${by - r * 0.1} ${luarX},${by}" ${garisMuka()}/>`;
+    if (alis === 'kesal') s += `<path d="M${dalamX},${by + r * 0.05} L${luarX},${by - r * 0.04}" ${garisMuka()}/>`;
+    if (g.pipi) s += `<ellipse cx="${130 + sx * r * 0.52}" cy="${cy + r * 0.3}" rx="${r * 0.11}" ry="${r * 0.07}" fill="#E8867A" opacity=".45"/>`;
+  }
+  if (g.hidung) s += `<path d="M${130 + r * 0.02},${cy + r * 0.1} Q${130 + r * 0.13},${cy + r * 0.17} ${130 + r * 0.02},${cy + r * 0.22}" ${garisMuka()}/>`;
+  const my = cy + r * (opsi.kumis ? 0.5 : 0.44);
+  if (mulut === 'senyum') s += `<path d="M${130 - r * 0.18},${my - r * 0.04} Q130,${my + r * 0.12} ${130 + r * 0.18},${my - r * 0.04}" ${garisMuka()}/>`;
+  if (mulut === 'cemas') s += `<path d="M${130 - r * 0.15},${my + r * 0.04} Q130,${my - r * 0.06} ${130 + r * 0.15},${my + r * 0.04}" ${garisMuka()}/>`;
+  if (mulut === 'datar') s += `<path d="M${130 - r * 0.12},${my} L${130 + r * 0.12},${my}" ${garisMuka()}/>`;
+  if (opsi.kumis) s += `<path d="M${130 - r * 0.24},${my - r * 0.1} Q130,${my - r * 0.24} ${130 + r * 0.24},${my - r * 0.1} Q130,${my - r * 0.04} ${130 - r * 0.24},${my - r * 0.1} Z" fill="${GELAP}"/>`;
+  return s;
+}
+
+function peci() {
+  const r = g.headR, cy = g.headCy;
+  const bawah = cy - r * 0.5, atas = cy - r - 16;
+  return `<path d="M${130 - r * 0.84},${bawah} L${130 - r * 0.74},${atas} Q130,${atas - 6} ${130 + r * 0.74},${atas} L${130 + r * 0.84},${bawah} Z" fill="#24211F" ${garis()}/>`;
+}
+
+function rambut() {
+  const r = g.headR, cy = g.headCy, R = r + 3;
+  const y0 = cy - r * 0.08;
+  return `<path d="M${130 - R},${y0} A${R},${R} 0 0 1 ${130 + R},${y0} L${130 + r * 0.9},${cy - r * 0.28} L${130 + r * 0.35},${cy - r * 0.46} L${130 - r * 0.05},${cy - r * 0.32} L${130 - r * 0.45},${cy - r * 0.48} L${130 - r * 0.95},${cy - r * 0.22} Z" fill="#2A2420" ${garis()}/>`;
+}
+
+function topi() {
+  const r = g.headR, cy = g.headCy, R = r + 4;
+  const y0 = cy - r * 0.32;
+  const dx = Math.sqrt(R * R - (cy - y0) ** 2);
+  return `<path d="M${130 - dx},${y0} A${R},${R} 0 0 1 ${130 + dx},${y0} Z" fill="${NAVY}" ${garis()}/>` +
+    `<ellipse cx="130" cy="${y0 + 2}" rx="${r * 0.9}" ry="${r * 0.17}" fill="#082142" ${garis()}/>`;
+}
+
+function hijab(warna) {
+  const r = g.headR, cy = g.headCy, R = r + 12, bw = g.bw, sy = g.sy;
+  const s1 = `<path d="M${130 - R},${cy} A${R},${R} 0 0 1 ${130 + R},${cy} C${130 + R},${cy + r * 0.9} ${130 + bw * 0.66},${sy + 20} ${130 + bw * 0.6},${sy + 78} Q130,${sy + 96} ${130 - bw * 0.6},${sy + 78} C${130 - bw * 0.66},${sy + 20} ${130 - R},${cy + r * 0.9} ${130 - R},${cy} Z" fill="${warna}" ${garis()}/>`;
+  const s2 = `<ellipse cx="130" cy="${cy + r * 0.08}" rx="${r * 0.76}" ry="${r * 0.84}" fill="${g.kulit}" ${garis(g.sw * 0.7)}/>`;
+  return s1 + s2;
+}
+
+function logoKaos() {
+  const lebar = g.bw * 0.34, skala = lebar / 474;
+  const x = 130 + g.bw * 0.1, y = g.sy + 34;
+  return `<g transform="translate(${x},${y}) scale(${skala}) translate(-392,-113)">
+    <path fill="${KREM}" d="M631 123 L856 275 V323 L631 169 L505 237.5 H610 V268 L560 304 C590 304 606 320 606 342 V364 C606 386 589 402 567 402 H402 L440 367 H552 C562 367 568 360 568 351 C568 341 562 334 553 334 H483 V328 L544 272 H454 L422 240 Z"/>
+    <path fill="${ORANYE}" d="M634 196 L757 279.1 V402 H715 V289.7 L634 235 Z M774 290.6 L811 315.6 V402 H774 Z M825 325 L856 346 V402 H825 Z"/></g>`;
+}
+
+function meteran(x, y) {
+  return `<rect x="${x - 15}" y="${y - 13}" width="30" height="26" rx="7" fill="#C9CDD2" ${garis(g.sw * 0.7)}/><circle cx="${x}" cy="${y}" r="5" fill="#6B7178"/>`;
+}
+
+function pose(kiri, kanan, baju) {
+  const { bw, sy, hy } = g;
+  const xL = 130 - bw / 2 + 12, xR = 130 + bw / 2 - 12;
+  return lengan(xL, sy + 18, xL - kiri, hy - 6, baju) + lengan(xR, sy + 18, xR + kanan, hy - 6, baju) +
+    `<circle cx="${xL - kiri}" cy="${hy - 6}" r="${g.armW * 0.58}" fill="${g.kulit}" ${garis()}/>` +
+    `<circle cx="${xR + kanan}" cy="${hy - 6}" r="${g.armW * 0.58}" fill="${g.kulit}" ${garis()}/>`;
+}
+
+const w = () => g.warna;
+const TOKOH = {
+  pak: () => pose(16, 16, w().pak) + kaki(w().celana, '#3A302A') + leher() + badan(w().pak) + kepala() + peci() + muka('cemas', 'cemas', { kumis: true }),
+  bu: () => pose(12, 12, w().bu) + rok(w().rok) + leher() + badan(w().bu) + hijab(w().bu) + muka('kesal', 'datar', { turun: 4 }),
+  anak: () => pose(14, 22, w().anak) + kaki(w().jins, '#2E2E2E') + leher() + badan(w().anak) + kepala() + rambut() + muka('senang', 'senyum'),
+  tukang: () => pose(14, 24, NAVY) + kaki('#4B4F55', '#2E2E2E') + leher() + badan(NAVY) + logoKaos() + kepala() + muka('senang', 'senyum') + topi() + meteran(130 + g.bw / 2 + 12, g.hy - 6),
+};
+const NAMA = { pak: 'Pak Darto', bu: 'Bu Darto', anak: 'Anaknya', tukang: 'Tukang 3 Putra' };
+
+function adegan() {
+  const skala = 1.95;
+  const ty = 205 + (16 + g.headR - g.headCy) * skala;
+  let hujan = '';
+  for (let i = 0; i < 46; i++) {
+    const x = (i * 53) % 440 - 20, y = (i * 97) % 720;
+    hujan += `<line x1="${x}" y1="${y}" x2="${x - 10}" y2="${y + 34}" stroke="#fff" stroke-width="2" opacity=".22"/>`;
+  }
+  return `
+  <svg x="40" y="860" width="405" height="720" viewBox="0 0 405 720">
+    <defs><linearGradient id="malam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C3644"/><stop offset="1" stop-color="#1B222C"/></linearGradient>
+    <clipPath id="bingkai"><rect width="405" height="720" rx="22"/></clipPath></defs>
+    <g clip-path="url(#bingkai)">
+      <rect width="405" height="720" fill="url(#malam)"/>
+      <rect x="0" y="250" width="405" height="470" fill="#3A4452"/>
+      <rect x="250" y="300" width="110" height="260" rx="6" fill="#2A323D"/>
+      <rect x="40" y="320" width="120" height="90" rx="4" fill="#4C5868"/>
+      ${hujan}
+      <g transform="translate(${202 - 130 * skala},${ty}) scale(${skala})">${TOKOH.pak()}</g>
+      <rect x="20" y="40" width="236" height="122" rx="12" fill="${NAVY}"/>
+      <text x="38" y="68" font-size="15" font-weight="600" fill="${KREM}" opacity=".8">Teras Pak Darto</text>
+      <text x="38" y="106" font-size="32" fill="${KREM}" style="font-family:Fraunces,serif;font-weight:600">5 m × 4 m</text>
+      <text x="38" y="145" font-size="28" fill="${ORANYE}" style="font-family:Fraunces,serif;font-weight:600">Rp9.000.000</text>
+      <g font-size="44" font-weight="800" text-anchor="middle">
+        <text x="202" y="600" fill="#fff" stroke="${GELAP}" stroke-width="9" paint-order="stroke" stroke-linejoin="round">harga di</text>
+        <rect x="88" y="620" width="230" height="62" rx="12" fill="${KREM}"/>
+        <text x="202" y="665" fill="${NAVY}">internet</text>
+      </g>
+    </g>
+  </svg>`;
+}
+
+const urutan = ['pak', 'bu', 'anak', 'tukang'];
+let tokoh = '';
+urutan.forEach((k, i) => {
+  tokoh += `<g transform="translate(${20 + i * 260},${210})">${TOKOH[k]()}</g>`;
+  tokoh += `<text x="${150 + i * 260}" y="772" font-size="26" font-weight="600" fill="${NAVY}" text-anchor="middle">${NAMA[k]}</text>`;
+});
+
+const kesan = g.kesan.map((t, i) => {
+  const kata = t.split(' ');
+  let baris = [], skr = '';
+  for (const k of kata) { if ((skr + ' ' + k).trim().length > 26) { baris.push(skr.trim()); skr = k; } else skr += ' ' + k; }
+  baris.push(skr.trim());
+  return { baris };
+});
+let ky = 940, teksKesan = '';
+kesan.forEach(({ baris }) => {
+  teksKesan += `<circle cx="496" cy="${ky - 9}" r="6" fill="${NAVY}"/>`;
+  baris.forEach((b, j) => { teksKesan += `<text x="516" y="${ky + j * 38}" font-size="29" fill="#2B2B2B">${b}</text>`; });
+  ky += baris.length * 38 + 30;
+});
+
+document.getElementById('lembar').innerHTML = `
+<svg width="1080" height="1620" viewBox="0 0 1080 1620" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="1620" fill="${KREM}"/>
+  <text x="40" y="112" font-size="96" fill="${NAVY}" style="font-family:Fraunces,serif;font-weight:600">${kode}</text>
+  <text x="124" y="84" font-size="44" font-weight="800" fill="${NAVY}">${g.judul}</text>
+  <text x="124" y="124" font-size="24" fill="#5A5A5A">Pilihan gaya karakter · Cerita 1: Takut harga nambah</text>
+  <rect x="20" y="170" width="1040" height="640" rx="28" fill="${g.panel}"/>
+  ${tokoh}
+  <text x="40" y="846" font-size="24" font-weight="600" fill="#5A5A5A">Contoh satu adegan di video</text>
+  ${adegan()}
+  <text x="490" y="890" font-size="24" font-weight="600" fill="#5A5A5A">Kesannya</text>
+  ${teksKesan}
+</svg>`;
+document.fonts.ready.then(() => { document.body.dataset.siap = '1'; });
+</script>
+</body>
+</html>
